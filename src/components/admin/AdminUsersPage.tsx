@@ -9,12 +9,18 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { UserPlus, Mail, Trash2 } from "lucide-react";
+import { Profile } from "@/lib/types";
+import { User } from "@supabase/supabase-js";
+
+interface UserProfile extends Profile {
+  email: string;
+}
 
 const AdminUsersPage = () => {
   const { profile, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const { data: profiles, refetch } = useQuery({
+  const { data: profiles, refetch } = useQuery<UserProfile[]>({
     queryKey: ["profiles"],
     queryFn: async () => {
       const { data: profiles, error } = await supabase
@@ -30,8 +36,8 @@ const AdminUsersPage = () => {
       if (usersError) throw usersError;
 
       // Combiner les données des profils avec les emails des utilisateurs
-      return profiles.map(profile => {
-        const user = users.find(u => u.id === profile.id);
+      return (profiles as Profile[]).map(profile => {
+        const user = (users as User[]).find(u => u.id === profile.id);
         return {
           ...profile,
           email: user?.email || "Email non trouvé"
