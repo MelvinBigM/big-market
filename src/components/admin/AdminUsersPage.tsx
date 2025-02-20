@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
@@ -45,30 +44,16 @@ const AdminUsersPage = () => {
         throw new Error("Accès non autorisé");
       }
 
-      // Récupérer tous les profils avec les données email associées
-      const { data: profilesWithEmail, error } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          role,
-          full_name,
-          created_at,
-          updated_at,
-          auth.users(email)
-        `)
-        .returns<(Profile & { auth: { users: { email: string }[] } })[]>();
+      // Récupérer tous les profils en utilisant la fonction rpc
+      const { data: profilesData, error } = await supabase
+        .rpc('get_profiles_with_email');
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur lors de la récupération des profils:", error);
+        throw error;
+      }
 
-      // Transformer les données pour correspondre à l'interface UserProfile
-      return (profilesWithEmail || []).map(profile => ({
-        id: profile.id,
-        role: profile.role,
-        full_name: profile.full_name,
-        created_at: profile.created_at,
-        updated_at: profile.updated_at,
-        email: profile.auth.users[0]?.email || "Email non trouvé"
-      })) as UserProfile[];
+      return profilesData as UserProfile[];
     },
     enabled: !!profile && profile.role === 'admin', // N'exécute la requête que si l'utilisateur est admin
   });
