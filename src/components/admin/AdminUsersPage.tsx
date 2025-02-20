@@ -29,7 +29,6 @@ const AdminUsersPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Protection de la route admin - redirection immédiate si non admin
     if (!isLoading && (!profile || profile.role !== 'admin')) {
       navigate('/');
       toast.error("Accès non autorisé");
@@ -37,29 +36,30 @@ const AdminUsersPage = () => {
     }
   }, [profile, isLoading, navigate]);
 
-  const { data: profiles, refetch } = useQuery({
+  const { data: profiles, refetch, isError } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
-      // Vérification supplémentaire des permissions
       if (!profile || profile.role !== 'admin') {
         throw new Error("Accès non autorisé");
       }
 
-      // Récupérer tous les profils en utilisant la fonction rpc
-      const { data: profilesData, error } = await supabase
-        .rpc('get_profiles_with_email') as { 
-          data: UserProfile[] | null; 
-          error: Error | null;
-        };
+      const { data, error } = await supabase.rpc('get_profiles_with_email');
+      
+      console.log("Données reçues:", data); // Pour le debugging
+      console.log("Erreur éventuelle:", error); // Pour le debugging
 
       if (error) {
         console.error("Erreur lors de la récupération des profils:", error);
         throw error;
       }
 
-      return profilesData || [];
+      if (!data) {
+        return [];
+      }
+
+      return data as UserProfile[];
     },
-    enabled: !!profile && profile.role === 'admin', // N'exécute la requête que si l'utilisateur est admin
+    enabled: !!profile && profile.role === 'admin',
   });
 
   const handleRoleChange = async (userId: string, newRole: 'nouveau' | 'client' | 'admin') => {
@@ -84,11 +84,10 @@ const AdminUsersPage = () => {
   };
 
   const filteredProfiles = profiles?.filter(profile =>
-    profile.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    profile.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     profile.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Affichage du chargement
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -100,7 +99,16 @@ const AdminUsersPage = () => {
     );
   }
 
-  // Protection supplémentaire contre l'accès non autorisé
+  if (isError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center text-red-600">
+          Une erreur est survenue lors du chargement des utilisateurs.
+        </div>
+      </div>
+    );
+  }
+
   if (!profile || profile.role !== 'admin') {
     return null;
   }
@@ -138,60 +146,60 @@ const AdminUsersPage = () => {
             </div>
 
             <div className="grid gap-4">
-              {filteredProfiles?.map((userProfile) => (
-                <div
-                  key={userProfile.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div>
-                      <h3 className="font-medium">{userProfile.email}</h3>
-                      <p className="text-sm text-gray-600">
-                        Inscrit le {new Date(userProfile.created_at).toLocaleDateString()}
-                      </p>
+              {filteredProfiles && filteredProfiles.length > 0 ? (
+                filteredProfiles.map((userProfile) => (
+                  <div
+                    key={userProfile.id}
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div>
+                        <h3 className="font-medium">{userProfile.email}</h3>
+                        <p className="text-sm text-gray-600">
+                          Inscrit le {new Date(userProfile.created_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <Select
+                        value={userProfile.role}
+                        onValueChange={(value: 'nouveau' | 'client' | 'admin') => 
+                          handleRoleChange(userProfile.id, value)
+                        }
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Sélectionner un rôle" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="nouveau">Nouveau</SelectItem>
+                          <SelectItem value="client">Client</SelectItem>
+                          <SelectItem value="admin">Administrateur</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            toast.info("Fonctionnalité à venir");
+                          }}
+                        >
+                          <Mail className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            toast.info("Fonctionnalité à venir");
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <Select
-                      value={userProfile.role}
-                      onValueChange={(value: 'nouveau' | 'client' | 'admin') => 
-                        handleRoleChange(userProfile.id, value)
-                      }
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Sélectionner un rôle" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="nouveau">Nouveau</SelectItem>
-                        <SelectItem value="client">Client</SelectItem>
-                        <SelectItem value="admin">Administrateur</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          toast.info("Fonctionnalité à venir");
-                        }}
-                      >
-                        <Mail className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          toast.info("Fonctionnalité à venir");
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-
-              {filteredProfiles?.length === 0 && (
+                ))
+              ) : (
                 <p className="text-center text-gray-600 py-4">
                   Aucun utilisateur trouvé.
                 </p>
