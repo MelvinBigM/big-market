@@ -80,7 +80,7 @@ const AdminUsersPage = () => {
 
       const { error } = await supabase.rpc('delete_user', {
         user_id: userId
-      });
+      }) as { error: any };
 
       if (error) throw error;
 
