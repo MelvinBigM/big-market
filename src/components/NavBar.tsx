@@ -1,11 +1,16 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MenuIcon, User, ShoppingCart, X } from "lucide-react";
 import { Button } from "./ui/button";
+import { useAuth } from "@/lib/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { session, profile } = useAuth();
+  const navigate = useNavigate();
 
   const categories = [
     { name: "Sodas", path: "/categories/sodas" },
@@ -15,6 +20,17 @@ const NavBar = () => {
     { name: "Alcool", path: "/categories/alcool" },
     { name: "Autres", path: "/categories/autres" },
   ];
+
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      toast.success("Déconnexion réussie");
+      navigate("/");
+    } catch (error: any) {
+      toast.error("Erreur lors de la déconnexion");
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
@@ -47,15 +63,25 @@ const NavBar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
+            {profile?.role === 'admin' && (
+              <Link to="/admin">
+                <Button variant="ghost" size="icon">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-            <Button variant="default" className="bg-primary hover:bg-primary/90">
-              Se connecter
-            </Button>
+            {session ? (
+              <Button variant="default" onClick={handleLogout}>
+                Se déconnecter
+              </Button>
+            ) : (
+              <Link to="/login">
+                <Button variant="default">Se connecter</Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -90,14 +116,36 @@ const NavBar = () => {
               </Link>
             ))}
             <div className="mt-4 flex flex-col space-y-2 px-3">
-              <Button variant="outline" className="justify-start">
-                <User className="h-5 w-5 mr-2" />
-                Se connecter
-              </Button>
-              <Button variant="outline" className="justify-start">
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                Panier
-              </Button>
+              {session ? (
+                <>
+                  {profile?.role === 'admin' && (
+                    <Link to="/admin">
+                      <Button variant="outline" className="w-full justify-start">
+                        <User className="h-5 w-5 mr-2" />
+                        Administration
+                      </Button>
+                    </Link>
+                  )}
+                  <Button variant="outline" className="justify-start">
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    Panier
+                  </Button>
+                  <Button 
+                    variant="default" 
+                    className="justify-start"
+                    onClick={handleLogout}
+                  >
+                    Se déconnecter
+                  </Button>
+                </>
+              ) : (
+                <Link to="/login">
+                  <Button variant="default" className="w-full justify-start">
+                    <User className="h-5 w-5 mr-2" />
+                    Se connecter
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
