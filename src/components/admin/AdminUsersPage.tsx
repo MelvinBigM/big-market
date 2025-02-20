@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import NavBar from "../NavBar";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { UserPlus, Mail, Trash2 } from "lucide-react";
 import { Profile } from "@/lib/types";
 import { User } from "@supabase/supabase-js";
+import CreateUserDialog from "./CreateUserDialog";
 
 interface UserProfile extends Profile {
   email: string;
@@ -19,8 +20,9 @@ interface UserProfile extends Profile {
 const AdminUsersPage = () => {
   const { profile, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  const { data: profiles, refetch } = useQuery<UserProfile[]>({
+  const { data: profiles, refetch } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
       const { data: profiles, error } = await supabase
@@ -51,11 +53,6 @@ const AdminUsersPage = () => {
       navigate('/');
     }
   }, [profile, isLoading, navigate]);
-
-  const handleCreateUser = async () => {
-    // Cette fonction sera implémentée plus tard
-    toast.info("Fonctionnalité à venir");
-  };
 
   if (isLoading) {
     return (
@@ -88,7 +85,7 @@ const AdminUsersPage = () => {
                 Gestion des clients
               </h1>
             </div>
-            <Button onClick={handleCreateUser}>
+            <Button onClick={() => setIsCreateDialogOpen(true)}>
               <UserPlus className="h-5 w-5 mr-2" />
               Créer un compte client
             </Button>
@@ -141,6 +138,13 @@ const AdminUsersPage = () => {
           </div>
         </div>
       </div>
+
+      <CreateUserDialog 
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+        onSuccess={refetch}
+      />
+
       <Footer />
     </div>
   );
