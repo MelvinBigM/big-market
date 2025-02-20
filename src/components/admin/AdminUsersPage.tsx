@@ -17,16 +17,26 @@ const AdminUsersPage = () => {
   const { data: profiles, refetch } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("*, users!inner(email)")
+        .select("*")
         .eq("role", "client");
 
       if (error) throw error;
-      return data.map(profile => ({
-        ...profile,
-        email: profile.users.email
-      }));
+      
+      // Récupérer les utilisateurs depuis l'API Auth
+      const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers();
+      
+      if (usersError) throw usersError;
+
+      // Combiner les données des profils avec les emails des utilisateurs
+      return profiles.map(profile => {
+        const user = users.find(u => u.id === profile.id);
+        return {
+          ...profile,
+          email: user?.email || "Email non trouvé"
+        };
+      });
     },
   });
 
@@ -87,7 +97,7 @@ const AdminUsersPage = () => {
                 >
                   <div className="flex items-center space-x-4">
                     <div>
-                      <h3 className="font-medium">{userProfile.email || "Email non défini"}</h3>
+                      <h3 className="font-medium">{userProfile.email}</h3>
                       <p className="text-sm text-gray-600">
                         Client depuis le {new Date(userProfile.created_at).toLocaleDateString()}
                       </p>
