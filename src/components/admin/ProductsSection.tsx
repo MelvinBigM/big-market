@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Product, Category } from "@/lib/types";
 import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
 import { Plus, Pencil, Trash2, Package } from "lucide-react";
 import ProductDialog from "./ProductDialog";
 import { toast } from "sonner";
@@ -54,6 +55,22 @@ const ProductsSection = () => {
     }
   };
 
+  const toggleStock = async (product: Product) => {
+    try {
+      const { error } = await supabase
+        .from("products")
+        .update({ in_stock: !product.in_stock })
+        .eq("id", product.id);
+
+      if (error) throw error;
+      
+      toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'hors stock'}`);
+      refetch();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-6">
@@ -96,7 +113,16 @@ const ProductsSection = () => {
                 )}
               </div>
             </div>
-            <div className="flex space-x-2">
+            <div className="flex items-center space-x-2">
+              <Toggle
+                pressed={product.in_stock}
+                onPressedChange={() => toggleStock(product)}
+                className={`${product.in_stock ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}
+              >
+                <span className={`text-sm ${product.in_stock ? 'text-green-700' : 'text-red-700'}`}>
+                  {product.in_stock ? 'En stock' : 'Hors stock'}
+                </span>
+              </Toggle>
               <Button
                 variant="ghost"
                 size="icon"
