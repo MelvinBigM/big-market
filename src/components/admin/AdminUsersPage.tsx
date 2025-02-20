@@ -19,11 +19,14 @@ const AdminUsersPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select("*, users!inner(email)")
         .eq("role", "client");
 
       if (error) throw error;
-      return data;
+      return data.map(profile => ({
+        ...profile,
+        email: profile.users.email
+      }));
     },
   });
 
@@ -95,7 +98,6 @@ const AdminUsersPage = () => {
                       variant="ghost"
                       size="icon"
                       onClick={() => {
-                        // Cette fonction sera implémentée plus tard
                         toast.info("Fonctionnalité à venir");
                       }}
                     >
@@ -105,7 +107,6 @@ const AdminUsersPage = () => {
                       variant="ghost"
                       size="icon"
                       onClick={() => {
-                        // Cette fonction sera implémentée plus tard
                         toast.info("Fonctionnalité à venir");
                       }}
                     >

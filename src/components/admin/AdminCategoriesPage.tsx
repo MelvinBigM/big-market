@@ -2,10 +2,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
-import NavBar from "./NavBar";
-import Footer from "./Footer";
-import CategoriesSection from "./admin/CategoriesSection";
-import ProductsSection from "./admin/ProductsSection";
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
+import CategoriesSection from "./CategoriesSection";
+import ProductsSection from "./ProductsSection";
 
 const AdminPage = () => {
   const { profile, isLoading } = useAuth();
