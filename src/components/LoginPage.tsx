@@ -42,15 +42,23 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Connexion
+        <div className="flex flex-col items-center">
+          <img
+            src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png"
+            alt="Big Market Logo"
+            className="h-24 w-24 mb-4"
+          />
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">
+            Connexion à Big Market
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Accédez à votre compte pour commander
+          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="rounded-md shadow-sm space-y-4">
             <div>
-              <label htmlFor="email" className="sr-only">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Adresse email
               </label>
               <Input
@@ -58,13 +66,13 @@ const LoginPage = () => {
                 name="email"
                 type="email"
                 required
-                placeholder="Adresse email"
+                placeholder="Votre email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Mot de passe
               </label>
               <Input
@@ -72,7 +80,7 @@ const LoginPage = () => {
                 name="password"
                 type="password"
                 required
-                placeholder="Mot de passe"
+                placeholder="Votre mot de passe"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -82,7 +90,7 @@ const LoginPage = () => {
           <div>
             <Button
               type="submit"
-              className="w-full"
+              className="w-full bg-primary hover:bg-primary/90"
               disabled={isLoading}
             >
               {isLoading ? "Connexion..." : "Se connecter"}
