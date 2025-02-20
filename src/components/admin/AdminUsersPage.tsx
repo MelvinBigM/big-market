@@ -78,9 +78,9 @@ const AdminUsersPage = () => {
         throw new Error("Action non autorisée");
       }
 
-      // Supprime d'abord l'utilisateur de la table auth.users
-      // Cela déclenchera la suppression en cascade du profil
-      const { error } = await supabase.auth.admin.deleteUser(userId);
+      const { error } = await supabase.rpc('delete_user', {
+        user_id: userId
+      });
 
       if (error) throw error;
 
