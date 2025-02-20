@@ -113,7 +113,7 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: {
           id: string
-          role: string
+          role: Database["public"]["Enums"]["user_role"]
           full_name: string
           created_at: string
           updated_at: string
