@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/select";
 
 interface UserProfile extends Profile {
-  email: string;
+  email: string | null;
 }
 
 const AdminUsersPage = () => {
@@ -36,30 +36,38 @@ const AdminUsersPage = () => {
     }
   }, [profile, isLoading, navigate]);
 
-  const { data: profiles, refetch, isError } = useQuery({
+  const { data: profiles, refetch, isError, error } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
-      if (!profile || profile.role !== 'admin') {
-        throw new Error("Accès non autorisé");
-      }
+      try {
+        if (!profile || profile.role !== 'admin') {
+          throw new Error("Accès non autorisé");
+        }
 
-      const { data, error } = await supabase.rpc('get_profiles_with_email');
-      
-      console.log("Données reçues:", data); // Pour le debugging
-      console.log("Erreur éventuelle:", error); // Pour le debugging
+        console.log("Début de la requête get_profiles_with_email");
+        const { data, error } = await supabase.rpc('get_profiles_with_email');
+        
+        console.log("Réponse complète:", { data, error });
 
-      if (error) {
-        console.error("Erreur lors de la récupération des profils:", error);
+        if (error) {
+          console.error("Erreur détaillée:", error);
+          throw error;
+        }
+
+        if (!data) {
+          console.log("Aucune donnée reçue");
+          return [];
+        }
+
+        console.log("Données des profils reçues:", data);
+        return data as UserProfile[];
+      } catch (error) {
+        console.error("Erreur attrapée dans queryFn:", error);
         throw error;
       }
-
-      if (!data) {
-        return [];
-      }
-
-      return data as UserProfile[];
     },
     enabled: !!profile && profile.role === 'admin',
+    retry: 1,
   });
 
   const handleRoleChange = async (userId: string, newRole: 'nouveau' | 'client' | 'admin') => {
@@ -84,7 +92,7 @@ const AdminUsersPage = () => {
   };
 
   const filteredProfiles = profiles?.filter(profile =>
-    profile.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (profile.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     profile.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -103,7 +111,8 @@ const AdminUsersPage = () => {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center text-red-600">
-          Une erreur est survenue lors du chargement des utilisateurs.
+          <p>Une erreur est survenue lors du chargement des utilisateurs.</p>
+          <p className="text-sm mt-2">{error instanceof Error ? error.message : 'Erreur inconnue'}</p>
         </div>
       </div>
     );
@@ -154,7 +163,7 @@ const AdminUsersPage = () => {
                   >
                     <div className="flex items-center space-x-4">
                       <div>
-                        <h3 className="font-medium">{userProfile.email}</h3>
+                        <h3 className="font-medium">{userProfile.email || 'Email non défini'}</h3>
                         <p className="text-sm text-gray-600">
                           Inscrit le {new Date(userProfile.created_at).toLocaleDateString()}
                         </p>
