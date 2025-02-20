@@ -11,7 +11,13 @@ import { toast } from "sonner";
 import { UserPlus, Mail, Trash2 } from "lucide-react";
 import { Profile } from "@/lib/types";
 import { User } from "@supabase/supabase-js";
-import CreateUserDialog from "./CreateUserDialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface UserProfile extends Profile {
   email: string;
@@ -20,7 +26,6 @@ interface UserProfile extends Profile {
 const AdminUsersPage = () => {
   const { profile, isLoading } = useAuth();
   const navigate = useNavigate();
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const { data: profiles, refetch } = useQuery({
     queryKey: ["profiles"],
@@ -28,7 +33,7 @@ const AdminUsersPage = () => {
       const { data: profiles, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("role", "client");
+        .not('role', 'eq', 'admin');
 
       if (error) throw error;
       
@@ -47,6 +52,22 @@ const AdminUsersPage = () => {
       });
     },
   });
+
+  const handleRoleChange = async (userId: string, newRole: 'nouveau' | 'client' | 'admin') => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ role: newRole })
+        .eq('id', userId);
+
+      if (error) throw error;
+
+      toast.success(`Le rôle a été mis à jour avec succès`);
+      refetch();
+    } catch (error) {
+      toast.error("Erreur lors de la mise à jour du rôle");
+    }
+  };
 
   useEffect(() => {
     if (!isLoading && (!profile || profile.role !== 'admin')) {
@@ -82,13 +103,9 @@ const AdminUsersPage = () => {
                 className="h-12 w-12"
               />
               <h1 className="text-3xl font-bold text-gray-900">
-                Gestion des clients
+                Gestion des utilisateurs
               </h1>
             </div>
-            <Button onClick={() => setIsCreateDialogOpen(true)}>
-              <UserPlus className="h-5 w-5 mr-2" />
-              Créer un compte client
-            </Button>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
@@ -102,48 +119,59 @@ const AdminUsersPage = () => {
                     <div>
                       <h3 className="font-medium">{userProfile.email}</h3>
                       <p className="text-sm text-gray-600">
-                        Client depuis le {new Date(userProfile.created_at).toLocaleDateString()}
+                        Inscrit le {new Date(userProfile.created_at).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        toast.info("Fonctionnalité à venir");
-                      }}
+                  <div className="flex items-center space-x-4">
+                    <Select
+                      value={userProfile.role}
+                      onValueChange={(value: 'nouveau' | 'client' | 'admin') => 
+                        handleRoleChange(userProfile.id, value)
+                      }
                     >
-                      <Mail className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        toast.info("Fonctionnalité à venir");
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Sélectionner un rôle" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="nouveau">Nouveau</SelectItem>
+                        <SelectItem value="client">Client</SelectItem>
+                        <SelectItem value="admin">Administrateur</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <div className="flex space-x-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          toast.info("Fonctionnalité à venir");
+                        }}
+                      >
+                        <Mail className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          toast.info("Fonctionnalité à venir");
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
 
               {profiles?.length === 0 && (
                 <p className="text-center text-gray-600 py-4">
-                  Aucun client enregistré pour le moment.
+                  Aucun utilisateur enregistré pour le moment.
                 </p>
               )}
             </div>
           </div>
         </div>
       </div>
-
-      <CreateUserDialog 
-        open={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
-        onSuccess={refetch}
-      />
 
       <Footer />
     </div>
