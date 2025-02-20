@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Product, Category } from "@/lib/types";
@@ -24,6 +25,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [inStock, setInStock] = useState(true);
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -38,7 +40,6 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
     },
   });
 
-  // Pré-remplir les champs quand un produit est sélectionné
   useEffect(() => {
     if (product) {
       setName(product.name);
@@ -46,13 +47,14 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
       setImageUrl(product.image_url || "");
       setPrice(product.price.toString());
       setCategoryId(product.category_id);
+      setInStock(product.in_stock);
     } else {
-      // Réinitialiser les champs si on crée un nouveau produit
       setName("");
       setDescription("");
       setImageUrl("");
       setPrice("");
       setCategoryId("");
+      setInStock(true);
     }
   }, [product, open]);
 
@@ -70,6 +72,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
             image_url: imageUrl,
             price: parseFloat(price),
             category_id: categoryId,
+            in_stock: inStock,
           })
           .eq("id", product.id);
 
@@ -85,6 +88,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
               image_url: imageUrl,
               price: parseFloat(price),
               category_id: categoryId,
+              in_stock: inStock,
             },
           ]);
 
@@ -168,6 +172,14 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="URL de l'image"
               />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="inStock"
+                checked={inStock}
+                onCheckedChange={(checked) => setInStock(checked as boolean)}
+              />
+              <Label htmlFor="inStock">En stock</Label>
             </div>
           </div>
           <DialogFooter>
