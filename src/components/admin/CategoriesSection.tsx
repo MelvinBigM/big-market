@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,14 +38,19 @@ const CategoriesSection = () => {
 
     // Mise à jour des positions dans la base de données
     try {
-      for (let i = 0; i < items.length; i++) {
-        const { error } = await supabase
-          .from("categories")
-          .update({ position: i })
-          .eq("id", items[i].id);
+      const updates = items.map((item, index) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        image_url: item.image_url,
+        position: index,
+      }));
 
-        if (error) throw error;
-      }
+      const { error } = await supabase
+        .from("categories")
+        .upsert(updates);
+
+      if (error) throw error;
       refetch();
     } catch (error: any) {
       toast.error("Erreur lors de la réorganisation des catégories");
