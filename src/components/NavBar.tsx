@@ -6,13 +6,14 @@ import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Category } from "@/lib/types";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { session, profile } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -29,21 +30,24 @@ const NavBar = () => {
 
   const handleLogout = async () => {
     try {
+      // Supprimer les données en cache avant la déconnexion
+      queryClient.clear();
+      
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error("Erreur lors de la déconnexion:", error);
         throw error;
       }
       
-      // Fermer le menu mobile si ouvert
+      // Fermer le menu mobile
       setIsOpen(false);
       
       // Rediriger vers la page d'accueil
-      navigate("/");
+      navigate("/", { replace: true });
       
       toast.success("Déconnexion réussie");
     } catch (error: any) {
-      console.error("Erreur détaillée:", error);
+      console.error("Erreur lors de la déconnexion:", error);
       toast.error("Erreur lors de la déconnexion");
     }
   };
