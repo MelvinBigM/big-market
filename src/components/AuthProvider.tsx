@@ -13,8 +13,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Récupérer la session initiale
     supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+        fetchProfile(session.user.id);
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
         fetchProfile(session.user.id);
@@ -24,24 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
-    // Souscrire aux changements de session
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      console.log("Auth state changed:", _event, session);
-      setSession(session);
-      
-      if (session) {
-        await fetchProfile(session.user.id);
-      } else {
-        setProfile(null);
-        setIsLoading(false);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchProfile = async (userId: string) => {
@@ -60,8 +53,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setProfile(data as Profile);
       }
     } catch (error: any) {
-      console.error("Error fetching profile:", error.message);
       toast.error("Erreur lors du chargement du profil");
+      console.error("Error fetching profile:", error.message);
     } finally {
       setIsLoading(false);
     }
