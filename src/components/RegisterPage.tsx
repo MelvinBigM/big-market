@@ -6,33 +6,37 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+        },
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
-      toast.success("Connexion réussie");
-      navigate("/");
+      toast.success("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+      navigate("/login");
     } catch (error: any) {
       toast.error(
-        error.message === "Invalid login credentials"
-          ? "Email ou mot de passe incorrect"
-          : "Erreur lors de la connexion"
+        error.message === "User already registered"
+          ? "Un compte existe déjà avec cet email"
+          : "Erreur lors de l'inscription"
       );
     } finally {
       setIsLoading(false);
@@ -49,14 +53,28 @@ const LoginPage = () => {
             className="h-24 w-24 mb-4"
           />
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            Connexion à Big Market
+            Créer un compte Big Market
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Accédez à votre compte pour commander
+            Rejoignez-nous pour accéder à nos produits
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+        <form className="mt-8 space-y-6" onSubmit={handleRegister}>
           <div className="rounded-md shadow-sm space-y-4">
+            <div>
+              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+                Nom complet
+              </label>
+              <Input
+                id="fullName"
+                name="fullName"
+                type="text"
+                required
+                placeholder="Votre nom complet"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Adresse email
@@ -83,6 +101,7 @@ const LoginPage = () => {
                 placeholder="Votre mot de passe"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                minLength={6}
               />
             </div>
           </div>
@@ -93,16 +112,16 @@ const LoginPage = () => {
               className="w-full bg-primary hover:bg-primary/90"
               disabled={isLoading}
             >
-              {isLoading ? "Connexion..." : "Se connecter"}
+              {isLoading ? "Inscription..." : "S'inscrire"}
             </Button>
             <p className="text-center text-sm">
-              Pas encore de compte ?{" "}
+              Déjà inscrit ?{" "}
               <button
                 type="button"
                 className="text-primary hover:text-primary/90"
-                onClick={() => navigate("/register")}
+                onClick={() => navigate("/login")}
               >
-                S'inscrire
+                Se connecter
               </button>
             </p>
           </div>
@@ -112,4 +131,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
