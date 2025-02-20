@@ -25,16 +25,25 @@ const NavBar = () => {
       if (error) throw error;
       return data as Category[];
     },
-    staleTime: 0, // Force le rafraîchissement des données
   });
 
   const handleLogout = async () => {
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      toast.success("Déconnexion réussie");
+      if (error) {
+        console.error("Erreur lors de la déconnexion:", error);
+        throw error;
+      }
+      
+      // Fermer le menu mobile si ouvert
+      setIsOpen(false);
+      
+      // Rediriger vers la page d'accueil
       navigate("/");
+      
+      toast.success("Déconnexion réussie");
     } catch (error: any) {
+      console.error("Erreur détaillée:", error);
       toast.error("Erreur lors de la déconnexion");
     }
   };
