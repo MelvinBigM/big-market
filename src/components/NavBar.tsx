@@ -20,9 +20,16 @@ const NavBar = () => {
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center">
-            <Link to="/" className="text-2xl font-bold text-primary">
-              Big Market
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="flex items-center space-x-2">
+              <img 
+                src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png" 
+                alt="Big Market Logo" 
+                className="h-10 w-10"
+              />
+              <span className="text-2xl font-bold text-primary hidden sm:block">
+                Big Market
+              </span>
             </Link>
           </div>
 
@@ -46,7 +53,9 @@ const NavBar = () => {
             <Button variant="ghost" size="icon">
               <User className="h-5 w-5" />
             </Button>
-            <Button variant="default">Se connecter</Button>
+            <Button variant="default" className="bg-primary hover:bg-primary/90">
+              Se connecter
+            </Button>
           </div>
 
           {/* Mobile menu button */}
