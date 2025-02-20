@@ -93,6 +93,7 @@ const AdminUsersPage = () => {
 
   const filteredProfiles = profiles?.filter(profile =>
     (profile.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+    (profile.full_name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     profile.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -146,7 +147,7 @@ const AdminUsersPage = () => {
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                 <Input
                   type="search"
-                  placeholder="Rechercher un utilisateur par email ou rôle..."
+                  placeholder="Rechercher un utilisateur par email, nom ou rôle..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10"
@@ -162,9 +163,12 @@ const AdminUsersPage = () => {
                     className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
                   >
                     <div className="flex items-center space-x-4">
-                      <div>
+                      <div className="space-y-1">
                         <h3 className="font-medium">{userProfile.email || 'Email non défini'}</h3>
                         <p className="text-sm text-gray-600">
+                          {userProfile.full_name || 'Nom non défini'}
+                        </p>
+                        <p className="text-xs text-gray-500">
                           Inscrit le {new Date(userProfile.created_at).toLocaleDateString()}
                         </p>
                       </div>
