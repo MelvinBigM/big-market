@@ -29,33 +29,59 @@ const AdminUsersPage = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
+  useEffect(() => {
+    // Protection de la route admin - redirection immédiate si non admin
+    if (!isLoading && (!profile || profile.role !== 'admin')) {
+      navigate('/');
+      toast.error("Accès non autorisé");
+      return;
+    }
+  }, [profile, isLoading, navigate]);
+
   const { data: profiles, refetch } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
+      // Vérification supplémentaire des permissions
+      if (!profile || profile.role !== 'admin') {
+        throw new Error("Accès non autorisé");
+      }
+
+      // Récupérer d'abord tous les profils
       const { data: profiles, error } = await supabase
         .from("profiles")
         .select("*");
 
       if (error) throw error;
-      
-      // Récupérer les utilisateurs depuis l'API Auth
-      const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers();
-      
-      if (usersError) throw usersError;
 
-      // Combiner les données des profils avec les emails des utilisateurs
+      // Récupérer la liste des emails depuis la table auth.users
+      const { data: emails, error: emailsError } = await supabase
+        .from('profiles')
+        .select(`
+          id,
+          email:id(email)
+        `)
+        .csv();
+
+      if (emailsError) throw emailsError;
+
+      // Combiner les données
       return (profiles as Profile[]).map(profile => {
-        const user = (users as User[]).find(u => u.id === profile.id);
+        const emailRecord = emails?.find(e => e.id === profile.id);
         return {
           ...profile,
-          email: user?.email || "Email non trouvé"
+          email: emailRecord?.email || "Email non trouvé"
         };
       });
     },
+    enabled: !!profile && profile.role === 'admin', // N'exécute la requête que si l'utilisateur est admin
   });
 
   const handleRoleChange = async (userId: string, newRole: 'nouveau' | 'client' | 'admin') => {
     try {
+      if (!profile || profile.role !== 'admin') {
+        throw new Error("Action non autorisée");
+      }
+
       const { error } = await supabase
         .from('profiles')
         .update({ role: newRole })
@@ -67,6 +93,7 @@ const AdminUsersPage = () => {
       refetch();
     } catch (error) {
       toast.error("Erreur lors de la mise à jour du rôle");
+      console.error(error);
     }
   };
 
@@ -75,12 +102,7 @@ const AdminUsersPage = () => {
     profile.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  useEffect(() => {
-    if (!isLoading && (!profile || profile.role !== 'admin')) {
-      navigate('/');
-    }
-  }, [profile, isLoading, navigate]);
-
+  // Affichage du chargement
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -92,6 +114,7 @@ const AdminUsersPage = () => {
     );
   }
 
+  // Protection supplémentaire contre l'accès non autorisé
   if (!profile || profile.role !== 'admin') {
     return null;
   }
@@ -191,7 +214,6 @@ const AdminUsersPage = () => {
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );
