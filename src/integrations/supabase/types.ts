@@ -112,7 +112,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      user_role: "admin" | "client"
+      user_role: "admin" | "client" | "nouveau"
     }
     CompositeTypes: {
       [_ in never]: never
