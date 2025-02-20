@@ -48,6 +48,7 @@ export type Database = {
           image_url: string | null
           in_stock: boolean
           name: string
+          position: number | null
           price: number
           updated_at: string
         }
@@ -59,6 +60,7 @@ export type Database = {
           image_url?: string | null
           in_stock?: boolean
           name: string
+          position?: number | null
           price: number
           updated_at?: string
         }
@@ -70,6 +72,7 @@ export type Database = {
           image_url?: string | null
           in_stock?: boolean
           name?: string
+          position?: number | null
           price?: number
           updated_at?: string
         }

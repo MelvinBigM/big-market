@@ -5,30 +5,21 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import ProductDialog from "./ProductDialog";
 import ProductHeader from "./products/ProductHeader";
 import ProductSearch from "./products/ProductSearch";
-import CategorySection from "./products/CategorySection";
 import { useProducts } from "./products/hooks/useProducts";
-import { useCategories } from "./products/hooks/useCategories";
+import { GripVertical, Pencil, Trash2 } from "lucide-react";
+import { Button } from "../ui/button";
+import { Toggle } from "../ui/toggle";
 
 const ProductsSection = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
 
-  const { products, refetchProducts, handleDelete, toggleStock } = useProducts();
-  const { categories, handleDragEnd } = useCategories();
+  const { products, refetchProducts, handleDelete, toggleStock, handleDragEnd } = useProducts();
 
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
     setDialogOpen(true);
-  };
-
-  const toggleCategory = (categoryId: string) => {
-    setCollapsedCategories(prev => 
-      prev.includes(categoryId)
-        ? prev.filter(id => id !== categoryId)
-        : [...prev, categoryId]
-    );
   };
 
   const filteredProducts = products?.filter(product =>
@@ -36,11 +27,6 @@ const ProductsSection = () => {
     product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     product.categories.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const productsByCategory = categories?.map(category => ({
-    ...category,
-    products: filteredProducts?.filter(product => product.category_id === category.id) || []
-  }));
 
   return (
     <div className="bg-white rounded-lg shadow p-6">
@@ -57,33 +43,88 @@ const ProductsSection = () => {
       />
 
       <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="categories">
+        <Droppable droppableId="products">
           {(provided) => (
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className="space-y-6"
+              className="space-y-2 mt-6"
             >
-              {productsByCategory?.map((category, index) => (
+              {filteredProducts?.map((product, index) => (
                 <Draggable
-                  key={category.id}
-                  draggableId={category.id}
+                  key={product.id}
+                  draggableId={product.id}
                   index={index}
                 >
                   {(provided) => (
-                    <CategorySection
-                      category={category}
-                      isCollapsed={collapsedCategories.includes(category.id)}
-                      onToggleCollapse={toggleCategory}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
-                      onToggleStock={toggleStock}
-                      provided={provided}
-                    />
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      className="flex items-center border rounded-lg bg-white overflow-hidden hover:bg-gray-50 transition-colors"
+                    >
+                      <div
+                        {...provided.dragHandleProps}
+                        className="px-4 cursor-move text-gray-400 hover:text-gray-600"
+                      >
+                        <GripVertical className="h-5 w-5" />
+                      </div>
+                      
+                      <div className="flex-1 flex items-center justify-between p-4">
+                        <div className="flex items-center space-x-4">
+                          {product.image_url && (
+                            <img
+                              src={product.image_url}
+                              alt={product.name}
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                          )}
+                          <div>
+                            <h3 className="font-medium">{product.name}</h3>
+                            <div className="text-sm text-gray-600">
+                              <span className="font-medium">{product.price} €</span> - 
+                              <span className="ml-2 text-gray-500">{product.categories.name}</span>
+                              {product.description && (
+                                <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Toggle
+                            pressed={product.in_stock}
+                            onPressedChange={() => toggleStock(product)}
+                            className={`${product.in_stock ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}
+                          >
+                            <span className={`text-sm ${product.in_stock ? 'text-green-700' : 'text-red-700'}`}>
+                              {product.in_stock ? 'En stock' : 'Hors stock'}
+                            </span>
+                          </Toggle>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEdit(product)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDelete(product)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </Draggable>
               ))}
               {provided.placeholder}
+              {filteredProducts?.length === 0 && (
+                <div className="text-center text-gray-500 py-8">
+                  Aucun produit trouvé
+                </div>
+              )}
             </div>
           )}
         </Droppable>
