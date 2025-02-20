@@ -72,6 +72,26 @@ const AdminUsersPage = () => {
     }
   };
 
+  const handleDelete = async (userId: string) => {
+    try {
+      if (!profile || profile.role !== 'admin') {
+        throw new Error("Action non autorisée");
+      }
+
+      // Supprime d'abord l'utilisateur de la table auth.users
+      // Cela déclenchera la suppression en cascade du profil
+      const { error } = await supabase.auth.admin.deleteUser(userId);
+
+      if (error) throw error;
+
+      toast.success("L'utilisateur a été supprimé avec succès");
+      refetch();
+    } catch (error) {
+      toast.error("Erreur lors de la suppression de l'utilisateur");
+      console.error(error);
+    }
+  };
+
   const filteredProfiles = profiles?.filter(profile =>
     (profile.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     (profile.full_name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
@@ -109,17 +129,10 @@ const AdminUsersPage = () => {
       <NavBar />
       <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
-              <img 
-                src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png" 
-                alt="Big Market Logo" 
-                className="h-12 w-12"
-              />
-              <h1 className="text-3xl font-bold text-gray-900">
-                Gestion des utilisateurs
-              </h1>
-            </div>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Gestion des utilisateurs
+            </h1>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
@@ -130,6 +143,7 @@ const AdminUsersPage = () => {
             <UsersList 
               profiles={filteredProfiles}
               onRoleChange={handleRoleChange}
+              onDelete={handleDelete}
             />
           </div>
         </div>

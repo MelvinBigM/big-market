@@ -18,16 +18,17 @@ interface UserProfile extends Profile {
 interface UserCardProps {
   userProfile: UserProfile;
   onRoleChange: (userId: string, newRole: 'nouveau' | 'client' | 'admin') => void;
+  onDelete: (userId: string) => void;
 }
 
-const UserCard = ({ userProfile, onRoleChange }: UserCardProps) => {
+const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
   return (
     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
       <div className="flex items-center space-x-4">
         <div className="space-y-1">
-          <h3 className="font-medium">{userProfile.email || 'Email non défini'}</h3>
+          <h3 className="font-medium">{userProfile.full_name || 'Nom non défini'}</h3>
           <p className="text-sm text-gray-600">
-            {userProfile.full_name || 'Nom non défini'}
+            {userProfile.email || 'Email non défini'}
           </p>
           <p className="text-xs text-gray-500">
             Inscrit le {new Date(userProfile.created_at).toLocaleDateString()}
@@ -63,9 +64,7 @@ const UserCard = ({ userProfile, onRoleChange }: UserCardProps) => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => {
-              toast.info("Fonctionnalité à venir");
-            }}
+            onClick={() => onDelete(userProfile.id)}
           >
             <Trash2 className="h-4 w-4" />
           </Button>

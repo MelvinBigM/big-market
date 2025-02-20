@@ -9,9 +9,10 @@ interface UserProfile extends Profile {
 interface UsersListProps {
   profiles: UserProfile[] | undefined;
   onRoleChange: (userId: string, newRole: 'nouveau' | 'client' | 'admin') => void;
+  onDelete: (userId: string) => void;
 }
 
-const UsersList = ({ profiles, onRoleChange }: UsersListProps) => {
+const UsersList = ({ profiles, onRoleChange, onDelete }: UsersListProps) => {
   if (!profiles || profiles.length === 0) {
     return (
       <p className="text-center text-gray-600 py-4">
@@ -27,6 +28,7 @@ const UsersList = ({ profiles, onRoleChange }: UsersListProps) => {
           key={userProfile.id}
           userProfile={userProfile}
           onRoleChange={onRoleChange}
+          onDelete={onDelete}
         />
       ))}
     </div>
