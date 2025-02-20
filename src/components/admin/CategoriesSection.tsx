@@ -4,9 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Category } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, GripVertical } from "lucide-react";
 import CategoryDialog from "./CategoryDialog";
 import { toast } from "sonner";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const CategoriesSection = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | undefined>();
@@ -18,7 +19,7 @@ const CategoriesSection = () => {
       const { data, error } = await supabase
         .from("categories")
         .select("*")
-        .order("name");
+        .order("position");
 
       if (error) {
         throw error;
@@ -27,6 +28,31 @@ const CategoriesSection = () => {
       return data as Category[];
     },
   });
+
+  const handleDragEnd = async (result: any) => {
+    if (!result.destination || !categories) return;
+
+    const items = Array.from(categories);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Mise à jour des positions dans la base de données
+    try {
+      const updates = items.map((item, index) => ({
+        id: item.id,
+        position: index,
+      }));
+
+      const { error } = await supabase
+        .from("categories")
+        .upsert(updates, { onConflict: "id" });
+
+      if (error) throw error;
+      refetch();
+    } catch (error: any) {
+      toast.error("Erreur lors de la réorganisation des catégories");
+    }
+  };
 
   const handleEdit = (category: Category) => {
     setSelectedCategory(category);
@@ -64,46 +90,72 @@ const CategoriesSection = () => {
         </Button>
       </div>
 
-      <div className="grid gap-4">
-        {categories?.map((category) => (
-          <div
-            key={category.id}
-            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
-          >
-            <div className="flex items-center space-x-4">
-              {category.image_url && (
-                <img
-                  src={category.image_url}
-                  alt={category.name}
-                  className="w-12 h-12 object-cover rounded"
-                />
-              )}
-              <div>
-                <h3 className="font-medium">{category.name}</h3>
-                {category.description && (
-                  <p className="text-sm text-gray-600">{category.description}</p>
-                )}
-              </div>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="categories">
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="grid gap-4"
+            >
+              {categories?.map((category, index) => (
+                <Draggable
+                  key={category.id}
+                  draggableId={category.id}
+                  index={index}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                    >
+                      <div className="flex items-center space-x-4">
+                        <div
+                          {...provided.dragHandleProps}
+                          className="cursor-move text-gray-400 hover:text-gray-600"
+                        >
+                          <GripVertical className="h-5 w-5" />
+                        </div>
+                        {category.image_url && (
+                          <img
+                            src={category.image_url}
+                            alt={category.name}
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        )}
+                        <div>
+                          <h3 className="font-medium">{category.name}</h3>
+                          {category.description && (
+                            <p className="text-sm text-gray-600">{category.description}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleEdit(category)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(category)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
             </div>
-            <div className="flex space-x-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleEdit(category)}
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleDelete(category)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
       <CategoryDialog
         open={dialogOpen}

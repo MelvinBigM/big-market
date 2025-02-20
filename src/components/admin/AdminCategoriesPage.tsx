@@ -5,7 +5,6 @@ import { useAuth } from "@/lib/auth";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import CategoriesSection from "./CategoriesSection";
-import ProductsSection from "./ProductsSection";
 
 const AdminPage = () => {
   const { profile, isLoading } = useAuth();
@@ -45,15 +44,11 @@ const AdminPage = () => {
                 className="h-12 w-12"
               />
               <h1 className="text-3xl font-bold text-gray-900">
-                Administration
+                Gestion des catégories
               </h1>
             </div>
           </div>
-
-          <div className="space-y-6">
-            <CategoriesSection />
-            <ProductsSection />
-          </div>
+          <CategoriesSection />
         </div>
       </div>
       <Footer />
