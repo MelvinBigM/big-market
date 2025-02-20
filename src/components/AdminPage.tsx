@@ -1,9 +1,11 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import CategoriesSection from "./admin/CategoriesSection";
+import ProductsSection from "./admin/ProductsSection";
 
 const AdminPage = () => {
   const { profile, isLoading } = useAuth();
@@ -50,8 +52,7 @@ const AdminPage = () => {
 
           <div className="space-y-6">
             <CategoriesSection />
-            
-            {/* Autres sections à venir */}
+            <ProductsSection />
           </div>
         </div>
       </div>
