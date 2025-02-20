@@ -20,11 +20,13 @@ const NavBar = () => {
       const { data, error } = await supabase
         .from("categories")
         .select("*")
-        .order("name");
+        .order("position");
 
       if (error) throw error;
       return data as Category[];
     },
+    staleTime: 0, // Force le rafraîchissement des données
+    cacheTime: 0, // Désactive le cache
   });
 
   const handleLogout = async () => {
