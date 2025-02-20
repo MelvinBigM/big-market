@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuIcon, User, ShoppingCart, X } from "lucide-react";
+import { MenuIcon, User, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,9 +77,6 @@ const NavBar = () => {
                 </Button>
               </Link>
             )}
-            <Button variant="ghost" size="icon">
-              <ShoppingCart className="h-5 w-5" />
-            </Button>
             {session ? (
               <Button variant="default" onClick={handleLogout}>
                 Se déconnecter
@@ -132,10 +130,6 @@ const NavBar = () => {
                       </Button>
                     </Link>
                   )}
-                  <Button variant="outline" className="justify-start">
-                    <ShoppingCart className="h-5 w-5 mr-2" />
-                    Panier
-                  </Button>
                   <Button 
                     variant="default" 
                     className="justify-start"

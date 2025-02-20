@@ -6,11 +6,11 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Product } from "@/lib/types";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
+import { useAuth } from "@/lib/auth";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
+  const { session } = useAuth();
 
   const { data: category } = useQuery({
     queryKey: ["category", categoryId],
@@ -76,15 +76,18 @@ const CategoryPage = () => {
                   {product.description && (
                     <p className="text-gray-600 mb-4">{product.description}</p>
                   )}
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-primary">
-                      {product.price.toFixed(2)} €
-                    </span>
-                    <Button>
-                      <ShoppingCart className="h-5 w-5 mr-2" />
-                      Ajouter au panier
-                    </Button>
-                  </div>
+                  {session && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold text-primary">
+                        {product.price.toFixed(2)} €
+                      </span>
+                    </div>
+                  )}
+                  {!session && (
+                    <p className="text-sm text-gray-500 italic">
+                      Connectez-vous pour voir le prix
+                    </p>
+                  )}
                 </div>
               </motion.div>
             ))}
