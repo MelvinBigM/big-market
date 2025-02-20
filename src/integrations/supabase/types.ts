@@ -109,7 +109,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_profiles_with_email: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          role: string
+          full_name: string
+          created_at: string
+          updated_at: string
+          email: string
+        }[]
+      }
     }
     Enums: {
       user_role: "admin" | "client" | "nouveau"
