@@ -11,7 +11,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { UserPlus, Mail, Trash2, Search } from "lucide-react";
 import { Profile } from "@/lib/types";
-import { User } from "@supabase/supabase-js";
 import {
   Select,
   SelectContent,
@@ -46,20 +45,29 @@ const AdminUsersPage = () => {
         throw new Error("Accès non autorisé");
       }
 
-      // Récupérer d'abord tous les profils avec les données email
+      // Récupérer tous les profils avec les données email associées
       const { data: profilesWithEmail, error } = await supabase
-        .from("profiles")
+        .from('profiles')
         .select(`
-          *,
-          email:auth.users!id(email)
-        `);
+          id,
+          role,
+          full_name,
+          created_at,
+          updated_at,
+          auth.users(email)
+        `)
+        .returns<(Profile & { auth: { users: { email: string }[] } })[]>();
 
       if (error) throw error;
 
       // Transformer les données pour correspondre à l'interface UserProfile
       return (profilesWithEmail || []).map(profile => ({
-        ...profile,
-        email: profile.email?.email || "Email non trouvé"
+        id: profile.id,
+        role: profile.role,
+        full_name: profile.full_name,
+        created_at: profile.created_at,
+        updated_at: profile.updated_at,
+        email: profile.auth.users[0]?.email || "Email non trouvé"
       })) as UserProfile[];
     },
     enabled: !!profile && profile.role === 'admin', // N'exécute la requête que si l'utilisateur est admin
