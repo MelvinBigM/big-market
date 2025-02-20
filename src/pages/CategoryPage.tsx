@@ -67,22 +67,22 @@ const CategoryPage = () => {
                 className="bg-white rounded-lg shadow-sm overflow-hidden h-[360px] flex flex-col"
               >
                 {product.image_url && (
-                  <div className="h-40 overflow-hidden">
+                  <div className="h-40 overflow-hidden flex items-center justify-center bg-gray-50">
                     <img
                       src={product.image_url}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-auto object-contain max-h-40"
                     />
                   </div>
                 )}
-                <div className="p-4 flex flex-col flex-grow">
+                <div className="p-4 flex flex-col flex-grow text-center">
                   <h3 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
                   {product.description && (
                     <p className="text-sm text-gray-600 mb-3 line-clamp-3">{product.description}</p>
                   )}
                   <div className="mt-auto">
                     {canSeePrice ? (
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-center">
                         <span className="text-xl font-bold text-primary">
                           {product.price.toFixed(2)} €
                         </span>
