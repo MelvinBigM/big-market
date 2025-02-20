@@ -46,32 +46,21 @@ const AdminUsersPage = () => {
         throw new Error("Accès non autorisé");
       }
 
-      // Récupérer d'abord tous les profils
-      const { data: profiles, error } = await supabase
+      // Récupérer d'abord tous les profils avec les données email
+      const { data: profilesWithEmail, error } = await supabase
         .from("profiles")
-        .select("*");
+        .select(`
+          *,
+          email:auth.users!id(email)
+        `);
 
       if (error) throw error;
 
-      // Récupérer la liste des emails depuis la table auth.users
-      const { data: emails, error: emailsError } = await supabase
-        .from('profiles')
-        .select(`
-          id,
-          email:id(email)
-        `)
-        .csv();
-
-      if (emailsError) throw emailsError;
-
-      // Combiner les données
-      return (profiles as Profile[]).map(profile => {
-        const emailRecord = emails?.find(e => e.id === profile.id);
-        return {
-          ...profile,
-          email: emailRecord?.email || "Email non trouvé"
-        };
-      });
+      // Transformer les données pour correspondre à l'interface UserProfile
+      return (profilesWithEmail || []).map(profile => ({
+        ...profile,
+        email: profile.email?.email || "Email non trouvé"
+      })) as UserProfile[];
     },
     enabled: !!profile && profile.role === 'admin', // N'exécute la requête que si l'utilisateur est admin
   });
