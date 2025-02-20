@@ -5,10 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Product, Category } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
-import { Plus, Pencil, Trash2, ChevronDown, ChevronUp, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronDown, ChevronUp, Search, GripVertical } from "lucide-react";
 import ProductDialog from "./ProductDialog";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 const ProductsSection = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
@@ -16,20 +17,20 @@ const ProductsSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
 
-  const { data: categories } = useQuery({
+  const { data: categories, refetch: refetchCategories } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
       const { data: categories, error } = await supabase
         .from("categories")
         .select("*")
-        .order("name");
+        .order("position");
 
       if (error) throw error;
       return categories as Category[];
     },
   });
 
-  const { data: products, refetch } = useQuery({
+  const { data: products, refetch: refetchProducts } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const { data: products, error: productsError } = await supabase
@@ -49,6 +50,31 @@ const ProductsSection = () => {
     },
   });
 
+  const handleDragEnd = async (result: any) => {
+    if (!result.destination || !categories) return;
+
+    const items = Array.from(categories);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Mise à jour des positions un par un pour éviter l'erreur TypeScript
+    try {
+      for (let i = 0; i < items.length; i++) {
+        const { error } = await supabase
+          .from("categories")
+          .update({ position: i })
+          .eq("id", items[i].id);
+
+        if (error) throw error;
+      }
+      
+      refetchCategories();
+      toast.success("Ordre des catégories mis à jour");
+    } catch (error: any) {
+      toast.error("Erreur lors de la réorganisation des catégories");
+    }
+  };
+
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
     setDialogOpen(true);
@@ -65,7 +91,7 @@ const ProductsSection = () => {
         if (error) throw error;
         
         toast.success("Produit supprimé avec succès");
-        refetch();
+        refetchProducts();
       } catch (error: any) {
         toast.error(error.message);
       }
@@ -82,7 +108,7 @@ const ProductsSection = () => {
       if (error) throw error;
       
       toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'hors stock'}`);
-      refetch();
+      refetchProducts();
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -131,89 +157,120 @@ const ProductsSection = () => {
         />
       </div>
 
-      <div className="space-y-6">
-        {productsByCategory?.map((category) => (
-          <div key={category.id} className="border rounded-lg overflow-hidden">
-            <button
-              onClick={() => toggleCategory(category.id)}
-              className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="categories">
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="space-y-6"
             >
-              <h3 className="font-medium text-gray-900">{category.name}</h3>
-              {collapsedCategories.includes(category.id) ? (
-                <ChevronDown className="h-5 w-5 text-gray-500" />
-              ) : (
-                <ChevronUp className="h-5 w-5 text-gray-500" />
-              )}
-            </button>
+              {productsByCategory?.map((category, index) => (
+                <Draggable
+                  key={category.id}
+                  draggableId={category.id}
+                  index={index}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      className="border rounded-lg overflow-hidden"
+                    >
+                      <div className="flex items-center bg-gray-50">
+                        <div
+                          {...provided.dragHandleProps}
+                          className="px-4 cursor-move text-gray-400 hover:text-gray-600"
+                        >
+                          <GripVertical className="h-5 w-5" />
+                        </div>
+                        <button
+                          onClick={() => toggleCategory(category.id)}
+                          className="flex-1 flex items-center justify-between p-4 hover:bg-gray-100 transition-colors"
+                        >
+                          <h3 className="font-medium text-gray-900">{category.name}</h3>
+                          {collapsedCategories.includes(category.id) ? (
+                            <ChevronDown className="h-5 w-5 text-gray-500" />
+                          ) : (
+                            <ChevronUp className="h-5 w-5 text-gray-500" />
+                          )}
+                        </button>
+                      </div>
 
-            {!collapsedCategories.includes(category.id) && (
-              <div className="divide-y">
-                {category.products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex items-center justify-between p-4"
-                  >
-                    <div className="flex items-center space-x-4">
-                      {product.image_url && (
-                        <img
-                          src={product.image_url}
-                          alt={product.name}
-                          className="w-12 h-12 object-cover rounded"
-                        />
-                      )}
-                      <div>
-                        <h3 className="font-medium">{product.name}</h3>
-                        <div className="text-sm text-gray-600">
-                          <span className="font-medium">{product.price} €</span>
-                          {product.description && (
-                            <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+                      {!collapsedCategories.includes(category.id) && (
+                        <div className="divide-y">
+                          {category.products.map((product) => (
+                            <div
+                              key={product.id}
+                              className="flex items-center justify-between p-4"
+                            >
+                              <div className="flex items-center space-x-4">
+                                {product.image_url && (
+                                  <img
+                                    src={product.image_url}
+                                    alt={product.name}
+                                    className="w-12 h-12 object-cover rounded"
+                                  />
+                                )}
+                                <div>
+                                  <h3 className="font-medium">{product.name}</h3>
+                                  <div className="text-sm text-gray-600">
+                                    <span className="font-medium">{product.price} €</span>
+                                    {product.description && (
+                                      <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Toggle
+                                  pressed={product.in_stock}
+                                  onPressedChange={() => toggleStock(product)}
+                                  className={`${product.in_stock ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}
+                                >
+                                  <span className={`text-sm ${product.in_stock ? 'text-green-700' : 'text-red-700'}`}>
+                                    {product.in_stock ? 'En stock' : 'Hors stock'}
+                                  </span>
+                                </Toggle>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleEdit(product)}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleDelete(product)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                          ))}
+                          {category.products.length === 0 && (
+                            <div className="p-4 text-center text-gray-500">
+                              Aucun produit dans cette catégorie
+                            </div>
                           )}
                         </div>
-                      </div>
+                      )}
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <Toggle
-                        pressed={product.in_stock}
-                        onPressedChange={() => toggleStock(product)}
-                        className={`${product.in_stock ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}
-                      >
-                        <span className={`text-sm ${product.in_stock ? 'text-green-700' : 'text-red-700'}`}>
-                          {product.in_stock ? 'En stock' : 'Hors stock'}
-                        </span>
-                      </Toggle>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleEdit(product)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDelete(product)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-                {category.products.length === 0 && (
-                  <div className="p-4 text-center text-gray-500">
-                    Aucun produit dans cette catégorie
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
 
       <ProductDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         product={selectedProduct}
-        onSuccess={refetch}
+        onSuccess={refetchProducts}
       />
     </div>
   );
