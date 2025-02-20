@@ -24,12 +24,14 @@ const CreateUserDialog = ({ open, onOpenChange, onSuccess }: CreateUserDialogPro
     setIsLoading(true);
 
     try {
-      const { error: signUpError } = await supabase.auth.admin.createUser({
+      const { error: signUpError } = await supabase.auth.signUp({
         email: email,
         password: password,
-        email_confirm: true,
-        user_metadata: {
-          full_name: fullName,
+        options: {
+          data: {
+            full_name: fullName,
+          },
+          emailRedirectTo: window.location.origin
         }
       });
 
