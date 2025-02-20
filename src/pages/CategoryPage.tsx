@@ -46,7 +46,7 @@ const CategoryPage = () => {
     <div className="min-h-screen bg-gray-50">
       <NavBar />
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1920px] mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               {category?.name}
@@ -58,37 +58,41 @@ const CategoryPage = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {products?.map((product) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-lg shadow-sm overflow-hidden"
+                className="bg-white rounded-lg shadow-sm overflow-hidden h-[360px] flex flex-col"
               >
                 {product.image_url && (
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-full h-48 object-cover"
-                  />
+                  <div className="h-40 overflow-hidden">
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 )}
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{product.name}</h3>
+                <div className="p-4 flex flex-col flex-grow">
+                  <h3 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
                   {product.description && (
-                    <p className="text-gray-600 mb-4">{product.description}</p>
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-3">{product.description}</p>
                   )}
-                  {canSeePrice ? (
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-primary">
-                        {product.price.toFixed(2)} €
-                      </span>
-                    </div>
-                  ) : (
-                    <p className="text-sm text-gray-500 italic">
-                      Connectez-vous en tant que client pour voir le prix
-                    </p>
-                  )}
+                  <div className="mt-auto">
+                    {canSeePrice ? (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xl font-bold text-primary">
+                          {product.price.toFixed(2)} €
+                        </span>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500 italic">
+                        Connectez-vous en tant que client pour voir le prix
+                      </p>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             ))}
