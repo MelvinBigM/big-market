@@ -5,10 +5,11 @@ import { useAuth } from "@/lib/auth";
 import NavBar from "../NavBar";
 import Footer from "../Footer";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { UserPlus, Mail, Trash2 } from "lucide-react";
+import { UserPlus, Mail, Trash2, Search } from "lucide-react";
 import { Profile } from "@/lib/types";
 import { User } from "@supabase/supabase-js";
 import {
@@ -26,14 +27,14 @@ interface UserProfile extends Profile {
 const AdminUsersPage = () => {
   const { profile, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: profiles, refetch } = useQuery({
     queryKey: ["profiles"],
     queryFn: async () => {
       const { data: profiles, error } = await supabase
         .from("profiles")
-        .select("*")
-        .not('role', 'eq', 'admin');
+        .select("*");
 
       if (error) throw error;
       
@@ -68,6 +69,11 @@ const AdminUsersPage = () => {
       toast.error("Erreur lors de la mise à jour du rôle");
     }
   };
+
+  const filteredProfiles = profiles?.filter(profile =>
+    profile.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    profile.role.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     if (!isLoading && (!profile || profile.role !== 'admin')) {
@@ -109,8 +115,21 @@ const AdminUsersPage = () => {
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
+            <div className="mb-6">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <Input
+                  type="search"
+                  placeholder="Rechercher un utilisateur par email ou rôle..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10"
+                />
+              </div>
+            </div>
+
             <div className="grid gap-4">
-              {profiles?.map((userProfile) => (
+              {filteredProfiles?.map((userProfile) => (
                 <div
                   key={userProfile.id}
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
@@ -163,9 +182,9 @@ const AdminUsersPage = () => {
                 </div>
               ))}
 
-              {profiles?.length === 0 && (
+              {filteredProfiles?.length === 0 && (
                 <p className="text-center text-gray-600 py-4">
-                  Aucun utilisateur enregistré pour le moment.
+                  Aucun utilisateur trouvé.
                 </p>
               )}
             </div>
