@@ -6,20 +6,26 @@ import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { Category } from "@/lib/types";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { session, profile } = useAuth();
   const navigate = useNavigate();
 
-  const categories = [
-    { name: "Sodas", path: "/categories/sodas" },
-    { name: "Jus", path: "/categories/jus" },
-    { name: "Eaux", path: "/categories/eaux" },
-    { name: "Chips", path: "/categories/chips" },
-    { name: "Alcool", path: "/categories/alcool" },
-    { name: "Autres", path: "/categories/autres" },
-  ];
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("name");
+
+      if (error) throw error;
+      return data as Category[];
+    },
+  });
 
   const handleLogout = async () => {
     try {
@@ -51,10 +57,10 @@ const NavBar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <Link
-                key={category.name}
-                to={category.path}
+                key={category.id}
+                to={`/category/${category.id}`}
                 className="text-gray-600 hover:text-primary transition-colors"
               >
                 {category.name}
@@ -105,10 +111,10 @@ const NavBar = () => {
       {isOpen && (
         <div className="md:hidden animate-fadeIn">
           <div className="px-2 pt-2 pb-3 space-y-1 bg-white">
-            {categories.map((category) => (
+            {categories?.map((category) => (
               <Link
-                key={category.name}
-                to={category.path}
+                key={category.id}
+                to={`/category/${category.id}`}
                 className="block px-3 py-2 text-gray-600 hover:text-primary transition-colors"
                 onClick={() => setIsOpen(false)}
               >
