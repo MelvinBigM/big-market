@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,9 +18,23 @@ interface CategoryDialogProps {
 
 const CategoryDialog = ({ open, onOpenChange, category, onSuccess }: CategoryDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState(category?.name || "");
-  const [description, setDescription] = useState(category?.description || "");
-  const [imageUrl, setImageUrl] = useState(category?.image_url || "");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+
+  // Pré-remplir les champs quand une catégorie est sélectionnée
+  useEffect(() => {
+    if (category) {
+      setName(category.name);
+      setDescription(category.description || "");
+      setImageUrl(category.image_url || "");
+    } else {
+      // Réinitialiser les champs si on crée une nouvelle catégorie
+      setName("");
+      setDescription("");
+      setImageUrl("");
+    }
+  }, [category, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +42,6 @@ const CategoryDialog = ({ open, onOpenChange, category, onSuccess }: CategoryDia
 
     try {
       if (category) {
-        // Mise à jour d'une catégorie existante
         const { error } = await supabase
           .from("categories")
           .update({
@@ -41,7 +54,6 @@ const CategoryDialog = ({ open, onOpenChange, category, onSuccess }: CategoryDia
         if (error) throw error;
         toast.success("Catégorie mise à jour avec succès");
       } else {
-        // Création d'une nouvelle catégorie
         const { error } = await supabase
           .from("categories")
           .insert([

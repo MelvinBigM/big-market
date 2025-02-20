@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MenuIcon, User, ShoppingCart, X } from "lucide-react";
@@ -26,7 +25,6 @@ const NavBar = () => {
       return data as Category[];
     },
     staleTime: 0, // Force le rafraîchissement des données
-    cacheTime: 0, // Désactive le cache
   });
 
   const handleLogout = async () => {

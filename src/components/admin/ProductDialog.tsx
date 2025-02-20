@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,11 +19,11 @@ interface ProductDialogProps {
 
 const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialogProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState(product?.name || "");
-  const [description, setDescription] = useState(product?.description || "");
-  const [imageUrl, setImageUrl] = useState(product?.image_url || "");
-  const [price, setPrice] = useState(product?.price.toString() || "");
-  const [categoryId, setCategoryId] = useState(product?.category_id || "");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [price, setPrice] = useState("");
+  const [categoryId, setCategoryId] = useState("");
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -37,6 +37,24 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
       return data as Category[];
     },
   });
+
+  // Pré-remplir les champs quand un produit est sélectionné
+  useEffect(() => {
+    if (product) {
+      setName(product.name);
+      setDescription(product.description || "");
+      setImageUrl(product.image_url || "");
+      setPrice(product.price.toString());
+      setCategoryId(product.category_id);
+    } else {
+      // Réinitialiser les champs si on crée un nouveau produit
+      setName("");
+      setDescription("");
+      setImageUrl("");
+      setPrice("");
+      setCategoryId("");
+    }
+  }, [product, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
