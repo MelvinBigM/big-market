@@ -10,7 +10,7 @@ import { useAuth } from "@/lib/auth";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
 
   const { data: category } = useQuery({
     queryKey: ["category", categoryId],
@@ -39,6 +39,8 @@ const CategoryPage = () => {
       return data as Product[];
     },
   });
+
+  const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -76,16 +78,15 @@ const CategoryPage = () => {
                   {product.description && (
                     <p className="text-gray-600 mb-4">{product.description}</p>
                   )}
-                  {session && (
+                  {canSeePrice ? (
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-primary">
                         {product.price.toFixed(2)} €
                       </span>
                     </div>
-                  )}
-                  {!session && (
+                  ) : (
                     <p className="text-sm text-gray-500 italic">
-                      Connectez-vous pour voir le prix
+                      Connectez-vous en tant que client pour voir le prix
                     </p>
                   )}
                 </div>
