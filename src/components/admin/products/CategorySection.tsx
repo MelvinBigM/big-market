@@ -1,8 +1,8 @@
 
 import { Category, Product } from "@/lib/types";
-import { ChevronDown, ChevronUp, GripVertical } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import ProductListItem from "./ProductListItem";
-import { DraggableProvided } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 interface CategorySectionProps {
   category: Category & { products: (Product & { categories: { id: string; name: string } })[] };
@@ -11,7 +11,7 @@ interface CategorySectionProps {
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
   onToggleStock: (product: Product) => void;
-  provided: DraggableProvided;
+  onDragEnd: (result: any) => void;
 }
 
 const CategorySection = ({
@@ -21,51 +21,58 @@ const CategorySection = ({
   onEdit,
   onDelete,
   onToggleStock,
-  provided
+  onDragEnd
 }: CategorySectionProps) => {
   return (
-    <div
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      className="border rounded-lg overflow-hidden"
-    >
-      <div className="flex items-center bg-gray-50">
-        <div
-          {...provided.dragHandleProps}
-          className="px-4 cursor-move text-gray-400 hover:text-gray-600"
-        >
-          <GripVertical className="h-5 w-5" />
-        </div>
-        <button
-          onClick={() => onToggleCollapse(category.id)}
-          className="flex-1 flex items-center justify-between p-4 hover:bg-gray-100 transition-colors"
-        >
-          <h3 className="font-medium text-gray-900">{category.name}</h3>
-          {isCollapsed ? (
-            <ChevronDown className="h-5 w-5 text-gray-500" />
-          ) : (
-            <ChevronUp className="h-5 w-5 text-gray-500" />
-          )}
-        </button>
-      </div>
+    <div className="border rounded-lg overflow-hidden bg-white">
+      <button
+        onClick={() => onToggleCollapse(category.id)}
+        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+      >
+        <h3 className="font-medium text-gray-900">{category.name}</h3>
+        {isCollapsed ? (
+          <ChevronDown className="h-5 w-5 text-gray-500" />
+        ) : (
+          <ChevronUp className="h-5 w-5 text-gray-500" />
+        )}
+      </button>
 
       {!isCollapsed && (
-        <div className="divide-y">
-          {category.products.map((product) => (
-            <ProductListItem
-              key={product.id}
-              product={product}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              onToggleStock={onToggleStock}
-            />
-          ))}
-          {category.products.length === 0 && (
-            <div className="p-4 text-center text-gray-500">
-              Aucun produit dans cette catégorie
-            </div>
-          )}
-        </div>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId={`category-${category.id}`}>
+            {(provided) => (
+              <div
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+                className="space-y-2 p-4"
+              >
+                {category.products.map((product, index) => (
+                  <Draggable
+                    key={product.id}
+                    draggableId={product.id}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <ProductListItem
+                        product={product}
+                        onEdit={onEdit}
+                        onDelete={onDelete}
+                        onToggleStock={onToggleStock}
+                        provided={provided}
+                      />
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+                {category.products.length === 0 && (
+                  <div className="text-center text-gray-500 py-4">
+                    Aucun produit dans cette catégorie
+                  </div>
+                )}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       )}
     </div>
   );
