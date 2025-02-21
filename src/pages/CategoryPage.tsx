@@ -34,7 +34,8 @@ const CategoryPage = () => {
         .from("products")
         .select("*")
         .eq("category_id", categoryId)
-        .order("name");
+        .order("position", { ascending: true })  // D'abord on trie par position
+        .order("name");                         // Puis par nom si la position est égale
 
       if (error) throw error;
       return data as Product[];
