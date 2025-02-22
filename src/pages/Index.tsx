@@ -61,7 +61,7 @@ const Index = () => {
       {/* Latest Products Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-secondary">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Nouveaux Produits</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">Nouveautés</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {latestProducts?.map((product, index) => (
               <motion.div
@@ -86,8 +86,8 @@ const Index = () => {
                 <div className="p-3">
                   <div className="text-xs text-gray-500 mb-1">{product.categories.name}</div>
                   <h3 className="text-sm font-semibold mb-3 truncate">{product.name}</h3>
-                  <div className="flex justify-end">
-                    <Link to={`/category/${product.category_id}`}>
+                  <div className="flex justify-center">
+                    <Link to={`/product/${product.id}`}>
                       <Button variant="default" size="sm">
                         Voir
                       </Button>
