@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Layers, Package } from "lucide-react";
+import { Users, Layers, Package, UserCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -55,6 +55,13 @@ const AdminDashboard = () => {
       icon: <Package className="h-8 w-8" />,
       link: "/admin/products",
       color: "bg-purple-500",
+    },
+    {
+      title: "Demandes d'accès",
+      description: "Gérer les demandes d'accès client",
+      icon: <UserCheck className="h-8 w-8" />,
+      link: "/admin/access-requests",
+      color: "bg-yellow-500",
     },
   ];
 
