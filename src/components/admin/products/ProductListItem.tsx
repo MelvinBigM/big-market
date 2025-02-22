@@ -29,13 +29,19 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
       
       <div className="flex-1 flex items-center justify-between p-4">
         <div className="flex items-center space-x-4">
-          {product.image_url && (
-            <img
-              src={product.image_url}
-              alt={product.name}
-              className="w-12 h-12 object-cover rounded"
-            />
-          )}
+          <div className="w-16 h-16 flex-shrink-0">
+            {product.image_url ? (
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="w-full h-full object-contain rounded"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-100 rounded flex items-center justify-center">
+                <span className="text-xs text-gray-400">No image</span>
+              </div>
+            )}
+          </div>
           <div>
             <h3 className="font-medium">{product.name}</h3>
             <div className="text-sm text-gray-600">
