@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import NavBar from "../NavBar";
 import Footer from "../Footer";
 import { Button } from "../ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Building2, User } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 
@@ -64,9 +64,16 @@ const UserDetailsPage = () => {
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Retour à la liste
               </Button>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Détails de l'utilisateur
-              </h1>
+              <div className="flex items-center gap-2">
+                {userDetails.is_company ? (
+                  <Building2 className="h-6 w-6" />
+                ) : (
+                  <User className="h-6 w-6" />
+                )}
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {userDetails.is_company ? userDetails.company_name : userDetails.full_name}
+                </h1>
+              </div>
             </div>
 
             <div className="space-y-6">
@@ -76,10 +83,19 @@ const UserDetailsPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Nom</p>
-                      <p className="mt-1">{userDetails.full_name || "Non défini"}</p>
-                    </div>
+                    {userDetails.is_company ? (
+                      <>
+                        <div>
+                          <p className="text-sm font-medium text-gray-500">Nom de l'entreprise</p>
+                          <p className="mt-1">{userDetails.company_name || "Non défini"}</p>
+                        </div>
+                      </>
+                    ) : (
+                      <div>
+                        <p className="text-sm font-medium text-gray-500">Nom complet</p>
+                        <p className="mt-1">{userDetails.full_name || "Non défini"}</p>
+                      </div>
+                    )}
                     <div>
                       <p className="text-sm font-medium text-gray-500">Email</p>
                       <p className="mt-1">{userEmail || "Non défini"}</p>
@@ -103,20 +119,12 @@ const UserDetailsPage = () => {
                   <CardTitle>Informations de contact</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Téléphone</p>
-                      <p className="mt-1">{userDetails.phone_number || "Non défini"}</p>
-                    </div>
-                    {userDetails.is_company && (
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Nom de la société</p>
-                        <p className="mt-1">{userDetails.company_name || "Non défini"}</p>
-                      </div>
-                    )}
+                  <div>
+                    <p className="text-sm font-medium text-gray-500">Téléphone</p>
+                    <p className="mt-1">{userDetails.phone_number || "Non défini"}</p>
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Adresse</p>
+                    <p className="text-sm font-medium text-gray-500">Adresse complète</p>
                     <p className="mt-1">{userDetails.address || "Non définie"}</p>
                     <p className="mt-1">
                       {userDetails.postal_code} {userDetails.city}

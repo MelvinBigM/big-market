@@ -1,7 +1,7 @@
 
 import { Profile } from "@/lib/types";
 import { Button } from "../ui/button";
-import { Mail, Trash2, ArrowRight } from "lucide-react";
+import { Mail, Trash2, ArrowRight, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import {
@@ -25,6 +25,10 @@ interface UserCardProps {
 const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
   const navigate = useNavigate();
 
+  const displayName = userProfile.is_company 
+    ? userProfile.company_name 
+    : userProfile.full_name;
+
   return (
     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
       <div className="flex items-center space-x-4">
@@ -33,7 +37,10 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
             onClick={() => navigate(`/admin/users/${userProfile.id}`)}
             className="font-medium hover:text-primary flex items-center gap-2"
           >
-            {userProfile.full_name || 'Nom non défini'}
+            <div className="flex items-center gap-2">
+              {userProfile.is_company && <Building2 className="h-4 w-4" />}
+              {displayName || 'Nom non défini'}
+            </div>
             <ArrowRight className="h-4 w-4" />
           </button>
           <p className="text-sm text-gray-600">
