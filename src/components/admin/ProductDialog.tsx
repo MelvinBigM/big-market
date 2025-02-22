@@ -24,6 +24,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [unitsPerPack, setUnitsPerPack] = useState("1");
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -45,12 +46,14 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
       setImageUrl(product.image_url || "");
       setPrice(product.price.toString());
       setCategoryId(product.category_id);
+      setUnitsPerPack(product.units_per_pack.toString());
     } else {
       setName("");
       setDescription("");
       setImageUrl("");
       setPrice("");
       setCategoryId("");
+      setUnitsPerPack("1");
     }
   }, [product, open]);
 
@@ -68,6 +71,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
             image_url: imageUrl,
             price: parseFloat(price),
             category_id: categoryId,
+            units_per_pack: parseInt(unitsPerPack),
           })
           .eq("id", product.id);
 
@@ -83,6 +87,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
               image_url: imageUrl,
               price: parseFloat(price),
               category_id: categoryId,
+              units_per_pack: parseInt(unitsPerPack),
             },
           ]);
 
@@ -157,6 +162,18 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="unitsPerPack">Unités par pack</Label>
+              <Input
+                id="unitsPerPack"
+                type="number"
+                min="1"
+                value={unitsPerPack}
+                onChange={(e) => setUnitsPerPack(e.target.value)}
+                placeholder="Nombre d'unités par pack"
+                required
+              />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="imageUrl">URL de l'image</Label>
