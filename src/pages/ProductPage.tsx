@@ -11,7 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
 
 const ProductPage = () => {
@@ -39,43 +38,9 @@ const ProductPage = () => {
   });
 
   const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
+  const isNewUser = profile?.role === 'nouveau';
 
   if (!product) return null;
-
-  const renderPriceSection = () => {
-    if (canSeePrice) {
-      return (
-        <div className="flex items-baseline space-x-2">
-          <span className="text-3xl font-bold text-primary">
-            {product.price.toFixed(2)} €
-          </span>
-          <span className="text-sm text-gray-500">HT</span>
-        </div>
-      );
-    }
-
-    if (profile?.role === 'nouveau') {
-      return (
-        <div className="space-y-4">
-          <Button
-            variant="outline"
-            onClick={() => setShowAccessDialog(true)}
-            className="w-full sm:w-auto"
-          >
-            Demander l'accès client
-          </Button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="space-y-4">
-        <p className="text-gray-600">
-          Pour voir les prix, vous devez avoir un accès client.
-        </p>
-      </div>
-    );
-  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -119,7 +84,29 @@ const ProductPage = () => {
                 <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
               </div>
 
-              {renderPriceSection()}
+              {canSeePrice ? (
+                <div className="flex items-baseline space-x-2">
+                  <span className="text-3xl font-bold text-primary">
+                    {product.price.toFixed(2)} €
+                  </span>
+                  <span className="text-sm text-gray-500">HT</span>
+                </div>
+              ) : (
+                <div className="text-sm">
+                  {isNewUser ? (
+                    <button
+                      onClick={() => setShowAccessDialog(true)}
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      Demander l'accès client
+                    </button>
+                  ) : (
+                    <p className="text-gray-500 italic">
+                      Connectez-vous en tant que client pour voir le prix
+                    </p>
+                  )}
+                </div>
+              )}
 
               <Card>
                 <CardContent className="pt-6">
