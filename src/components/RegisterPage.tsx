@@ -14,7 +14,6 @@ const RegisterPage = () => {
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isCompany, setIsCompany] = useState(false);
-  const [companyName, setCompanyName] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -31,10 +30,9 @@ const RegisterPage = () => {
         password,
         options: {
           data: {
-            full_name: isCompany ? null : fullName,
+            full_name: fullName,
             phone_number: phoneNumber,
             is_company: isCompany,
-            company_name: isCompany ? companyName : null,
             address,
             city,
             postal_code: postalCode,
@@ -85,31 +83,19 @@ const RegisterPage = () => {
               />
             </div>
 
-            {isCompany ? (
-              <div>
-                <Label htmlFor="companyName">Nom de la société</Label>
-                <Input
-                  id="companyName"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  required={isCompany}
-                  placeholder="Nom de votre société"
-                  className="mt-1"
-                />
-              </div>
-            ) : (
-              <div>
-                <Label htmlFor="fullName">Nom complet</Label>
-                <Input
-                  id="fullName"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required={!isCompany}
-                  placeholder="Votre nom complet"
-                  className="mt-1"
-                />
-              </div>
-            )}
+            <div>
+              <Label htmlFor="fullName">
+                {isCompany ? "Nom de la société" : "Nom complet"}
+              </Label>
+              <Input
+                id="fullName"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+                placeholder={isCompany ? "Nom de votre société" : "Votre nom complet"}
+                className="mt-1"
+              />
+            </div>
 
             <div>
               <Label htmlFor="email">Adresse email</Label>
