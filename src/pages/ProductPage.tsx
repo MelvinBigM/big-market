@@ -11,10 +11,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
+import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
 
 const ProductPage = () => {
   const { productId } = useParams();
   const { profile } = useAuth();
+  const [showAccessDialog, setShowAccessDialog] = useState(false);
 
   const { data: product } = useQuery({
     queryKey: ["product", productId],
@@ -90,11 +92,20 @@ const ProductPage = () => {
                   <span className="text-sm text-gray-500">HT</span>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 italic">
-                  {isNewUser 
-                    ? "Veuillez vous rapprocher d'un commercial pour avoir accès aux prix"
-                    : "Connectez-vous en tant que client pour voir le prix"}
-                </p>
+                <div className="text-sm">
+                  {isNewUser ? (
+                    <button
+                      onClick={() => setShowAccessDialog(true)}
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      Demander l'accès client
+                    </button>
+                  ) : (
+                    <p className="text-gray-500 italic">
+                      Connectez-vous en tant que client pour voir le prix
+                    </p>
+                  )}
+                </div>
               )}
 
               <Card>
@@ -132,6 +143,10 @@ const ProductPage = () => {
         </div>
       </main>
       <Footer />
+      <RequestClientAccessDialog 
+        open={showAccessDialog} 
+        onOpenChange={setShowAccessDialog}
+      />
     </div>
   );
 };
