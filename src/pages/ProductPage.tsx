@@ -97,13 +97,15 @@ const ProductPage = () => {
                   <p className="text-gray-600">
                     Pour voir les prix, vous devez avoir un accès client.
                   </p>
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowAccessDialog(true)}
-                    className="w-full sm:w-auto"
-                  >
-                    Demander l'accès client
-                  </Button>
+                  {isNewUser && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowAccessDialog(true)}
+                      className="w-full sm:w-auto"
+                    >
+                      Demander l'accès client
+                    </Button>
+                  )}
                 </div>
               )}
 
