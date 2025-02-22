@@ -25,7 +25,6 @@ export type Product = {
   image_url: string | null;
   category_id: string;
   in_stock: boolean;
-  units_per_pack: number;
   created_at: string;
   updated_at: string;
 };
