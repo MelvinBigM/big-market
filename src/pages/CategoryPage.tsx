@@ -8,11 +8,15 @@ import { Product } from "@/lib/types";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
   const { session, profile } = useAuth();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: category } = useQuery({
     queryKey: ["category", categoryId],
@@ -43,6 +47,11 @@ const CategoryPage = () => {
     },
   });
 
+  const filteredProducts = products?.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
   const isNewUser = profile?.role === 'nouveau';
 
@@ -56,14 +65,26 @@ const CategoryPage = () => {
               {category?.name}
             </h1>
             {category?.description && (
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
                 {category.description}
               </p>
             )}
+            <div className="max-w-md mx-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <Input
+                  type="search"
+                  placeholder="Rechercher un produit..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {products?.map((product) => (
+            {filteredProducts?.map((product) => (
               <TooltipProvider key={product.id}>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -120,10 +141,12 @@ const CategoryPage = () => {
             ))}
           </div>
 
-          {products?.length === 0 && (
+          {filteredProducts?.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-600">
-                Aucun produit n'est disponible dans cette catégorie pour le moment.
+                {searchQuery 
+                  ? "Aucun produit ne correspond à votre recherche."
+                  : "Aucun produit n'est disponible dans cette catégorie pour le moment."}
               </p>
             </div>
           )}
