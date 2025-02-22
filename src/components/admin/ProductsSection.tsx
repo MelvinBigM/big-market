@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Product } from "@/lib/types";
 import ProductDialog from "./ProductDialog";
 import ProductHeader from "./products/ProductHeader";
@@ -13,7 +13,6 @@ const ProductsSection = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  // Initialiser collapsedCategories avec les IDs de toutes les catégories
   const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
 
   const { products, refetchProducts, handleDelete, toggleStock, handleDragEnd } = useProducts();
@@ -32,7 +31,7 @@ const ProductsSection = () => {
   });
 
   // Mettre à jour collapsedCategories quand les catégories sont chargées
-  React.useEffect(() => {
+  useEffect(() => {
     if (categories) {
       setCollapsedCategories(categories.map(cat => cat.id));
     }
