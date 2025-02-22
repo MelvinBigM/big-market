@@ -76,7 +76,7 @@ const UserDetailsPage = () => {
                   <User className="h-6 w-6" />
                 )}
                 <h1 className="text-3xl font-bold text-gray-900">
-                  {userDetails.is_company ? userDetails.company_name : userDetails.full_name}
+                  {userDetails.full_name}
                 </h1>
               </div>
             </div>
@@ -88,19 +88,10 @@ const UserDetailsPage = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
-                    {userDetails.is_company ? (
-                      <>
-                        <div>
-                          <p className="text-sm font-medium text-gray-500">Nom de l'entreprise</p>
-                          <p className="mt-1">{userDetails.company_name || "Non défini"}</p>
-                        </div>
-                      </>
-                    ) : (
-                      <div>
-                        <p className="text-sm font-medium text-gray-500">Nom complet</p>
-                        <p className="mt-1">{userDetails.full_name || "Non défini"}</p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Nom complet</p>
+                      <p className="mt-1">{userDetails.full_name || "Non défini"}</p>
+                    </div>
                     <div>
                       <p className="text-sm font-medium text-gray-500">Email</p>
                       <p className="mt-1">{userEmail || "Non défini"}</p>
