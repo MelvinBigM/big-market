@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, XCircle } from "lucide-react";
@@ -7,8 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import NavBar from "../NavBar";
-import Footer from "../Footer";
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 import type { AccessRequest } from "@/lib/types";
 
 const AccessRequestsPage = () => {
