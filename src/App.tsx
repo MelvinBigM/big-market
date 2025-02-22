@@ -1,71 +1,43 @@
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "@/pages/Index";
-import AboutPage from "@/pages/AboutPage";
-import ContactPage from "@/pages/ContactPage";
-import LegalPage from "@/pages/LegalPage";
-import NotFound from "@/pages/NotFound";
-import CategoryPage from "@/pages/CategoryPage";
-import ProductPage from "@/pages/ProductPage";
-import LoginPage from "@/components/LoginPage";
-import RegisterPage from "@/components/RegisterPage";
-import AdminDashboard from "@/components/admin/AdminDashboard";
-import AdminUsersPage from "@/components/admin/AdminUsersPage";
-import AdminCategoriesPage from "@/components/admin/AdminCategoriesPage";
-import AdminProductsPage from "@/components/admin/AdminProductsPage";
-import AdminProtectedRoute from "@/components/admin/AdminProtectedRoute";
-import { AuthProvider } from "@/components/AuthProvider";
-import "./App.css";
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LoginPage from './components/LoginPage';
+import RegisterPage from './components/RegisterPage';
+import HomePage from './components/HomePage';
+import NavBar from './components/NavBar';
+import Footer from './components/Footer';
+import { AuthProvider } from './lib/auth';
+import AdminProtectedRoute from './components/admin/AdminProtectedRoute';
+import AdminUsersPage from './components/admin/AdminUsersPage';
+import { Toaster } from 'sonner';
+import CategoriesPage from './components/CategoriesPage';
+import ProductsPage from './components/ProductsPage';
+import EditCategoryPage from './components/admin/EditCategoryPage';
+import CreateCategoryPage from './components/admin/CreateCategoryPage';
+import EditProductPage from './components/admin/EditProductPage';
+import CreateProductPage from './components/admin/CreateProductPage';
+// Importez la nouvelle page
+import UserDetailsPage from "@/components/admin/UserDetailsPage";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/legal" element={<LegalPage />} />
-          <Route path="/category/:categoryId" element={<CategoryPage />} />
-          <Route path="/product/:productId" element={<ProductPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/admin"
-            element={
-              <AdminProtectedRoute>
-                <AdminDashboard />
-              </AdminProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <AdminProtectedRoute>
-                <AdminUsersPage />
-              </AdminProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/categories"
-            element={
-              <AdminProtectedRoute>
-                <AdminCategoriesPage />
-              </AdminProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/products"
-            element={
-              <AdminProtectedRoute>
-                <AdminProductsPage />
-              </AdminProtectedRoute>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Toaster />
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/categories" element={<CategoriesPage />} />
+            <Route path="/categories/:categoryId/products" element={<ProductsPage />} />
+            <Route path="/admin/categories/:categoryId/edit" element={<AdminProtectedRoute><EditCategoryPage /></AdminProtectedRoute>} />
+            <Route path="/admin/categories/create" element={<AdminProtectedRoute><CreateCategoryPage /></AdminProtectedRoute>} />
+            <Route path="/admin/products/:productId/edit" element={<AdminProtectedRoute><EditProductPage /></AdminProtectedRoute>} />
+            <Route path="/admin/categories/:categoryId/products/create" element={<AdminProtectedRoute><CreateProductPage /></AdminProtectedRoute>} />
+            <Route path="/admin/users" element={<AdminProtectedRoute><AdminUsersPage /></AdminProtectedRoute>} />
+            <Route path="/admin/users/:userId" element={<UserDetailsPage />} />
+          </Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </Router>
   );
 }
 
