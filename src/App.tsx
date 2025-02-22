@@ -13,6 +13,7 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminUsersPage from "@/components/admin/AdminUsersPage";
 import AdminCategoriesPage from "@/components/admin/AdminCategoriesPage";
 import AdminProductsPage from "@/components/admin/AdminProductsPage";
+import AdminProtectedRoute from "@/components/admin/AdminProtectedRoute";
 import { AuthProvider } from "@/components/AuthProvider";
 import "./App.css";
 
@@ -29,10 +30,38 @@ function App() {
           <Route path="/product/:productId" element={<ProductPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<AdminUsersPage />} />
-          <Route path="/admin/categories" element={<AdminCategoriesPage />} />
-          <Route path="/admin/products" element={<AdminProductsPage />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminProtectedRoute>
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminProtectedRoute>
+                <AdminUsersPage />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/categories"
+            element={
+              <AdminProtectedRoute>
+                <AdminCategoriesPage />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/products"
+            element={
+              <AdminProtectedRoute>
+                <AdminProductsPage />
+              </AdminProtectedRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>

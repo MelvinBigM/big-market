@@ -1,9 +1,39 @@
 
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Users, Layers, Package } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
+import NavBar from "../NavBar";
+import Footer from "../Footer";
 
 const AdminDashboard = () => {
+  const { profile, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && (!profile || profile.role !== 'admin')) {
+      navigate('/');
+      toast.error("Accès non autorisé");
+    }
+  }, [profile, isLoading, navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <p className="mt-4">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profile || profile.role !== 'admin') {
+    return null;
+  }
+
   const cards = [
     {
       title: "Gestion des clients",
@@ -30,6 +60,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <NavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
@@ -72,6 +103,7 @@ const AdminDashboard = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
