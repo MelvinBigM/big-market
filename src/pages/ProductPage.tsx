@@ -101,7 +101,12 @@ const ProductPage = () => {
                 <CardContent className="pt-6">
                   <div className="space-y-4">
                     <div className="flex items-center space-x-2">
-                      <Badge variant={product.in_stock ? "secondary" : "destructive"}>
+                      <Badge 
+                        variant="default"
+                        className={product.in_stock 
+                          ? "bg-[#F2FCE2] text-green-700 hover:bg-[#F2FCE2]" 
+                          : "bg-red-100 text-red-700 hover:bg-red-100"}
+                      >
                         {product.in_stock ? "En stock" : "Hors stock"}
                       </Badge>
                     </div>
