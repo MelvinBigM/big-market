@@ -1,8 +1,9 @@
 
 import { Profile } from "@/lib/types";
 import { Button } from "../ui/button";
-import { Mail, Trash2 } from "lucide-react";
+import { Mail, Trash2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import {
   Select,
   SelectContent,
@@ -22,11 +23,19 @@ interface UserCardProps {
 }
 
 const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
       <div className="flex items-center space-x-4">
         <div className="space-y-1">
-          <h3 className="font-medium">{userProfile.full_name || 'Nom non défini'}</h3>
+          <button
+            onClick={() => navigate(`/admin/users/${userProfile.id}`)}
+            className="font-medium hover:text-primary flex items-center gap-2"
+          >
+            {userProfile.full_name || 'Nom non défini'}
+            <ArrowRight className="h-4 w-4" />
+          </button>
           <p className="text-sm text-gray-600">
             {userProfile.email || 'Email non défini'}
           </p>
