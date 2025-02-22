@@ -84,10 +84,10 @@ const CategoryPage = () => {
                           />
                         </div>
                       )}
-                      <div className="p-4 flex flex-col justify-between flex-grow">
-                        <h3 className="text-lg font-semibold line-clamp-2 mb-1">{product.name}</h3>
+                      <div className="p-4 flex flex-col items-center space-y-0.5">
+                        <h3 className="text-lg font-semibold line-clamp-2 text-center">{product.name}</h3>
                         {canSeePrice ? (
-                          <div className="flex items-baseline justify-center space-x-1">
+                          <div className="flex items-baseline space-x-1">
                             <span className="text-xl font-bold text-primary">
                               {product.price.toFixed(2)} €
                             </span>
