@@ -14,6 +14,9 @@ import AdminUsersPage from "./components/admin/AdminUsersPage";
 import AdminCategoriesPage from "./components/admin/AdminCategoriesPage";
 import AdminProductsPage from "./components/admin/AdminProductsPage";
 import CategoryPage from "./pages/CategoryPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import LegalPage from "./pages/LegalPage";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +36,9 @@ const App = () => (
             <Route path="/admin/categories" element={<AdminCategoriesPage />} />
             <Route path="/admin/products" element={<AdminProductsPage />} />
             <Route path="/category/:categoryId" element={<CategoryPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/legal" element={<LegalPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
