@@ -84,21 +84,20 @@ const CategoryPage = () => {
                           />
                         </div>
                       )}
-                      <div className="p-4 flex flex-col flex-grow text-center">
-                        <h3 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                        <div className="mt-auto">
-                          {canSeePrice ? (
-                            <div className="flex items-center justify-center">
-                              <span className="text-xl font-bold text-primary">
-                                {product.price.toFixed(2)} €
-                              </span>
-                            </div>
-                          ) : (
-                            <p className="text-sm text-gray-500 italic">
-                              Connectez-vous en tant que client pour voir le prix
-                            </p>
-                          )}
-                        </div>
+                      <div className="p-4 flex flex-col justify-between flex-grow">
+                        <h3 className="text-lg font-semibold line-clamp-2 mb-1">{product.name}</h3>
+                        {canSeePrice ? (
+                          <div className="flex items-baseline justify-center space-x-1">
+                            <span className="text-xl font-bold text-primary">
+                              {product.price.toFixed(2)} €
+                            </span>
+                            <span className="text-xs text-gray-500">HT</span>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-gray-500 italic">
+                            Connectez-vous en tant que client pour voir le prix
+                          </p>
+                        )}
                       </div>
                     </motion.div>
                   </TooltipTrigger>
