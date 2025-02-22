@@ -101,14 +101,16 @@ const ProductPage = () => {
                 <CardContent className="pt-6">
                   <div className="space-y-4">
                     <div className="flex items-center space-x-2">
-                      <Badge variant={product.in_stock ? "default" : "destructive"}>
+                      <Badge variant={product.in_stock ? "secondary" : "destructive"}>
                         {product.in_stock ? "En stock" : "Hors stock"}
                       </Badge>
                     </div>
 
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <MapPin className="h-4 w-4" />
-                      <span>{product.in_stock ? "Disponible en magasin" : "Non disponible en magasin"}</span>
+                      <span className={product.in_stock ? "text-green-600" : "text-red-600"}>
+                        {product.in_stock ? "Disponible en magasin" : "Non disponible en magasin"}
+                      </span>
                     </div>
                   </div>
                 </CardContent>

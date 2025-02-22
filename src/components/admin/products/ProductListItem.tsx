@@ -50,7 +50,7 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
           <Toggle
             pressed={product.in_stock}
             onPressedChange={() => onToggleStock(product)}
-            className={`${product.in_stock ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}`}
+            className={product.in_stock ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}
           >
             <span className={`text-sm ${product.in_stock ? 'text-green-700' : 'text-red-700'}`}>
               {product.in_stock ? 'En stock' : 'Hors stock'}
