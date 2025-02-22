@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, XCircle } from "lucide-react";
@@ -9,6 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import type { AccessRequest } from "@/lib/types";
+
+type RequestWithProfile = AccessRequest & {
+  profiles: {
+    full_name: string | null;
+  } | null;
+};
 
 const AccessRequestsPage = () => {
   const { profile, isLoading } = useAuth();
@@ -33,17 +40,18 @@ const AccessRequestsPage = () => {
         .from('access_requests')
         .select(`
           *,
-          profiles!access_requests_user_id_fkey (
+          profiles:user_id (
             full_name
           )
         `)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
+        .returns<RequestWithProfile[]>();
 
       if (error) throw error;
 
       setRequests(data.map(request => ({
         ...request,
-        user_full_name: request.profiles?.full_name
+        user_full_name: request.profiles?.full_name || null
       })));
     } catch (error) {
       console.error("Erreur lors du chargement des demandes:", error);
