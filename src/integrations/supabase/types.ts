@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      access_requests: {
+        Row: {
+          created_at: string
+          id: string
+          reason: string
+          status: Database["public"]["Enums"]["access_request_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reason: string
+          status?: Database["public"]["Enums"]["access_request_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reason?: string
+          status?: Database["public"]["Enums"]["access_request_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -159,6 +186,7 @@ export type Database = {
       }
     }
     Enums: {
+      access_request_status: "pending" | "approved" | "rejected"
       user_role: "admin" | "client" | "nouveau"
     }
     CompositeTypes: {

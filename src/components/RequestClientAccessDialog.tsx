@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import type { AccessRequest } from "@/lib/types";
 
 interface RequestClientAccessDialogProps {
   open: boolean;
@@ -26,13 +27,11 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
     try {
       const { error } = await supabase
         .from("access_requests")
-        .insert([
-          {
-            user_id: profile.id,
-            reason,
-            status: "pending"
-          }
-        ]);
+        .insert<AccessRequest>({
+          user_id: profile.id,
+          reason,
+          status: "pending"
+        });
 
       if (error) throw error;
 

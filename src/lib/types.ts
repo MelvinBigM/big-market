@@ -1,4 +1,3 @@
-
 export type Profile = {
   id: string;
   role: 'admin' | 'client' | 'nouveau';
@@ -32,6 +31,15 @@ export type Product = {
   category_id: string;
   in_stock: boolean;
   position: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AccessRequest = {
+  id: string;
+  user_id: string;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
   created_at: string;
   updated_at: string;
 };
