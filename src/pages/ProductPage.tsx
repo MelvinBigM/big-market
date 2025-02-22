@@ -105,7 +105,7 @@ const ProductPage = () => {
 
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <MapPin className="h-4 w-4" />
-                      <span>Disponible en magasin</span>
+                      <span>{product.in_stock ? "Disponible en magasin" : "Non disponible en magasin"}</span>
                     </div>
                   </div>
                 </CardContent>
