@@ -84,10 +84,8 @@ const Index = () => {
                 </div>
                 <div className="p-3">
                   <div className="text-xs text-gray-500 mb-1">{product.categories.name}</div>
-                  <h3 className="text-sm font-semibold mb-1 truncate">{product.name}</h3>
-                  <p className="text-xs text-gray-600 mb-2 line-clamp-2">{product.description}</p>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-bold text-primary">{product.price} €</span>
+                  <h3 className="text-sm font-semibold mb-3 truncate">{product.name}</h3>
+                  <div className="flex justify-end">
                     <Link to={`/category/${product.category_id}`}>
                       <Button variant="default" size="sm">
                         Voir
