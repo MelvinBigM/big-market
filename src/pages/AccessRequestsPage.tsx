@@ -10,14 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import type { AccessRequest } from "@/lib/types";
+import { Database } from "@/integrations/supabase/types";
 
-type RequestWithProfile = {
-  id: string;
-  user_id: string;
-  reason: string;
-  status: 'pending' | 'approved' | 'rejected';
-  created_at: string;
-  updated_at: string;
+type AccessRequestWithProfile = Database['public']['Tables']['access_requests']['Row'] & {
   profiles: {
     full_name: string | null;
   } | null;
@@ -51,25 +46,25 @@ const AccessRequestsPage = () => {
           status,
           created_at,
           updated_at,
-          profiles (
+          profiles!access_requests_user_id_fkey (
             full_name
           )
         `)
-        .order('created_at', { ascending: false });
+        .returns<AccessRequestWithProfile[]>();
 
       if (error) throw error;
 
-      const typedData = data as RequestWithProfile[];
-      
-      setRequests(typedData.map(request => ({
-        id: request.id,
-        user_id: request.user_id,
-        reason: request.reason,
-        status: request.status,
-        created_at: request.created_at,
-        updated_at: request.updated_at,
-        user_full_name: request.profiles?.full_name || null
-      })));
+      setRequests(
+        (data ?? []).map((request) => ({
+          id: request.id,
+          user_id: request.user_id,
+          reason: request.reason,
+          status: request.status,
+          created_at: request.created_at,
+          updated_at: request.updated_at,
+          user_full_name: request.profiles?.full_name ?? null
+        }))
+      );
     } catch (error) {
       console.error("Erreur lors du chargement des demandes:", error);
       toast.error("Erreur lors du chargement des demandes");
