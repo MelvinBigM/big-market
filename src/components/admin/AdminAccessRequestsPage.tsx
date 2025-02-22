@@ -1,5 +1,5 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AccessRequest } from "@/lib/types";
 import NavBar from "../NavBar";
@@ -10,13 +10,15 @@ import { Clock, CheckCircle, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
 
 const AdminAccessRequestsPage = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const { data: requests, isLoading } = useQuery({
     queryKey: ["access-requests"],
     queryFn: async () => {
-      // Faire deux requêtes séparées et les combiner
       const { data: accessRequests, error: requestsError } = await supabase
         .from("access_requests")
         .select('*')
@@ -41,7 +43,6 @@ const AdminAccessRequestsPage = () => {
         throw profilesError;
       }
 
-      // Combiner les données
       return accessRequests.map(request => ({
         ...request,
         profiles: profiles?.find(profile => profile.id === request.user_id) || {
@@ -64,6 +65,34 @@ const AdminAccessRequestsPage = () => {
       })[];
     }
   });
+
+  const handleRequestAction = async (requestId: string, userId: string, approve: boolean) => {
+    try {
+      // Mettre à jour le statut de la demande
+      const { error: requestError } = await supabase
+        .from('access_requests')
+        .update({ status: approve ? 'approved' : 'rejected' })
+        .eq('id', requestId);
+
+      if (requestError) throw requestError;
+
+      // Si approuvé, mettre à jour le rôle de l'utilisateur
+      if (approve) {
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({ role: 'client' })
+          .eq('id', userId);
+
+        if (profileError) throw profileError;
+      }
+
+      toast.success(approve ? 'Demande approuvée' : 'Demande rejetée');
+      queryClient.invalidateQueries({ queryKey: ["access-requests"] });
+    } catch (error) {
+      console.error('Error handling request:', error);
+      toast.error("Une erreur est survenue lors du traitement de la demande");
+    }
+  };
 
   if (isLoading) {
     return (
@@ -118,10 +147,9 @@ const AdminAccessRequestsPage = () => {
               requests.map((request) => (
                 <Card 
                   key={request.id}
-                  className="cursor-pointer hover:shadow-lg transition-shadow"
-                  onClick={() => navigate(`/admin/users/${request.user_id}`)}
+                  className="hover:shadow-lg transition-shadow"
                 >
-                  <CardHeader>
+                  <CardHeader className="cursor-pointer" onClick={() => navigate(`/admin/users/${request.user_id}`)}>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-lg">
                         {request.profiles.full_name || 'Utilisateur sans nom'}
@@ -135,10 +163,32 @@ const AdminAccessRequestsPage = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-500 mb-2">
+                    <p className="text-sm text-gray-600 mb-2">{request.reason}</p>
+                    <p className="text-sm text-gray-500 mb-4">
                       Demande effectuée le {formatDate(request.created_at)}
                     </p>
-                    <p className="text-sm text-gray-600 line-clamp-2">{request.reason}</p>
+                    {request.status === 'pending' && (
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          onClick={() => handleRequestAction(request.id, request.user_id, false)}
+                        >
+                          <XCircle className="w-4 h-4" />
+                          Refuser
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                          onClick={() => handleRequestAction(request.id, request.user_id, true)}
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          Approuver
+                        </Button>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))
