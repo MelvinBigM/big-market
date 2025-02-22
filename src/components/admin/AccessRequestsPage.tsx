@@ -7,19 +7,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
+import NavBar from "../NavBar";
+import Footer from "../Footer";
 import type { AccessRequest } from "@/lib/types";
-import { Database } from "@/integrations/supabase/types";
-
-type AccessRequestWithProfile = Database['public']['Tables']['access_requests']['Row'] & {
-  user_full_name: string | null;
-};
 
 const AccessRequestsPage = () => {
   const { profile, isLoading } = useAuth();
   const navigate = useNavigate();
-  const [requests, setRequests] = useState<AccessRequestWithProfile[]>([]);
+  const [requests, setRequests] = useState<(AccessRequest & { user_full_name: string | null })[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,24 +30,22 @@ const AccessRequestsPage = () => {
 
   const fetchRequests = async () => {
     try {
-      let { data: accessRequests, error } = await supabase
+      const { data, error } = await supabase
         .from('access_requests')
-        .select('*, profiles(full_name)')
+        .select(`
+          *,
+          profiles:user_id (
+            full_name
+          )
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      const formattedRequests: AccessRequestWithProfile[] = (accessRequests ?? []).map((request: any) => ({
-        id: request.id,
-        user_id: request.user_id,
-        reason: request.reason,
-        status: request.status,
-        created_at: request.created_at,
-        updated_at: request.updated_at,
-        user_full_name: request.profiles?.full_name ?? null
-      }));
-
-      setRequests(formattedRequests);
+      setRequests(data.map(request => ({
+        ...request,
+        user_full_name: request.profiles?.full_name
+      })));
     } catch (error) {
       console.error("Erreur lors du chargement des demandes:", error);
       toast.error("Erreur lors du chargement des demandes");

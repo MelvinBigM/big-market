@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "@/pages/Index";
 import AboutPage from "@/pages/AboutPage";
@@ -18,7 +17,7 @@ import AdminProtectedRoute from "@/components/admin/AdminProtectedRoute";
 import { AuthProvider } from "@/components/AuthProvider";
 import "./App.css";
 import { QueryProvider } from "@/components/QueryProvider";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/Toaster";
 import AccessRequestsPage from "@/pages/AccessRequestsPage";
 
 const App = () => {

@@ -8,13 +8,12 @@ import { Button } from "../ui/button";
 import { ArrowLeft, Building2, User } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 import AdminProtectedRoute from "./AdminProtectedRoute";
-import { toast } from "sonner";
 
 const UserDetailsPage = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  const { data: userDetails, isLoading: isLoadingDetails } = useQuery({
+  const { data: userDetails, isLoading } = useQuery({
     queryKey: ["user", userId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -23,38 +22,23 @@ const UserDetailsPage = () => {
         .eq("id", userId)
         .single();
 
-      if (error) {
-        console.error("Error fetching user details:", error);
-        throw error;
-      }
-      
-      if (!data) {
-        throw new Error("User not found");
-      }
-
+      console.log("User details from DB:", data); // Pour le débogage
+      if (error) throw error;
       return data;
     },
-    retry: false,
-    meta: {
-      onError: () => {
-        toast.error("Erreur lors du chargement des détails de l'utilisateur");
-        navigate("/admin/users");
-      }
-    }
   });
 
-  const { data: userEmail, isLoading: isLoadingEmail } = useQuery({
+  const { data: userEmail } = useQuery({
     queryKey: ["user-email", userId],
     queryFn: async () => {
       const { data, error } = await supabase.rpc("get_profiles_with_email");
 
       if (error) throw error;
       const userWithEmail = data.find((user: any) => user.id === userId);
+      console.log("User email data:", userWithEmail); // Pour le débogage
       return userWithEmail?.email;
-    }
+    },
   });
-
-  const isLoading = isLoadingDetails || isLoadingEmail;
 
   if (isLoading) {
     return (
@@ -67,9 +51,8 @@ const UserDetailsPage = () => {
     );
   }
 
-  if (!userDetails) {
-    return null;
-  }
+  console.log("Final userDetails:", userDetails); // Pour le débogage
+  console.log("Final userEmail:", userEmail); // Pour le débogage
 
   return (
     <AdminProtectedRoute>

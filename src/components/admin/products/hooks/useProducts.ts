@@ -20,13 +20,10 @@ export const useProducts = () => {
         .order("position", { ascending: true })
         .order("name", { ascending: true });
 
-      if (productsError) {
-        console.error("Error fetching products:", productsError);
-        throw productsError;
-      }
+      if (productsError) throw productsError;
 
-      return (products || []) as (Product & { categories: { id: string; name: string } })[];
-    }
+      return products as (Product & { categories: { id: string; name: string } })[];
+    },
   });
 
   const handleDragEnd = async (result: any) => {
@@ -37,9 +34,8 @@ export const useProducts = () => {
     items.splice(result.destination.index, 0, reorderedItem);
 
     try {
+      // Mise à jour des positions un par un
       for (let i = 0; i < items.length; i++) {
-        if (!items[i].id) continue; // Skip if id is undefined
-        
         const { error } = await supabase
           .from("products")
           .update({ position: i })
@@ -51,14 +47,11 @@ export const useProducts = () => {
       refetchProducts();
       toast.success("Ordre des produits mis à jour");
     } catch (error: any) {
-      console.error("Error updating product positions:", error);
       toast.error("Erreur lors de la réorganisation des produits");
     }
   };
 
   const handleDelete = async (product: Product) => {
-    if (!product.id) return; // Guard against undefined id
-    
     if (window.confirm(`Êtes-vous sûr de vouloir supprimer le produit "${product.name}" ?`)) {
       try {
         const { error } = await supabase
@@ -71,15 +64,12 @@ export const useProducts = () => {
         toast.success("Produit supprimé avec succès");
         refetchProducts();
       } catch (error: any) {
-        console.error("Error deleting product:", error);
         toast.error(error.message);
       }
     }
   };
 
   const toggleStock = async (product: Product) => {
-    if (!product.id) return; // Guard against undefined id
-    
     try {
       const { error } = await supabase
         .from("products")
@@ -91,13 +81,12 @@ export const useProducts = () => {
       toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'hors stock'}`);
       refetchProducts();
     } catch (error: any) {
-      console.error("Error toggling product stock:", error);
       toast.error(error.message);
     }
   };
 
   return {
-    products: products || [], // Ensure we always return an array
+    products,
     refetchProducts,
     handleDragEnd,
     handleDelete,
