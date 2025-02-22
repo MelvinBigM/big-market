@@ -12,35 +12,50 @@ const AdminAccessRequestsPage = () => {
   const { data: requests, isLoading } = useQuery({
     queryKey: ["access-requests"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // Faire deux requêtes séparées et les combiner
+      const { data: accessRequests, error: requestsError } = await supabase
         .from("access_requests")
-        .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            is_company,
-            phone_number,
-            address,
-            city,
-            postal_code
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error("Error fetching access requests:", error);
+      if (requestsError) {
+        console.error("Error fetching access requests:", requestsError);
         toast.error("Erreur lors du chargement des demandes d'accès");
-        throw error;
+        throw requestsError;
       }
 
-      return data as (AccessRequest & {
+      const userIds = accessRequests?.map(request => request.user_id) || [];
+      
+      const { data: profiles, error: profilesError } = await supabase
+        .from("profiles")
+        .select('*')
+        .in('id', userIds);
+
+      if (profilesError) {
+        console.error("Error fetching profiles:", profilesError);
+        toast.error("Erreur lors du chargement des profils");
+        throw profilesError;
+      }
+
+      // Combiner les données
+      return accessRequests.map(request => ({
+        ...request,
+        profiles: profiles?.find(profile => profile.id === request.user_id) || {
+          full_name: 'Utilisateur inconnu',
+          is_company: false,
+          phone_number: '',
+          address: '',
+          city: '',
+          postal_code: '',
+        }
+      })) as (AccessRequest & {
         profiles: {
-          full_name: string;
-          is_company: boolean;
-          phone_number: string;
-          address: string;
-          city: string;
-          postal_code: string;
+          full_name: string | null;
+          is_company: boolean | null;
+          phone_number: string | null;
+          address: string | null;
+          city: string | null;
+          postal_code: string | null;
         };
       })[];
     }
