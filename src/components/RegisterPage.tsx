@@ -26,19 +26,11 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      // 1. Créer l'utilisateur dans auth.users
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-      });
-
-      if (signUpError) throw signUpError;
-
-      // 2. Mettre à jour le profil utilisateur dans profiles
-      if (authData.user) {
-        const { error: updateError } = await supabase
-          .from('profiles')
-          .update({
+        options: {
+          data: {
             full_name: isCompany ? null : fullName,
             phone_number: phoneNumber,
             is_company: isCompany,
@@ -46,14 +38,11 @@ const RegisterPage = () => {
             address,
             city,
             postal_code: postalCode,
-          })
-          .eq('id', authData.user.id);
+          },
+        },
+      });
 
-        if (updateError) {
-          console.error('Erreur lors de la mise à jour du profil:', updateError);
-          throw updateError;
-        }
-      }
+      if (signUpError) throw signUpError;
 
       toast.success("Inscription réussie ! Vous pouvez maintenant vous connecter.");
       navigate("/login");
