@@ -8,11 +8,12 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { Database } from "@/integrations/supabase/types";
 
-interface Registration {
+type RegistrationResult = {
   id: string;
   full_name: string | null;
-  role: 'nouveau' | 'client' | 'admin';
+  role: Database['public']['Enums']['user_role'];
   email: string;
   created_at: string;
 }
@@ -33,7 +34,7 @@ const AdminRegistrationsPage = () => {
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_recent_registrations');
       if (error) throw error;
-      return data as Registration[];
+      return data as RegistrationResult[];
     },
     enabled: !!profile && profile.role === 'admin',
   });

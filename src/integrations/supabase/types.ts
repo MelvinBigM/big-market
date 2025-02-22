@@ -132,6 +132,16 @@ export type Database = {
           email: string
         }[]
       }
+      get_recent_registrations: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          full_name: string
+          role: Database["public"]["Enums"]["user_role"]
+          email: string
+          created_at: string
+        }[]
+      }
     }
     Enums: {
       user_role: "admin" | "client" | "nouveau"
