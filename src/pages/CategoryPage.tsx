@@ -8,6 +8,8 @@ import { Product } from "@/lib/types";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { Package } from "lucide-react";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
@@ -34,8 +36,8 @@ const CategoryPage = () => {
         .from("products")
         .select("*")
         .eq("category_id", categoryId)
-        .order("position", { ascending: true })  // D'abord on trie par position
-        .order("name");                         // Puis par nom si la position est égale
+        .order("position", { ascending: true })  
+        .order("name");                         
 
       if (error) throw error;
       return data as Product[];
@@ -71,7 +73,15 @@ const CategoryPage = () => {
                       className="bg-white rounded-lg shadow-sm overflow-hidden h-[300px] flex flex-col relative group cursor-pointer"
                     >
                       <div className="absolute top-2 right-2 z-10">
-                        <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
+                        <div className="flex flex-col gap-2 items-end">
+                          <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
+                          {product.units_per_pack > 1 && (
+                            <Badge variant="secondary" className="flex items-center gap-1">
+                              <Package className="h-3 w-3" />
+                              {product.units_per_pack} unités
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                       {product.image_url && (
                         <div className="h-40 overflow-hidden flex items-center justify-center bg-gray-50">
