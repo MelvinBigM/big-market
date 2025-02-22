@@ -13,15 +13,13 @@ import type { AccessRequest } from "@/lib/types";
 import { Database } from "@/integrations/supabase/types";
 
 type AccessRequestWithProfile = Database['public']['Tables']['access_requests']['Row'] & {
-  profiles: {
-    full_name: string | null;
-  } | null;
+  user_full_name: string | null;
 };
 
 const AccessRequestsPage = () => {
   const { profile, isLoading } = useAuth();
   const navigate = useNavigate();
-  const [requests, setRequests] = useState<(AccessRequest & { user_full_name: string | null })[]>([]);
+  const [requests, setRequests] = useState<AccessRequestWithProfile[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,34 +35,24 @@ const AccessRequestsPage = () => {
 
   const fetchRequests = async () => {
     try {
-      const { data, error } = await supabase
+      let { data: accessRequests, error } = await supabase
         .from('access_requests')
-        .select(`
-          id,
-          user_id,
-          reason,
-          status,
-          created_at,
-          updated_at,
-          profiles!access_requests_user_id_fkey (
-            full_name
-          )
-        `)
-        .returns<AccessRequestWithProfile[]>();
+        .select('*, profiles(full_name)')
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      setRequests(
-        (data ?? []).map((request) => ({
-          id: request.id,
-          user_id: request.user_id,
-          reason: request.reason,
-          status: request.status,
-          created_at: request.created_at,
-          updated_at: request.updated_at,
-          user_full_name: request.profiles?.full_name ?? null
-        }))
-      );
+      const formattedRequests: AccessRequestWithProfile[] = (accessRequests ?? []).map((request: any) => ({
+        id: request.id,
+        user_id: request.user_id,
+        reason: request.reason,
+        status: request.status,
+        created_at: request.created_at,
+        updated_at: request.updated_at,
+        user_full_name: request.profiles?.full_name ?? null
+      }));
+
+      setRequests(formattedRequests);
     } catch (error) {
       console.error("Erreur lors du chargement des demandes:", error);
       toast.error("Erreur lors du chargement des demandes");
