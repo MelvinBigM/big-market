@@ -1,17 +1,15 @@
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import NavBar from "../NavBar";
 import Footer from "../Footer";
-import { Button } from "../ui/button";
-import { ArrowLeft, Building2, User } from "lucide-react";
+import { Building2, User } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 
 const UserDetailsPage = () => {
   const { userId } = useParams();
-  const navigate = useNavigate();
 
   const { data: userDetails, isLoading } = useQuery({
     queryKey: ["user", userId],
@@ -61,14 +59,6 @@ const UserDetailsPage = () => {
         <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <div className="mb-6">
-              <Button
-                variant="ghost"
-                onClick={() => navigate("/admin/users")}
-                className="mb-4"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Retour à la liste
-              </Button>
               <div className="flex items-center gap-2">
                 {userDetails.is_company ? (
                   <Building2 className="h-6 w-6" />
