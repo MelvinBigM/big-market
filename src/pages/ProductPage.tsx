@@ -36,6 +36,7 @@ const ProductPage = () => {
   });
 
   const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
+  const isNewUser = profile?.role === 'nouveau';
 
   if (!product) return null;
 
@@ -90,7 +91,9 @@ const ProductPage = () => {
                 </div>
               ) : (
                 <p className="text-sm text-gray-500 italic">
-                  Connectez-vous en tant que client pour voir le prix
+                  {isNewUser 
+                    ? "Veuillez vous rapprocher d'un commercial pour avoir accès aux prix"
+                    : "Connectez-vous en tant que client pour voir le prix"}
                 </p>
               )}
 

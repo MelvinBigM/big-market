@@ -44,6 +44,7 @@ const CategoryPage = () => {
   });
 
   const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
+  const isNewUser = profile?.role === 'nouveau';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -95,7 +96,9 @@ const CategoryPage = () => {
                           </div>
                         ) : (
                           <p className="text-sm text-gray-500 italic text-center">
-                            Connectez-vous en tant que client pour voir le prix
+                            {isNewUser 
+                              ? "Veuillez vous rapprocher d'un commercial"
+                              : "Connectez-vous en tant que client pour voir le prix"}
                           </p>
                         )}
                       </div>
