@@ -13,6 +13,7 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminUsersPage from "@/components/admin/AdminUsersPage";
 import AdminCategoriesPage from "@/components/admin/AdminCategoriesPage";
 import AdminProductsPage from "@/components/admin/AdminProductsPage";
+import AdminAccessRequestsPage from "@/components/admin/AdminAccessRequestsPage";
 import UserDetailsPage from "@/components/admin/UserDetailsPage";
 import AdminProtectedRoute from "@/components/admin/AdminProtectedRoute";
 import { AuthProvider } from "@/components/AuthProvider";
@@ -68,6 +69,14 @@ function App() {
             element={
               <AdminProtectedRoute>
                 <AdminProductsPage />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/access-requests"
+            element={
+              <AdminProtectedRoute>
+                <AdminAccessRequestsPage />
               </AdminProtectedRoute>
             }
           />
