@@ -11,7 +11,13 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import type { AccessRequest } from "@/lib/types";
 
-type RequestWithProfile = AccessRequest & {
+type RequestWithProfile = {
+  id: string;
+  user_id: string;
+  reason: string;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at: string;
+  updated_at: string;
   profiles: {
     full_name: string | null;
   } | null;
@@ -39,18 +45,29 @@ const AccessRequestsPage = () => {
       const { data, error } = await supabase
         .from('access_requests')
         .select(`
-          *,
-          profiles:user_id (
+          id,
+          user_id,
+          reason,
+          status,
+          created_at,
+          updated_at,
+          profiles (
             full_name
           )
         `)
-        .order('created_at', { ascending: false })
-        .returns<RequestWithProfile[]>();
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      setRequests(data.map(request => ({
-        ...request,
+      const typedData = data as RequestWithProfile[];
+      
+      setRequests(typedData.map(request => ({
+        id: request.id,
+        user_id: request.user_id,
+        reason: request.reason,
+        status: request.status,
+        created_at: request.created_at,
+        updated_at: request.updated_at,
         user_full_name: request.profiles?.full_name || null
       })));
     } catch (error) {
