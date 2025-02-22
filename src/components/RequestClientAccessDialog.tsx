@@ -27,11 +27,11 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
     try {
       const { error } = await supabase
         .from("access_requests")
-        .insert<AccessRequest>({
+        .insert({
           user_id: profile.id,
           reason,
           status: "pending"
-        });
+        } as unknown as AccessRequest);
 
       if (error) throw error;
 

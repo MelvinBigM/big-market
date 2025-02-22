@@ -1,3 +1,4 @@
+
 export type Profile = {
   id: string;
   role: 'admin' | 'client' | 'nouveau';
@@ -43,3 +44,4 @@ export type AccessRequest = {
   created_at: string;
   updated_at: string;
 };
+
