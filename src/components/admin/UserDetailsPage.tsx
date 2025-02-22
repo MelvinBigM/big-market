@@ -35,9 +35,11 @@ const UserDetailsPage = () => {
       return data;
     },
     retry: false,
-    onError: () => {
-      toast.error("Erreur lors du chargement des détails de l'utilisateur");
-      navigate("/admin/users");
+    meta: {
+      onError: () => {
+        toast.error("Erreur lors du chargement des détails de l'utilisateur");
+        navigate("/admin/users");
+      }
     }
   });
 
