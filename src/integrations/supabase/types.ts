@@ -50,7 +50,6 @@ export type Database = {
           name: string
           position: number | null
           price: number
-          units_per_pack: number
           updated_at: string
         }
         Insert: {
@@ -63,7 +62,6 @@ export type Database = {
           name: string
           position?: number | null
           price: number
-          units_per_pack?: number
           updated_at?: string
         }
         Update: {
@@ -76,7 +74,6 @@ export type Database = {
           name?: string
           position?: number | null
           price?: number
-          units_per_pack?: number
           updated_at?: string
         }
         Relationships: [

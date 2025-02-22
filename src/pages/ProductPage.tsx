@@ -101,11 +101,6 @@ const ProductPage = () => {
                       <Badge variant={product.in_stock ? "default" : "destructive"}>
                         {product.in_stock ? "En stock" : "Hors stock"}
                       </Badge>
-                      {product.in_stock && (
-                        <span className="text-sm text-gray-500">
-                          {product.units_per_pack} unité{product.units_per_pack > 1 ? 's' : ''} par pack
-                        </span>
-                      )}
                     </div>
 
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
