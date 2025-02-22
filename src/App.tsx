@@ -14,7 +14,7 @@ import AdminRegistrationsPage from "./components/admin/AdminRegistrationsPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
 import LegalPage from "./pages/LegalPage";
-import AuthProvider from "./components/AuthProvider";
+import { AuthProvider } from "@/components/AuthProvider";
 import { Toaster } from "./components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
