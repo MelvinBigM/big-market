@@ -22,6 +22,7 @@ const UserDetailsPage = () => {
         .eq("id", userId)
         .single();
 
+      console.log("User details from DB:", data); // Pour le débogage
       if (error) throw error;
       return data;
     },
@@ -34,6 +35,7 @@ const UserDetailsPage = () => {
 
       if (error) throw error;
       const userWithEmail = data.find((user: any) => user.id === userId);
+      console.log("User email data:", userWithEmail); // Pour le débogage
       return userWithEmail?.email;
     },
   });
@@ -48,6 +50,9 @@ const UserDetailsPage = () => {
       </div>
     );
   }
+
+  console.log("Final userDetails:", userDetails); // Pour le débogage
+  console.log("Final userEmail:", userEmail); // Pour le débogage
 
   return (
     <AdminProtectedRoute>
@@ -126,9 +131,11 @@ const UserDetailsPage = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-500">Adresse complète</p>
                     <p className="mt-1">{userDetails.address || "Non définie"}</p>
-                    <p className="mt-1">
-                      {userDetails.postal_code} {userDetails.city}
-                    </p>
+                    {(userDetails.postal_code || userDetails.city) && (
+                      <p className="mt-1">
+                        {userDetails.postal_code} {userDetails.city}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
