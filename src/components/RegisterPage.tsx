@@ -26,23 +26,34 @@ const RegisterPage = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // 1. Créer l'utilisateur dans auth.users
+      const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          data: {
-            full_name: fullName,
+      });
+
+      if (signUpError) throw signUpError;
+
+      // 2. Mettre à jour le profil utilisateur dans profiles
+      if (authData.user) {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({
+            full_name: isCompany ? null : fullName,
             phone_number: phoneNumber,
             is_company: isCompany,
-            company_name: companyName,
+            company_name: isCompany ? companyName : null,
             address,
             city,
             postal_code: postalCode,
-          },
-        },
-      });
+          })
+          .eq('id', authData.user.id);
 
-      if (error) throw error;
+        if (updateError) {
+          console.error('Erreur lors de la mise à jour du profil:', updateError);
+          throw updateError;
+        }
+      }
 
       toast.success("Inscription réussie ! Vous pouvez maintenant vous connecter.");
       navigate("/login");
@@ -52,6 +63,7 @@ const RegisterPage = () => {
           ? "Un compte existe déjà avec cet email"
           : "Erreur lors de l'inscription"
       );
+      console.error('Erreur complète:', error);
     } finally {
       setIsLoading(false);
     }
