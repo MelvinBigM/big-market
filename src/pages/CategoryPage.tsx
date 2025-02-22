@@ -75,16 +75,16 @@ const CategoryPage = () => {
                       <div className="absolute top-2 right-2 z-10">
                         <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
                       </div>
-                      {product.image_url && (
-                        <div className="h-40 overflow-hidden flex items-center justify-center bg-gray-50">
+                      <div className="w-full h-40 bg-white">
+                        {product.image_url && (
                           <img
                             src={product.image_url}
                             alt={product.name}
-                            className="w-full h-auto object-contain max-h-40"
+                            className="w-full h-full object-contain p-2"
                           />
-                        </div>
-                      )}
-                      <div className="p-4 flex flex-col items-center">
+                        )}
+                      </div>
+                      <div className="p-4 flex flex-col items-center bg-white">
                         <h3 className="text-lg font-semibold line-clamp-2 text-center mb-2">{product.name}</h3>
                         {canSeePrice ? (
                           <div className="flex items-baseline space-x-1">
