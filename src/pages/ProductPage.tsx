@@ -39,7 +39,7 @@ const ProductPage = () => {
   });
 
   const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
-  const isNewUser = profile?.role === 'nouveau';
+  const isNewUser = profile && profile.role === 'nouveau';
 
   if (!product) return null;
 
