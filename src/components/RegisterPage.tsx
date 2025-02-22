@@ -4,12 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 import { toast } from "sonner";
+import { Switch } from "./ui/switch";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [isCompany, setIsCompany] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -24,6 +32,12 @@ const RegisterPage = () => {
         options: {
           data: {
             full_name: fullName,
+            phone_number: phoneNumber,
+            is_company: isCompany,
+            company_name: companyName,
+            address,
+            city,
+            postal_code: postalCode,
           },
         },
       });
@@ -61,48 +75,116 @@ const RegisterPage = () => {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleRegister}>
           <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-                Nom complet
-              </label>
-              <Input
-                id="fullName"
-                name="fullName"
-                type="text"
-                required
-                placeholder="Votre nom complet"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+            <div className="flex items-center justify-between">
+              <Label htmlFor="isCompany">Êtes-vous une société ?</Label>
+              <Switch
+                id="isCompany"
+                checked={isCompany}
+                onCheckedChange={setIsCompany}
               />
             </div>
+
+            {isCompany ? (
+              <div>
+                <Label htmlFor="companyName">Nom de la société</Label>
+                <Input
+                  id="companyName"
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
+                  required={isCompany}
+                  placeholder="Nom de votre société"
+                  className="mt-1"
+                />
+              </div>
+            ) : (
+              <div>
+                <Label htmlFor="fullName">Nom complet</Label>
+                <Input
+                  id="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required={!isCompany}
+                  placeholder="Votre nom complet"
+                  className="mt-1"
+                />
+              </div>
+            )}
+
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Adresse email
-              </label>
+              <Label htmlFor="email">Adresse email</Label>
               <Input
                 id="email"
-                name="email"
                 type="email"
-                required
-                placeholder="Votre email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="Votre email"
+                className="mt-1"
               />
             </div>
+
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Mot de passe
-              </label>
+              <Label htmlFor="password">Mot de passe</Label>
               <Input
                 id="password"
-                name="password"
                 type="password"
-                required
-                placeholder="Votre mot de passe"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Votre mot de passe"
                 minLength={6}
+                className="mt-1"
               />
+            </div>
+
+            <div>
+              <Label htmlFor="phoneNumber">Numéro de téléphone</Label>
+              <Input
+                id="phoneNumber"
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+                placeholder="Votre numéro de téléphone"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="address">Adresse</Label>
+              <Input
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+                placeholder="Votre adresse"
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="postalCode">Code postal</Label>
+                <Input
+                  id="postalCode"
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  required
+                  placeholder="Code postal"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="city">Ville</Label>
+                <Input
+                  id="city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  required
+                  placeholder="Ville"
+                  className="mt-1"
+                />
+              </div>
             </div>
           </div>
 
