@@ -12,18 +12,18 @@ import { useState, useEffect } from "react";
 const banners = [
   {
     title: "Bienvenue chez BIG IMEX",
-    description: "Votre destination pour des produits alimentaires et des boissons de qualité.",
-    bgColor: "bg-gradient-to-r from-orange-100 to-rose-100"
+    description: "Votre destination pour des produits alimentaires et des boissons de qualité. Découvrez notre large sélection de produits soigneusement sélectionnés.",
+    bgColor: "bg-white"
   },
   {
     title: "Découvrez nos Produits",
-    description: "Une sélection premium de produits soigneusement choisis pour vous.",
-    bgColor: "bg-gradient-to-r from-blue-100 to-purple-100"
+    description: "Une sélection premium de produits soigneusement choisis pour vous. Nous nous engageons à vous offrir uniquement le meilleur.",
+    bgColor: "bg-white"
   },
   {
     title: "Qualité Garantie",
-    description: "Nous nous engageons à vous offrir les meilleurs produits du marché.",
-    bgColor: "bg-gradient-to-r from-green-100 to-teal-100"
+    description: "Nous nous engageons à vous offrir les meilleurs produits du marché. La qualité est au cœur de nos préoccupations.",
+    bgColor: "bg-white"
   }
 ];
 
@@ -63,8 +63,8 @@ const Index = () => {
       <NavBar />
       
       {/* Hero Section with Rotating Banners */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        <div className="max-w-7xl mx-auto relative">
+      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           <AnimatePresence mode="wait">
             <motion.div 
               key={currentBanner}
@@ -72,7 +72,7 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className={`text-center p-12 rounded-2xl shadow-lg ${banners[currentBanner].bgColor}`}
+              className="text-center"
             >
               <motion.h1 
                 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6"
