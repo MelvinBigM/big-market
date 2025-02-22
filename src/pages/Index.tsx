@@ -1,5 +1,5 @@
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,8 +7,37 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/lib/types";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+const banners = [
+  {
+    title: "Bienvenue chez BIG IMEX",
+    description: "Votre destination pour des produits alimentaires et des boissons de qualité.",
+    bgColor: "bg-gradient-to-r from-orange-100 to-rose-100"
+  },
+  {
+    title: "Découvrez nos Produits",
+    description: "Une sélection premium de produits soigneusement choisis pour vous.",
+    bgColor: "bg-gradient-to-r from-blue-100 to-purple-100"
+  },
+  {
+    title: "Qualité Garantie",
+    description: "Nous nous engageons à vous offrir les meilleurs produits du marché.",
+    bgColor: "bg-gradient-to-r from-green-100 to-teal-100"
+  }
+];
 
 const Index = () => {
+  const [currentBanner, setCurrentBanner] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % banners.length);
+    }, 10000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const { data: latestProducts } = useQuery({
     queryKey: ["latest-products"],
     queryFn: async () => {
@@ -33,28 +62,36 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <NavBar />
       
-      {/* Hero Section */}
-      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center">
-            <motion.h1 
+      {/* Hero Section with Rotating Banners */}
+      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="max-w-7xl mx-auto relative">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={currentBanner}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6"
+              className={`text-center p-12 rounded-2xl shadow-lg ${banners[currentBanner].bgColor}`}
             >
-              Bienvenue chez BIG IMEX
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-xl text-gray-600 max-w-2xl mx-auto"
-            >
-              Votre destination pour des produits alimentaires et des boissons de qualité.
-              Découvrez notre large sélection de produits soigneusement sélectionnés.
-            </motion.p>
-          </div>
+              <motion.h1 
+                className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {banners[currentBanner].title}
+              </motion.h1>
+              <motion.p 
+                className="text-xl text-gray-600 max-w-2xl mx-auto"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                {banners[currentBanner].description}
+              </motion.p>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </section>
 
