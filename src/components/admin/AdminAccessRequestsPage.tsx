@@ -22,6 +22,7 @@ const AdminAccessRequestsPage = () => {
       const { data: accessRequests, error: requestsError } = await supabase
         .from("access_requests")
         .select('*')
+        .eq('status', 'pending')
         .order('created_at', { ascending: false });
 
       if (requestsError) {
@@ -105,28 +106,6 @@ const AdminAccessRequestsPage = () => {
     );
   }
 
-  const getStatusIcon = (status: 'pending' | 'approved' | 'rejected') => {
-    switch (status) {
-      case 'pending':
-        return <Clock className="h-5 w-5 text-yellow-500" />;
-      case 'approved':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case 'rejected':
-        return <XCircle className="h-5 w-5 text-red-500" />;
-    }
-  };
-
-  const getStatusText = (status: 'pending' | 'approved' | 'rejected') => {
-    switch (status) {
-      case 'pending':
-        return 'En attente';
-      case 'approved':
-        return 'Approuvée';
-      case 'rejected':
-        return 'Rejetée';
-    }
-  };
-
   const formatDate = (date: string) => {
     return format(new Date(date), "d MMMM yyyy", { locale: fr });
   };
@@ -138,7 +117,7 @@ const AdminAccessRequestsPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">
-              Demandes d'accès
+              Demandes d'accès en attente
             </h1>
           </div>
 
@@ -150,45 +129,35 @@ const AdminAccessRequestsPage = () => {
                   className="hover:shadow-lg transition-shadow"
                 >
                   <CardHeader className="cursor-pointer" onClick={() => navigate(`/admin/users/${request.user_id}`)}>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-lg">
-                        {request.profiles.full_name || 'Utilisateur sans nom'}
-                      </CardTitle>
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(request.status)}
-                        <span className="text-sm font-medium">
-                          {getStatusText(request.status)}
-                        </span>
-                      </div>
-                    </div>
+                    <CardTitle className="text-lg">
+                      {request.profiles.full_name || 'Utilisateur sans nom'}
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-gray-600 mb-2">{request.reason}</p>
                     <p className="text-sm text-gray-500 mb-4">
                       Demande effectuée le {formatDate(request.created_at)}
                     </p>
-                    {request.status === 'pending' && (
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                          onClick={() => handleRequestAction(request.id, request.user_id, false)}
-                        >
-                          <XCircle className="w-4 h-4" />
-                          Refuser
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-green-600 hover:text-green-700 hover:bg-green-50"
-                          onClick={() => handleRequestAction(request.id, request.user_id, true)}
-                        >
-                          <CheckCircle className="w-4 h-4" />
-                          Approuver
-                        </Button>
-                      </div>
-                    )}
+                    <div className="flex justify-center gap-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        onClick={() => handleRequestAction(request.id, request.user_id, false)}
+                      >
+                        <XCircle className="w-4 h-4" />
+                        Refuser
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                        onClick={() => handleRequestAction(request.id, request.user_id, true)}
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        Approuver
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))
@@ -196,7 +165,7 @@ const AdminAccessRequestsPage = () => {
               <div className="col-span-full">
                 <Card>
                   <CardContent className="text-center py-6">
-                    <p className="text-gray-500">Aucune demande d'accès pour le moment</p>
+                    <p className="text-gray-500">Aucune demande d'accès en attente</p>
                   </CardContent>
                 </Card>
               </div>
