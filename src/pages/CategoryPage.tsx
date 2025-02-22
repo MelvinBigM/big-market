@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import NavBar from "@/components/NavBar";
@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const CategoryPage = () => {
   const { categoryId } = useParams();
   const { session, profile } = useAuth();
+  const navigate = useNavigate();
 
   const { data: category } = useQuery({
     queryKey: ["category", categoryId],
@@ -34,8 +35,8 @@ const CategoryPage = () => {
         .from("products")
         .select("*")
         .eq("category_id", categoryId)
-        .order("position", { ascending: true })  // D'abord on trie par position
-        .order("name");                         // Puis par nom si la position est égale
+        .order("position", { ascending: true })  
+        .order("name");                         
 
       if (error) throw error;
       return data as Product[];
@@ -69,6 +70,7 @@ const CategoryPage = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="bg-white rounded-lg shadow-sm overflow-hidden h-[300px] flex flex-col relative group cursor-pointer"
+                      onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="absolute top-2 right-2 z-10">
                         <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
