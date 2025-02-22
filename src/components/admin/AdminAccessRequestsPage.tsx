@@ -7,8 +7,12 @@ import Footer from "../Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { toast } from "sonner";
 import { Clock, CheckCircle, XCircle } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { useNavigate } from "react-router-dom";
 
 const AdminAccessRequestsPage = () => {
+  const navigate = useNavigate();
   const { data: requests, isLoading } = useQuery({
     queryKey: ["access-requests"],
     queryFn: async () => {
@@ -94,6 +98,10 @@ const AdminAccessRequestsPage = () => {
     }
   };
 
+  const formatDate = (date: string) => {
+    return format(new Date(date), "d MMMM yyyy", { locale: fr });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
@@ -105,13 +113,17 @@ const AdminAccessRequestsPage = () => {
             </h1>
           </div>
 
-          <div className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {requests && requests.length > 0 ? (
               requests.map((request) => (
-                <Card key={request.id}>
+                <Card 
+                  key={request.id}
+                  className="cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => navigate(`/admin/users/${request.user_id}`)}
+                >
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl">
+                      <CardTitle className="text-lg">
                         {request.profiles.full_name || 'Utilisateur sans nom'}
                       </CardTitle>
                       <div className="flex items-center gap-2">
@@ -123,43 +135,20 @@ const AdminAccessRequestsPage = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-2">Informations</h3>
-                        <div className="space-y-2 text-sm">
-                          <p>
-                            <span className="font-medium">Type : </span>
-                            {request.profiles.is_company ? 'Entreprise' : 'Particulier'}
-                          </p>
-                          <p>
-                            <span className="font-medium">Téléphone : </span>
-                            {request.profiles.phone_number || 'Non renseigné'}
-                          </p>
-                          <p>
-                            <span className="font-medium">Adresse : </span>
-                            {request.profiles.address || 'Non renseignée'}
-                          </p>
-                          {(request.profiles.postal_code || request.profiles.city) && (
-                            <p>
-                              {request.profiles.postal_code} {request.profiles.city}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900 mb-2">Motif de la demande</h3>
-                        <p className="text-sm whitespace-pre-line">{request.reason}</p>
-                      </div>
-                    </div>
+                    <p className="text-sm text-gray-500">
+                      Demande effectuée le {formatDate(request.created_at)}
+                    </p>
                   </CardContent>
                 </Card>
               ))
             ) : (
-              <Card>
-                <CardContent className="text-center py-6">
-                  <p className="text-gray-500">Aucune demande d'accès pour le moment</p>
-                </CardContent>
-              </Card>
+              <div className="col-span-full">
+                <Card>
+                  <CardContent className="text-center py-6">
+                    <p className="text-gray-500">Aucune demande d'accès pour le moment</p>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </div>
         </div>
