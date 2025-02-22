@@ -90,7 +90,6 @@ export type Database = {
         Row: {
           address: string | null
           city: string | null
-          company_name: string | null
           created_at: string
           full_name: string | null
           id: string
@@ -103,7 +102,6 @@ export type Database = {
         Insert: {
           address?: string | null
           city?: string | null
-          company_name?: string | null
           created_at?: string
           full_name?: string | null
           id: string
@@ -116,7 +114,6 @@ export type Database = {
         Update: {
           address?: string | null
           city?: string | null
-          company_name?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
