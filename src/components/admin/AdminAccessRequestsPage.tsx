@@ -135,9 +135,10 @@ const AdminAccessRequestsPage = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 mb-2">
                       Demande effectuée le {formatDate(request.created_at)}
                     </p>
+                    <p className="text-sm text-gray-600 line-clamp-2">{request.reason}</p>
                   </CardContent>
                 </Card>
               ))
