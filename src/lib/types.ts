@@ -5,6 +5,12 @@ export type Profile = {
   full_name: string | null;
   created_at: string;
   updated_at: string;
+  is_company: boolean | null;
+  company_name: string | null;
+  phone_number: string | null;
+  address: string | null;
+  city: string | null;
+  postal_code: string | null;
 };
 
 export type Category = {
