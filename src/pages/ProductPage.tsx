@@ -92,20 +92,21 @@ const ProductPage = () => {
                   </span>
                   <span className="text-sm text-gray-500">HT</span>
                 </div>
+              ) : isNewUser ? (
+                <div className="space-y-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowAccessDialog(true)}
+                    className="w-full sm:w-auto"
+                  >
+                    Demander l'accès client
+                  </Button>
+                </div>
               ) : (
                 <div className="space-y-4">
                   <p className="text-gray-600">
                     Pour voir les prix, vous devez avoir un accès client.
                   </p>
-                  {isNewUser && (
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowAccessDialog(true)}
-                      className="w-full sm:w-auto"
-                    >
-                      Demander l'accès client
-                    </Button>
-                  )}
                 </div>
               )}
 
