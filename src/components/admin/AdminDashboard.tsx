@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Users, Layers, Package, UserPlus } from "lucide-react";
+import { Users, Layers, Package } from "lucide-react";
 import { motion } from "framer-motion";
 
 const AdminDashboard = () => {
@@ -26,13 +26,6 @@ const AdminDashboard = () => {
       link: "/admin/products",
       color: "bg-purple-500",
     },
-    {
-      title: "Suivi inscriptions",
-      description: "Consulter les dernières inscriptions",
-      icon: <UserPlus className="h-8 w-8" />,
-      link: "/admin/registrations",
-      color: "bg-orange-500",
-    },
   ];
 
   return (
@@ -51,7 +44,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {cards.map((card, index) => (
             <motion.div
               key={card.title}
