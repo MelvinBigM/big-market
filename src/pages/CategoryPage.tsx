@@ -69,7 +69,7 @@ const CategoryPage = () => {
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-white rounded-lg shadow-sm overflow-hidden h-[300px] flex flex-col relative group cursor-pointer"
+                      className="bg-white rounded-lg shadow-sm overflow-hidden h-[250px] flex flex-col relative group cursor-pointer"
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="absolute top-2 right-2 z-10">
@@ -84,8 +84,8 @@ const CategoryPage = () => {
                           />
                         </div>
                       )}
-                      <div className="p-4 flex flex-col items-center space-y-0.5">
-                        <h3 className="text-lg font-semibold line-clamp-2 text-center">{product.name}</h3>
+                      <div className="p-4 flex flex-col items-center">
+                        <h3 className="text-lg font-semibold line-clamp-2 text-center mb-2">{product.name}</h3>
                         {canSeePrice ? (
                           <div className="flex items-baseline space-x-1">
                             <span className="text-xl font-bold text-primary">
