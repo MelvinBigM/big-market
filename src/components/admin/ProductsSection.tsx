@@ -13,6 +13,7 @@ const ProductsSection = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  // Initialiser collapsedCategories avec les IDs de toutes les catégories
   const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
 
   const { products, refetchProducts, handleDelete, toggleStock, handleDragEnd } = useProducts();
@@ -29,6 +30,13 @@ const ProductsSection = () => {
       return data;
     },
   });
+
+  // Mettre à jour collapsedCategories quand les catégories sont chargées
+  React.useEffect(() => {
+    if (categories) {
+      setCollapsedCategories(categories.map(cat => cat.id));
+    }
+  }, [categories]);
 
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
