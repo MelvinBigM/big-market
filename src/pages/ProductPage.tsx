@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
 
 const ProductPage = () => {
@@ -92,19 +93,17 @@ const ProductPage = () => {
                   <span className="text-sm text-gray-500">HT</span>
                 </div>
               ) : (
-                <div className="text-sm">
-                  {isNewUser ? (
-                    <button
-                      onClick={() => setShowAccessDialog(true)}
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      Demander l'accès client
-                    </button>
-                  ) : (
-                    <p className="text-gray-500 italic">
-                      Connectez-vous en tant que client pour voir le prix
-                    </p>
-                  )}
+                <div className="space-y-4">
+                  <p className="text-gray-600">
+                    Pour voir les prix, vous devez avoir un accès client.
+                  </p>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowAccessDialog(true)}
+                    className="w-full sm:w-auto"
+                  >
+                    Demander l'accès client
+                  </Button>
                 </div>
               )}
 
