@@ -108,7 +108,7 @@ const ProductPage = () => {
 
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <MapPin className="h-4 w-4" />
-                      <span className={product.in_stock ? "text-green-600" : "text-red-600"}>
+                      <span>
                         {product.in_stock ? "Disponible en magasin" : "Non disponible en magasin"}
                       </span>
                     </div>
