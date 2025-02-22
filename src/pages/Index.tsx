@@ -13,17 +13,17 @@ const banners = [
   {
     title: "Bienvenue chez BIG IMEX",
     description: "Votre destination pour des produits alimentaires et des boissons de qualité. Découvrez notre large sélection de produits soigneusement sélectionnés.",
-    bgColor: "bg-white"
+    bgColor: "bg-gray-50"
   },
   {
     title: "Découvrez nos Produits",
     description: "Une sélection premium de produits soigneusement choisis pour vous. Nous nous engageons à vous offrir uniquement le meilleur.",
-    bgColor: "bg-white"
+    bgColor: "bg-gray-50"
   },
   {
     title: "Qualité Garantie",
     description: "Nous nous engageons à vous offrir les meilleurs produits du marché. La qualité est au cœur de nos préoccupations.",
-    bgColor: "bg-white"
+    bgColor: "bg-gray-50"
   }
 ];
 
@@ -72,7 +72,7 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="text-center"
+              className={`text-center p-12 rounded-xl shadow-sm ${banners[currentBanner].bgColor} border border-gray-100`}
             >
               <motion.h1 
                 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6"
