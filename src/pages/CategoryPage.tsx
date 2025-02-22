@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import NavBar from "@/components/NavBar";
@@ -34,8 +34,8 @@ const CategoryPage = () => {
         .from("products")
         .select("*")
         .eq("category_id", categoryId)
-        .order("position", { ascending: true })  // D'abord on trie par position
-        .order("name");                         // Puis par nom si la position est égale
+        .order("position", { ascending: true })
+        .order("name");
 
       if (error) throw error;
       return data as Product[];
@@ -65,40 +65,42 @@ const CategoryPage = () => {
               <TooltipProvider key={product.id}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-white rounded-lg shadow-sm overflow-hidden h-[300px] flex flex-col relative group cursor-pointer"
-                    >
-                      <div className="absolute top-2 right-2 z-10">
-                        <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
-                      </div>
-                      {product.image_url && (
-                        <div className="h-40 overflow-hidden flex items-center justify-center bg-gray-50">
-                          <img
-                            src={product.image_url}
-                            alt={product.name}
-                            className="w-full h-auto object-contain max-h-40"
-                          />
+                    <Link to={`/product/${product.id}`}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-white rounded-lg shadow-sm overflow-hidden h-[300px] flex flex-col relative group cursor-pointer hover:shadow-md transition-shadow"
+                      >
+                        <div className="absolute top-2 right-2 z-10">
+                          <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
                         </div>
-                      )}
-                      <div className="p-4 flex flex-col flex-grow text-center">
-                        <h3 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                        <div className="mt-auto">
-                          {canSeePrice ? (
-                            <div className="flex items-center justify-center">
-                              <span className="text-xl font-bold text-primary">
-                                {product.price.toFixed(2)} €
-                              </span>
-                            </div>
-                          ) : (
-                            <p className="text-sm text-gray-500 italic">
-                              Connectez-vous en tant que client pour voir le prix
-                            </p>
-                          )}
+                        {product.image_url && (
+                          <div className="h-40 overflow-hidden flex items-center justify-center bg-gray-50">
+                            <img
+                              src={product.image_url}
+                              alt={product.name}
+                              className="w-full h-auto object-contain max-h-40"
+                            />
+                          </div>
+                        )}
+                        <div className="p-4 flex flex-col flex-grow text-center">
+                          <h3 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                          <div className="mt-auto">
+                            {canSeePrice ? (
+                              <div className="flex items-center justify-center">
+                                <span className="text-xl font-bold text-primary">
+                                  {product.price.toFixed(2)} € HT
+                                </span>
+                              </div>
+                            ) : (
+                              <p className="text-sm text-gray-500 italic">
+                                Connectez-vous en tant que client pour voir le prix
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </motion.div>
+                      </motion.div>
+                    </Link>
                   </TooltipTrigger>
                   <TooltipContent side="top" className="p-4 max-w-xs">
                     <div className="space-y-2">
