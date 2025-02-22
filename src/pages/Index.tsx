@@ -1,3 +1,4 @@
+
 import { motion } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -75,11 +76,11 @@ const Index = () => {
                     New
                   </span>
                 </div>
-                <div className="aspect-w-16 aspect-h-9">
+                <div className="w-full h-40">
                   <img
                     src={product.image_url || "https://images.unsplash.com/photo-1618160472975-cfea543a1077?auto=format&fit=crop&q=80&w=800"}
                     alt={product.name}
-                    className="object-cover w-full h-32"
+                    className="w-full h-full object-contain p-2"
                   />
                 </div>
                 <div className="p-3">
