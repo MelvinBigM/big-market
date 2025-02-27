@@ -113,23 +113,30 @@ const CategoryPage = () => {
                         )}
                       </div>
                       <div className="p-4 flex flex-col justify-between flex-grow bg-white">
-                        <h3 className="text-base font-semibold line-clamp-2 text-center mb-2 min-h-[40px]">{product.name}</h3>
-                        {canSeePrice ? (
-                          <div className="flex items-baseline space-x-1 justify-center">
-                            <span className="text-xl font-bold text-primary">
-                              {product.price.toFixed(2)} €
-                            </span>
-                            <span className="text-xs text-gray-500">HT</span>
-                          </div>
-                        ) : (
-                          <p className="text-sm text-gray-700 text-center">
-                            {isNewUser ? (
-                              "Prix affichés uniquement aux clients validés"
-                            ) : (
-                              "Vous devez avoir un accès client pour voir les prix"
-                            )}
-                          </p>
-                        )}
+                        <div className="flex-grow flex flex-col">
+                          <h3 className="text-base font-semibold line-clamp-2 text-center mb-auto">
+                            {product.name}
+                          </h3>
+                        </div>
+                        
+                        <div className="mt-auto">
+                          {canSeePrice ? (
+                            <div className="flex items-baseline space-x-1 justify-center">
+                              <span className="text-xl font-bold text-primary">
+                                {product.price.toFixed(2)} €
+                              </span>
+                              <span className="text-xs text-gray-500">HT</span>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-700 text-center">
+                              {isNewUser ? (
+                                "Prix visibles uniquement pour les clients validés"
+                              ) : (
+                                "Connexion client requise pour afficher les prix"
+                              )}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </motion.div>
                   </TooltipTrigger>
