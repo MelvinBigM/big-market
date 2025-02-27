@@ -11,12 +11,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
 
 const CategoryPage = () => {
   const { categoryId } = useParams();
   const { session, profile } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showAccessDialog, setShowAccessDialog] = useState(false);
 
   const { data: category } = useQuery({
     queryKey: ["category", categoryId],
@@ -54,6 +56,10 @@ const CategoryPage = () => {
 
   const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
   const isNewUser = profile?.role === 'nouveau';
+
+  const handleAccessRequest = () => {
+    setShowAccessDialog(true);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -116,10 +122,20 @@ const CategoryPage = () => {
                             <span className="text-xs text-gray-500">HT</span>
                           </div>
                         ) : (
-                          <p className="text-sm text-gray-500 italic text-center">
-                            {isNewUser 
-                              ? "Veuillez vous rapprocher d'un commercial"
-                              : "Connectez-vous en tant que client pour voir le prix"}
+                          <p className="text-sm text-gray-700 text-center">
+                            {isNewUser ? (
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAccessRequest();
+                                }}
+                                className="text-blue-600 hover:text-blue-800 underline font-medium"
+                              >
+                                Pour voir les prix : demander l'accès client
+                              </button>
+                            ) : (
+                              "Vous devez avoir un accès client pour voir les prix"
+                            )}
                           </p>
                         )}
                       </div>
@@ -153,6 +169,10 @@ const CategoryPage = () => {
         </div>
       </main>
       <Footer />
+      <RequestClientAccessDialog 
+        open={showAccessDialog} 
+        onOpenChange={setShowAccessDialog}
+      />
     </div>
   );
 };
