@@ -94,14 +94,16 @@ const ProductPage = () => {
               ) : (
                 <div className="text-sm">
                   {isNewUser ? (
-                    <button
-                      onClick={() => setShowAccessDialog(true)}
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      Demander l'accès client
-                    </button>
+                    <p className="text-gray-700 mb-2">
+                      Pour voir les prix : <button
+                        onClick={() => setShowAccessDialog(true)}
+                        className="text-blue-600 hover:text-blue-800 underline font-medium"
+                      >
+                        demander l'accès client
+                      </button>
+                    </p>
                   ) : (
-                    <p className="text-gray-500 italic">
+                    <p className="text-gray-700 italic">
                       Connectez-vous en tant que client pour voir le prix
                     </p>
                   )}
