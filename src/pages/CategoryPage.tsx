@@ -124,15 +124,7 @@ const CategoryPage = () => {
                         ) : (
                           <p className="text-sm text-gray-700 text-center">
                             {isNewUser ? (
-                              <button 
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleAccessRequest();
-                                }}
-                                className="text-blue-600 hover:text-blue-800 underline font-medium"
-                              >
-                                Pour voir les prix : demander l'accès client
-                              </button>
+                              "Prix affichés uniquement aux clients validés"
                             ) : (
                               "Vous devez avoir un accès client pour voir les prix"
                             )}
