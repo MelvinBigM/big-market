@@ -53,13 +53,19 @@ const ProfilePage = () => {
     queryFn: async () => {
       if (!profile?.id) throw new Error("Utilisateur non connecté");
       
+      console.log("Récupération du profil pour l'ID:", profile.id);
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", profile.id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur lors de la récupération du profil:", error);
+        throw error;
+      }
+      
+      console.log("Données du profil récupérées:", data);
       return data as UserProfileData;
     },
     enabled: !!profile?.id,
@@ -68,6 +74,7 @@ const ProfilePage = () => {
   // Utiliser useEffect pour mettre à jour le formulaire quand userData change
   useEffect(() => {
     if (userData) {
+      console.log("Mise à jour du formulaire avec les données:", userData);
       setFormData({
         full_name: userData.full_name || "",
         is_company: userData.is_company || false,
@@ -82,17 +89,28 @@ const ProfilePage = () => {
   // Mutation pour mettre à jour le profil
   const updateProfileMutation = useMutation({
     mutationFn: async (updatedProfile: any) => {
-      console.log("Envoi des données:", updatedProfile);
+      console.log("Envoi des données de mise à jour:", updatedProfile);
       
-      const { error } = await supabase
+      if (!profile?.id) {
+        throw new Error("ID utilisateur non disponible");
+      }
+      
+      const { data, error } = await supabase
         .from("profiles")
         .update(updatedProfile)
-        .eq("id", profile?.id);
+        .eq("id", profile.id)
+        .select();
 
-      if (error) throw error;
-      return true;
+      if (error) {
+        console.error("Erreur de mise à jour:", error);
+        throw error;
+      }
+      
+      console.log("Réponse de mise à jour:", data);
+      return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Mise à jour réussie:", data);
       queryClient.invalidateQueries({ queryKey: ["userProfile", profile?.id] });
       toast.success("Profil mis à jour avec succès");
       setIsEditing(false);
@@ -114,6 +132,7 @@ const ProfilePage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Soumission du formulaire avec les données:", formData);
     updateProfileMutation.mutate(formData);
   };
 
