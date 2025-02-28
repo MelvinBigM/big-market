@@ -77,17 +77,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) {
         console.error("Erreur lors du chargement du profil:", error);
-        // Ne pas lancer d'erreur ici, permettre à l'utilisateur de continuer
+        // Continuer même en cas d'erreur
       }
 
       if (data) {
         console.log("Profil récupéré:", data);
         setProfile(data as Profile);
+      } else {
+        console.warn("Aucun profil trouvé pour l'utilisateur:", userId);
       }
     } catch (error: any) {
       console.error("Erreur lors du chargement du profil:", error.message);
     } finally {
-      // Toujours mettre fin au chargement, même en cas d'erreur
+      // Toujours terminer le chargement, même en cas d'erreur
       setIsLoading(false);
     }
   };

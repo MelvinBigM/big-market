@@ -15,7 +15,7 @@ const NavBar = () => {
   const { session, profile } = useAuth();
   const navigate = useNavigate();
 
-  const { data: categories } = useQuery({
+  const { data: categories, isLoading: loadingCategories } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -23,10 +23,14 @@ const NavBar = () => {
         .select("*")
         .order("position");
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur lors de la récupération des catégories:", error);
+        throw error;
+      }
       return data as Category[];
     },
-    staleTime: 0, // Force le rafraîchissement des données
+    staleTime: 60000, // Cache pour 1 minute
+    retry: 2, // Retry 2 fois en cas d'échec
   });
 
   const handleLogout = async () => {
@@ -37,6 +41,7 @@ const NavBar = () => {
       navigate("/");
     } catch (error: any) {
       toast.error("Erreur lors de la déconnexion");
+      console.error("Erreur de déconnexion:", error);
     }
   };
 
@@ -59,15 +64,21 @@ const NavBar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {categories?.map((category) => (
-              <Link
-                key={category.id}
-                to={`/category/${category.id}`}
-                className="text-gray-600 hover:text-primary transition-colors"
-              >
-                {category.name}
-              </Link>
-            ))}
+            {loadingCategories ? (
+              <div className="text-gray-400">Chargement...</div>
+            ) : categories && categories.length > 0 ? (
+              categories.map((category) => (
+                <Link
+                  key={category.id}
+                  to={`/category/${category.id}`}
+                  className="text-gray-600 hover:text-primary transition-colors"
+                >
+                  {category.name}
+                </Link>
+              ))
+            ) : (
+              <div className="text-gray-400">Aucune catégorie disponible</div>
+            )}
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
@@ -145,16 +156,22 @@ const NavBar = () => {
       {isOpen && (
         <div className="md:hidden animate-fadeIn">
           <div className="px-2 pt-2 pb-3 space-y-1 bg-white">
-            {categories?.map((category) => (
-              <Link
-                key={category.id}
-                to={`/category/${category.id}`}
-                className="block px-3 py-2 text-gray-600 hover:text-primary transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
-                {category.name}
-              </Link>
-            ))}
+            {loadingCategories ? (
+              <div className="px-3 py-2 text-gray-400">Chargement...</div>
+            ) : categories && categories.length > 0 ? (
+              categories.map((category) => (
+                <Link
+                  key={category.id}
+                  to={`/category/${category.id}`}
+                  className="block px-3 py-2 text-gray-600 hover:text-primary transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  {category.name}
+                </Link>
+              ))
+            ) : (
+              <div className="px-3 py-2 text-gray-400">Aucune catégorie disponible</div>
+            )}
             <div className="mt-4 flex flex-col space-y-2 px-3">
               {session ? (
                 <>

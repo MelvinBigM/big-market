@@ -31,7 +31,7 @@ type UserProfileData = {
 };
 
 const ProfilePage = () => {
-  const { session, profile, isLoading } = useAuth();
+  const { session, profile, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -46,12 +46,28 @@ const ProfilePage = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
+
+  // Mettre en place un timeout pour éviter un chargement infini
+  useEffect(() => {
+    if (authLoading) {
+      const timer = setTimeout(() => {
+        setLoadingTimeout(true);
+      }, 5000); // 5 secondes timeout
+      
+      return () => clearTimeout(timer);
+    } else {
+      setLoadingTimeout(false);
+    }
+  }, [authLoading]);
 
   // Récupérer les détails de l'utilisateur connecté
-  const { data: userData, isLoading: profileLoading } = useQuery({
+  const { data: userData, isLoading: profileLoading, error: profileError } = useQuery({
     queryKey: ["userProfile", profile?.id],
     queryFn: async () => {
-      if (!profile?.id) throw new Error("Utilisateur non connecté");
+      if (!profile?.id) {
+        throw new Error("Utilisateur non connecté");
+      }
       
       console.log("Récupération du profil pour l'ID:", profile.id);
       const { data, error } = await supabase
@@ -68,7 +84,9 @@ const ProfilePage = () => {
       console.log("Données du profil récupérées:", data);
       return data as UserProfileData;
     },
-    enabled: !!profile?.id, // N'exécute la requête que si nous avons un profil
+    enabled: !!profile?.id && !!session, // N'exécute la requête que si nous avons un profil et une session
+    retry: 1,
+    staleTime: 60000, // 1 minute
   });
 
   // Utiliser useEffect pour mettre à jour le formulaire quand userData change
@@ -138,14 +156,53 @@ const ProfilePage = () => {
 
   // Ne rediriger que si le chargement est terminé ET qu'il n'y a pas de session
   useEffect(() => {
-    if (!isLoading && !session) {
+    // On ne redirige que si authLoading est false (chargement terminé) et session est null
+    if (!authLoading && !session) {
       console.log("Redirection vers login: chargement terminé et pas de session");
       navigate("/login");
     }
-  }, [isLoading, session, navigate]);
+  }, [authLoading, session, navigate]);
   
+  // Afficher un écran d'erreur si le chargement prend trop de temps
+  if (loadingTimeout) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <NavBar />
+        <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <Card className="shadow-md">
+              <CardHeader>
+                <CardTitle className="text-red-600">Problème de chargement</CardTitle>
+                <CardDescription>
+                  Le chargement de votre profil prend plus de temps que prévu.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4">Vous pouvez essayer les solutions suivantes :</p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>Actualiser la page</li>
+                  <li>Vous déconnecter et vous reconnecter</li>
+                  <li>Vérifier votre connexion Internet</li>
+                </ul>
+              </CardContent>
+              <CardFooter className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => navigate("/")}>
+                  Retour à l'accueil
+                </Button>
+                <Button onClick={() => window.location.reload()}>
+                  Réessayer
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   // Afficher un écran de chargement pendant que l'état d'authentification est vérifié
-  if (isLoading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <NavBar />
@@ -181,9 +238,13 @@ const ProfilePage = () => {
             </CardHeader>
 
             <CardContent>
-              {profileLoading || !userData ? (
+              {profileLoading ? (
                 <div className="text-center py-4">
                   <p>Chargement du profil...</p>
+                </div>
+              ) : profileError ? (
+                <div className="text-center py-4 text-red-500">
+                  <p>Erreur lors du chargement du profil. Veuillez réessayer.</p>
                 </div>
               ) : isEditing ? (
                 <form id="profile-form" onSubmit={handleSubmit}>
