@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 import type { AccessRequest } from "@/lib/types";
 
 interface RequestClientAccessDialogProps {
@@ -18,6 +19,28 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
   const [reason, setReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { profile } = useAuth();
+
+  // Vérifier si l'utilisateur a déjà une demande en attente
+  const { data: existingRequest, isLoading: checkingRequest } = useQuery({
+    queryKey: ["user-access-request", profile?.id],
+    queryFn: async () => {
+      if (!profile?.id) return null;
+      
+      const { data, error } = await supabase
+        .from("access_requests")
+        .select("*")
+        .eq("user_id", profile.id)
+        .eq("status", "pending")
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = Not found
+        throw error;
+      }
+      
+      return data as AccessRequest | null;
+    },
+    enabled: !!profile?.id && open,
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,43 +69,69 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
     }
   };
 
+  // Réinitialiser le formulaire quand le dialog s'ouvre
+  useEffect(() => {
+    if (open) {
+      setReason("");
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Demande d'accès client</DialogTitle>
           <DialogDescription>
-            Expliquez-nous pourquoi vous souhaitez obtenir un accès client à notre catalogue
+            {existingRequest 
+              ? "Votre demande d'accès est en cours d'examen par notre équipe" 
+              : "Expliquez-nous pourquoi vous souhaitez obtenir un accès client à notre catalogue"}
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="reason">Motif de la demande</Label>
-            <Textarea
-              id="reason"
-              placeholder="Expliquez votre activité et vos besoins..."
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              required
-              className="min-h-[100px]"
-            />
+        
+        {checkingRequest ? (
+          <div className="flex justify-center py-4">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
           </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Annuler
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-            >
-              {isLoading ? "Envoi..." : "Envoyer la demande"}
-            </Button>
+        ) : existingRequest ? (
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-center text-muted-foreground">
+              Votre demande a été soumise le {new Date(existingRequest.created_at).toLocaleDateString('fr-FR')}. 
+              Nous l'examinerons dans les plus brefs délais.
+            </p>
+            <div className="flex justify-center">
+              <Button onClick={() => onOpenChange(false)}>Fermer</Button>
+            </div>
           </div>
-        </form>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="reason">Motif de la demande</Label>
+              <Textarea
+                id="reason"
+                placeholder="Expliquez votre activité et vos besoins..."
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                required
+                className="min-h-[100px]"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
+                Annuler
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading ? "Envoi..." : "Envoyer la demande"}
+              </Button>
+            </div>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
