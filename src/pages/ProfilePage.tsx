@@ -142,13 +142,6 @@ const ProfilePage = () => {
       <NavBar />
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Mon profil</h1>
-            <p className="text-gray-600 mt-2">
-              Consultez et modifiez vos informations personnelles
-            </p>
-          </div>
-
           <Card className="shadow-md">
             <CardHeader>
               <CardTitle>Informations personnelles</CardTitle>
