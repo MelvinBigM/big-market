@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/lib/auth";
+import { useAuth, isAuthenticated } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Définition du type complet pour les données du profil utilisateur
 type UserProfileData = {
@@ -34,6 +35,7 @@ const ProfilePage = () => {
   const { session, profile, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isUserAuthenticated = isAuthenticated({ isLoading: authLoading, session, profile });
 
   // État initial du formulaire
   const [formData, setFormData] = useState({
@@ -46,23 +48,9 @@ const ProfilePage = () => {
   });
 
   const [isEditing, setIsEditing] = useState(false);
-  const [loadingTimeout, setLoadingTimeout] = useState(false);
 
-  // Mettre en place un timeout pour éviter un chargement infini
-  useEffect(() => {
-    if (authLoading) {
-      const timer = setTimeout(() => {
-        setLoadingTimeout(true);
-      }, 5000); // 5 secondes timeout
-      
-      return () => clearTimeout(timer);
-    } else {
-      setLoadingTimeout(false);
-    }
-  }, [authLoading]);
-
-  // Récupérer les détails de l'utilisateur connecté
-  const { data: userData, isLoading: profileLoading, error: profileError } = useQuery({
+  // Récupérer les détails de l'utilisateur connecté uniquement si authentifié
+  const { data: userData, isLoading: profileLoading } = useQuery({
     queryKey: ["userProfile", profile?.id],
     queryFn: async () => {
       if (!profile?.id) {
@@ -84,9 +72,9 @@ const ProfilePage = () => {
       console.log("Données du profil récupérées:", data);
       return data as UserProfileData;
     },
-    enabled: !!profile?.id && !!session, // N'exécute la requête que si nous avons un profil et une session
+    enabled: !!profile?.id, // Ne pas exécuter la requête si le profil n'est pas disponible
     retry: 1,
-    staleTime: 60000, // 1 minute
+    staleTime: 30000, // 30 secondes
   });
 
   // Utiliser useEffect pour mettre à jour le formulaire quand userData change
@@ -154,54 +142,15 @@ const ProfilePage = () => {
     updateProfileMutation.mutate(formData);
   };
 
-  // Ne rediriger que si le chargement est terminé ET qu'il n'y a pas de session
+  // Redirection si non connecté après le chargement
   useEffect(() => {
-    // On ne redirige que si authLoading est false (chargement terminé) et session est null
     if (!authLoading && !session) {
-      console.log("Redirection vers login: chargement terminé et pas de session");
+      console.log("Redirection vers la page de connexion - aucune session");
       navigate("/login");
     }
   }, [authLoading, session, navigate]);
-  
-  // Afficher un écran d'erreur si le chargement prend trop de temps
-  if (loadingTimeout) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <NavBar />
-        <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
-            <Card className="shadow-md">
-              <CardHeader>
-                <CardTitle className="text-red-600">Problème de chargement</CardTitle>
-                <CardDescription>
-                  Le chargement de votre profil prend plus de temps que prévu.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="mb-4">Vous pouvez essayer les solutions suivantes :</p>
-                <ul className="list-disc pl-5 space-y-2">
-                  <li>Actualiser la page</li>
-                  <li>Vous déconnecter et vous reconnecter</li>
-                  <li>Vérifier votre connexion Internet</li>
-                </ul>
-              </CardContent>
-              <CardFooter className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => navigate("/")}>
-                  Retour à l'accueil
-                </Button>
-                <Button onClick={() => window.location.reload()}>
-                  Réessayer
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
 
-  // Afficher un écran de chargement pendant que l'état d'authentification est vérifié
+  // Si en cours de chargement, afficher un indicateur de chargement
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -209,7 +158,7 @@ const ProfilePage = () => {
         <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <div className="text-center">
-              <p>Chargement des informations...</p>
+              <p>Vérification de l'authentification...</p>
             </div>
           </div>
         </main>
@@ -218,7 +167,7 @@ const ProfilePage = () => {
     );
   }
 
-  // Si le chargement est terminé mais qu'il n'y a pas de session, ne rien afficher
+  // Si non connecté (après vérification), ne rien rendre
   // La redirection sera gérée par l'effet ci-dessus
   if (!session) {
     return null;
@@ -239,12 +188,35 @@ const ProfilePage = () => {
 
             <CardContent>
               {profileLoading ? (
-                <div className="text-center py-4">
-                  <p>Chargement du profil...</p>
-                </div>
-              ) : profileError ? (
-                <div className="text-center py-4 text-red-500">
-                  <p>Erreur lors du chargement du profil. Veuillez réessayer.</p>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <Skeleton className="h-4 w-24 mb-2" />
+                      <Skeleton className="h-6 w-48" />
+                    </div>
+                    <div>
+                      <Skeleton className="h-4 w-24 mb-2" />
+                      <Skeleton className="h-6 w-32" />
+                    </div>
+                  </div>
+                  <Separator />
+                  <div>
+                    <Skeleton className="h-5 w-32 mb-4" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <Skeleton className="h-4 w-24 mb-2" />
+                        <Skeleton className="h-6 w-full" />
+                      </div>
+                      <div>
+                        <Skeleton className="h-4 w-24 mb-2" />
+                        <Skeleton className="h-6 w-32" />
+                      </div>
+                      <div>
+                        <Skeleton className="h-4 w-24 mb-2" />
+                        <Skeleton className="h-6 w-24" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : isEditing ? (
                 <form id="profile-form" onSubmit={handleSubmit}>
