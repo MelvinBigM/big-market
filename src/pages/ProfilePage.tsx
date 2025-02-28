@@ -24,7 +24,6 @@ type UserProfileData = {
   created_at: string;
   updated_at: string;
   is_company: boolean | null;
-  company_name: string | null;
   phone_number: string | null;
   address: string | null;
   city: string | null;
@@ -40,7 +39,6 @@ const ProfilePage = () => {
   const [formData, setFormData] = useState({
     full_name: "",
     is_company: false,
-    company_name: "",
     phone_number: "",
     address: "",
     city: "",
@@ -73,7 +71,6 @@ const ProfilePage = () => {
       setFormData({
         full_name: userData.full_name || "",
         is_company: userData.is_company || false,
-        company_name: userData.company_name || "",
         phone_number: userData.phone_number || "",
         address: userData.address || "",
         city: userData.city || "",
@@ -117,16 +114,7 @@ const ProfilePage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Préparation des données pour l'envoi
-    const dataToSubmit = { ...formData };
-    
-    // Si ce n'est pas une entreprise, on vide le champ company_name
-    if (!dataToSubmit.is_company) {
-      dataToSubmit.company_name = null;
-    }
-    
-    updateProfileMutation.mutate(dataToSubmit);
+    updateProfileMutation.mutate(formData);
   };
 
   // Redirection si non connecté
