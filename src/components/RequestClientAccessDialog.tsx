@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AccessRequest } from "@/lib/types";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
 interface RequestClientAccessDialogProps {
   open: boolean;
@@ -19,6 +21,7 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
   const [reason, setReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { profile } = useAuth();
+  const queryClient = useQueryClient();
 
   // Vérifier si l'utilisateur a déjà une demande en attente
   const { data: existingRequest, isLoading: checkingRequest } = useQuery({
@@ -31,7 +34,7 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
         .select("*")
         .eq("user_id", profile.id)
         .eq("status", "pending")
-        .single();
+        .maybeSingle();
 
       if (error && error.code !== 'PGRST116') { // PGRST116 = Not found
         throw error;
@@ -54,14 +57,17 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
           user_id: profile.id,
           reason,
           status: "pending"
-        } as unknown as AccessRequest);
+        });
 
       if (error) throw error;
 
       toast.success("Votre demande d'accès a été envoyée avec succès");
+      // Invalider la requête pour forcer le rechargement des données
+      queryClient.invalidateQueries({ queryKey: ["user-access-request", profile.id] });
+      queryClient.invalidateQueries({ queryKey: ["has-access-request", profile.id] });
       onOpenChange(false);
       setReason("");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erreur lors de l'envoi de la demande:", error);
       toast.error("Une erreur est survenue lors de l'envoi de votre demande");
     } finally {
@@ -75,6 +81,10 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
       setReason("");
     }
   }, [open]);
+
+  const formatDate = (dateString: string) => {
+    return format(new Date(dateString), "d MMMM yyyy", { locale: fr });
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -95,7 +105,7 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
         ) : existingRequest ? (
           <div className="space-y-4 py-2">
             <p className="text-sm text-center text-muted-foreground">
-              Votre demande a été soumise le {new Date(existingRequest.created_at).toLocaleDateString('fr-FR')}. 
+              Votre demande a été soumise le {formatDate(existingRequest.created_at)}. 
               Nous l'examinerons dans les plus brefs délais.
             </p>
             <div className="flex justify-center">
