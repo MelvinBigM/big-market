@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/lib/auth";
+import { useAuth, isAuthenticated } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Définition du type complet pour les données du profil utilisateur
 type UserProfileData = {
@@ -31,9 +32,10 @@ type UserProfileData = {
 };
 
 const ProfilePage = () => {
-  const { session, profile } = useAuth();
+  const { session, profile, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isUserAuthenticated = isAuthenticated({ isLoading: authLoading, session, profile });
 
   // État initial du formulaire
   const [formData, setFormData] = useState({
@@ -47,11 +49,13 @@ const ProfilePage = () => {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  // Récupérer les détails de l'utilisateur connecté
-  const { data: userData, isLoading } = useQuery({
+  // Récupérer les détails de l'utilisateur connecté uniquement si authentifié
+  const { data: userData, isLoading: profileLoading } = useQuery({
     queryKey: ["userProfile", profile?.id],
     queryFn: async () => {
-      if (!profile?.id) throw new Error("Utilisateur non connecté");
+      if (!profile?.id) {
+        throw new Error("Utilisateur non connecté");
+      }
       
       console.log("Récupération du profil pour l'ID:", profile.id);
       const { data, error } = await supabase
@@ -68,7 +72,9 @@ const ProfilePage = () => {
       console.log("Données du profil récupérées:", data);
       return data as UserProfileData;
     },
-    enabled: !!profile?.id,
+    enabled: !!profile?.id, // Ne pas exécuter la requête si le profil n'est pas disponible
+    retry: 1,
+    staleTime: 30000, // 30 secondes
   });
 
   // Utiliser useEffect pour mettre à jour le formulaire quand userData change
@@ -136,31 +142,35 @@ const ProfilePage = () => {
     updateProfileMutation.mutate(formData);
   };
 
-  // Redirection si non connecté
+  // Redirection si non connecté après le chargement
   useEffect(() => {
-    if (!session) {
+    if (!authLoading && !session) {
+      console.log("Redirection vers la page de connexion - aucune session");
       navigate("/login");
     }
-  }, [session, navigate]);
+  }, [authLoading, session, navigate]);
 
-  if (!session) {
-    return null;
-  }
-
-  if (isLoading) {
+  // Si en cours de chargement, afficher un indicateur de chargement
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <NavBar />
         <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
             <div className="text-center">
-              <p>Chargement des informations...</p>
+              <p>Vérification de l'authentification...</p>
             </div>
           </div>
         </main>
         <Footer />
       </div>
     );
+  }
+
+  // Si non connecté (après vérification), ne rien rendre
+  // La redirection sera gérée par l'effet ci-dessus
+  if (!session) {
+    return null;
   }
 
   return (
@@ -177,7 +187,38 @@ const ProfilePage = () => {
             </CardHeader>
 
             <CardContent>
-              {isEditing ? (
+              {profileLoading ? (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <Skeleton className="h-4 w-24 mb-2" />
+                      <Skeleton className="h-6 w-48" />
+                    </div>
+                    <div>
+                      <Skeleton className="h-4 w-24 mb-2" />
+                      <Skeleton className="h-6 w-32" />
+                    </div>
+                  </div>
+                  <Separator />
+                  <div>
+                    <Skeleton className="h-5 w-32 mb-4" />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="md:col-span-2">
+                        <Skeleton className="h-4 w-24 mb-2" />
+                        <Skeleton className="h-6 w-full" />
+                      </div>
+                      <div>
+                        <Skeleton className="h-4 w-24 mb-2" />
+                        <Skeleton className="h-6 w-32" />
+                      </div>
+                      <div>
+                        <Skeleton className="h-4 w-24 mb-2" />
+                        <Skeleton className="h-6 w-24" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : isEditing ? (
                 <form id="profile-form" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2 md:col-span-2">
