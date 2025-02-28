@@ -36,14 +36,15 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // État initial du formulaire
   const [formData, setFormData] = useState({
-    full_name: profile?.full_name || "",
-    is_company: profile?.is_company || false,
+    full_name: "",
+    is_company: false,
     company_name: "",
-    phone_number: profile?.phone_number || "",
-    address: profile?.address || "",
-    city: profile?.city || "",
-    postal_code: profile?.postal_code || "",
+    phone_number: "",
+    address: "",
+    city: "",
+    postal_code: "",
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -84,6 +85,8 @@ const ProfilePage = () => {
   // Mutation pour mettre à jour le profil
   const updateProfileMutation = useMutation({
     mutationFn: async (updatedProfile: any) => {
+      console.log("Envoi des données:", updatedProfile);
+      
       const { error } = await supabase
         .from("profiles")
         .update(updatedProfile)
@@ -98,6 +101,7 @@ const ProfilePage = () => {
       setIsEditing(false);
     },
     onError: (error: any) => {
+      console.error("Erreur de mise à jour:", error);
       toast.error(`Erreur lors de la mise à jour du profil: ${error.message}`);
     },
   });
@@ -113,11 +117,26 @@ const ProfilePage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    updateProfileMutation.mutate(formData);
+    
+    // Préparation des données pour l'envoi
+    const dataToSubmit = { ...formData };
+    
+    // Si ce n'est pas une entreprise, on vide le champ company_name
+    if (!dataToSubmit.is_company) {
+      dataToSubmit.company_name = null;
+    }
+    
+    updateProfileMutation.mutate(dataToSubmit);
   };
 
+  // Redirection si non connecté
+  useEffect(() => {
+    if (!session) {
+      navigate("/login");
+    }
+  }, [session, navigate]);
+
   if (!session) {
-    navigate("/login");
     return null;
   }
 
@@ -154,8 +173,21 @@ const ProfilePage = () => {
               {isEditing ? (
                 <form id="profile-form" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="full_name">Nom complet</Label>
+                    <div className="space-y-2 md:col-span-2">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="is_company" 
+                          checked={formData.is_company} 
+                          onCheckedChange={handleCheckboxChange}
+                        />
+                        <Label htmlFor="is_company">Entreprise</Label>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="full_name">
+                        {formData.is_company ? "Nom de l'entreprise" : "Nom complet"}
+                      </Label>
                       <Input
                         id="full_name"
                         name="full_name"
@@ -173,29 +205,6 @@ const ProfilePage = () => {
                         onChange={handleInputChange}
                       />
                     </div>
-
-                    <div className="space-y-2 md:col-span-2">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="is_company" 
-                          checked={formData.is_company} 
-                          onCheckedChange={handleCheckboxChange}
-                        />
-                        <Label htmlFor="is_company">Entreprise</Label>
-                      </div>
-                    </div>
-
-                    {formData.is_company && (
-                      <div className="space-y-2 md:col-span-2">
-                        <Label htmlFor="company_name">Nom de l'entreprise</Label>
-                        <Input
-                          id="company_name"
-                          name="company_name"
-                          value={formData.company_name}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    )}
                   </div>
 
                   <Separator className="my-6" />
@@ -238,8 +247,10 @@ const ProfilePage = () => {
               ) : (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">Nom complet</p>
+                    <div className="md:col-span-2">
+                      <p className="text-sm font-medium text-gray-500">
+                        {userData?.is_company ? "Nom de l'entreprise" : "Nom complet"}
+                      </p>
                       <p className="mt-1">{userData?.full_name || "-"}</p>
                     </div>
 
@@ -247,13 +258,6 @@ const ProfilePage = () => {
                       <p className="text-sm font-medium text-gray-500">Téléphone</p>
                       <p className="mt-1">{userData?.phone_number || "-"}</p>
                     </div>
-
-                    {userData?.is_company && userData?.company_name && (
-                      <div className="md:col-span-2">
-                        <p className="text-sm font-medium text-gray-500">Entreprise</p>
-                        <p className="mt-1">{userData.company_name}</p>
-                      </div>
-                    )}
                   </div>
 
                   <Separator />
