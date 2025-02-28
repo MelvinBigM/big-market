@@ -81,6 +81,7 @@ const NavBar = () => {
                 ) : (
                   <Link to="/profile">
                     <Button variant="ghost" size="sm">
+                      <User className="mr-2 h-4 w-4" />
                       Mon profil
                     </Button>
                   </Link>
