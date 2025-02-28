@@ -1,13 +1,14 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuIcon, User, X } from "lucide-react";
+import { MenuIcon, User, Settings, LogOut, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "@/lib/types";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,25 +72,51 @@ const NavBar = () => {
 
           <div className="hidden md:flex items-center space-x-4">
             {session ? (
-              <>
-                {profile?.role === 'admin' ? (
-                  <Link to="/admin">
-                    <Button variant="ghost" size="sm">
-                      Administration
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link to="/profile">
-                    <Button variant="ghost" size="sm">
-                      <User className="mr-2 h-4 w-4" />
-                      Mon profil
-                    </Button>
-                  </Link>
-                )}
-                <Button variant="default" onClick={handleLogout}>
-                  Se déconnecter
-                </Button>
-              </>
+              <TooltipProvider>
+                <div className="flex items-center space-x-3">
+                  {/* Admin or Profile button with icon */}
+                  {profile?.role === 'admin' ? (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Link to="/admin">
+                          <Button variant="ghost" size="icon">
+                            <Settings className="h-5 w-5" />
+                          </Button>
+                        </Link>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Administration</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  ) : null}
+                  
+                  {/* Profile button for everyone */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link to="/profile">
+                        <Button variant="ghost" size="icon">
+                          <User className="h-5 w-5" />
+                        </Button>
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Mon profil</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  
+                  {/* Logout button */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon" onClick={handleLogout}>
+                        <LogOut className="h-5 w-5" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Se déconnecter</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+              </TooltipProvider>
             ) : (
               <Link to="/login">
                 <Button variant="default">Se connecter</Button>
@@ -131,21 +158,20 @@ const NavBar = () => {
             <div className="mt-4 flex flex-col space-y-2 px-3">
               {session ? (
                 <>
-                  {profile?.role === 'admin' ? (
+                  {profile?.role === 'admin' && (
                     <Link to="/admin" onClick={() => setIsOpen(false)}>
                       <Button variant="outline" className="w-full justify-start">
-                        <User className="h-5 w-5 mr-2" />
+                        <Settings className="h-5 w-5 mr-2" />
                         Administration
                       </Button>
                     </Link>
-                  ) : (
-                    <Link to="/profile" onClick={() => setIsOpen(false)}>
-                      <Button variant="outline" className="w-full justify-start">
-                        <User className="h-5 w-5 mr-2" />
-                        Mon profil
-                      </Button>
-                    </Link>
                   )}
+                  <Link to="/profile" onClick={() => setIsOpen(false)}>
+                    <Button variant="outline" className="w-full justify-start">
+                      <User className="h-5 w-5 mr-2" />
+                      Mon profil
+                    </Button>
+                  </Link>
                   <Button 
                     variant="default" 
                     className="justify-start"
@@ -154,6 +180,7 @@ const NavBar = () => {
                       setIsOpen(false);
                     }}
                   >
+                    <LogOut className="h-5 w-5 mr-2" />
                     Se déconnecter
                   </Button>
                 </>
