@@ -70,17 +70,25 @@ const NavBar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            {profile?.role === 'admin' && (
-              <Link to="/admin">
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                </Button>
-              </Link>
-            )}
             {session ? (
-              <Button variant="default" onClick={handleLogout}>
-                Se déconnecter
-              </Button>
+              <>
+                {profile?.role === 'admin' ? (
+                  <Link to="/admin">
+                    <Button variant="ghost" size="sm">
+                      Administration
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link to="/profile">
+                    <Button variant="ghost" size="sm">
+                      Mon profil
+                    </Button>
+                  </Link>
+                )}
+                <Button variant="default" onClick={handleLogout}>
+                  Se déconnecter
+                </Button>
+              </>
             ) : (
               <Link to="/login">
                 <Button variant="default">Se connecter</Button>
@@ -122,24 +130,34 @@ const NavBar = () => {
             <div className="mt-4 flex flex-col space-y-2 px-3">
               {session ? (
                 <>
-                  {profile?.role === 'admin' && (
-                    <Link to="/admin">
+                  {profile?.role === 'admin' ? (
+                    <Link to="/admin" onClick={() => setIsOpen(false)}>
                       <Button variant="outline" className="w-full justify-start">
                         <User className="h-5 w-5 mr-2" />
                         Administration
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link to="/profile" onClick={() => setIsOpen(false)}>
+                      <Button variant="outline" className="w-full justify-start">
+                        <User className="h-5 w-5 mr-2" />
+                        Mon profil
                       </Button>
                     </Link>
                   )}
                   <Button 
                     variant="default" 
                     className="justify-start"
-                    onClick={handleLogout}
+                    onClick={() => {
+                      handleLogout();
+                      setIsOpen(false);
+                    }}
                   >
                     Se déconnecter
                   </Button>
                 </>
               ) : (
-                <Link to="/login">
+                <Link to="/login" onClick={() => setIsOpen(false)}>
                   <Button variant="default" className="w-full justify-start">
                     <User className="h-5 w-5 mr-2" />
                     Se connecter

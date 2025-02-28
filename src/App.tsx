@@ -7,6 +7,7 @@ import LegalPage from "@/pages/LegalPage";
 import NotFound from "@/pages/NotFound";
 import CategoryPage from "@/pages/CategoryPage";
 import ProductPage from "@/pages/ProductPage";
+import ProfilePage from "@/pages/ProfilePage";
 import LoginPage from "@/components/LoginPage";
 import RegisterPage from "@/components/RegisterPage";
 import AdminDashboard from "@/components/admin/AdminDashboard";
@@ -30,6 +31,7 @@ function App() {
           <Route path="/legal" element={<LegalPage />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/product/:productId" element={<ProductPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
