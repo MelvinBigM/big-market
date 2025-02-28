@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,6 +16,21 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
+// Définition du type complet pour les données du profil utilisateur
+type UserProfileData = {
+  id: string;
+  role: 'admin' | 'client' | 'nouveau';
+  full_name: string | null;
+  created_at: string;
+  updated_at: string;
+  is_company: boolean | null;
+  company_name: string | null;
+  phone_number: string | null;
+  address: string | null;
+  city: string | null;
+  postal_code: string | null;
+};
+
 const ProfilePage = () => {
   const { session, profile } = useAuth();
   const navigate = useNavigate();
@@ -24,7 +39,7 @@ const ProfilePage = () => {
   const [formData, setFormData] = useState({
     full_name: profile?.full_name || "",
     is_company: profile?.is_company || false,
-    company_name: profile?.company_name || "",
+    company_name: "",
     phone_number: profile?.phone_number || "",
     address: profile?.address || "",
     city: profile?.city || "",
@@ -46,21 +61,25 @@ const ProfilePage = () => {
         .single();
 
       if (error) throw error;
-      return data;
+      return data as UserProfileData;
     },
     enabled: !!profile?.id,
-    onSuccess: (data) => {
-      setFormData({
-        full_name: data.full_name || "",
-        is_company: data.is_company || false,
-        company_name: data.company_name || "",
-        phone_number: data.phone_number || "",
-        address: data.address || "",
-        city: data.city || "",
-        postal_code: data.postal_code || "",
-      });
-    },
   });
+
+  // Utiliser useEffect pour mettre à jour le formulaire quand userData change
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        full_name: userData.full_name || "",
+        is_company: userData.is_company || false,
+        company_name: userData.company_name || "",
+        phone_number: userData.phone_number || "",
+        address: userData.address || "",
+        city: userData.city || "",
+        postal_code: userData.postal_code || "",
+      });
+    }
+  }, [userData]);
 
   // Mutation pour mettre à jour le profil
   const updateProfileMutation = useMutation({
@@ -228,18 +247,18 @@ const ProfilePage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <p className="text-sm font-medium text-gray-500">Nom complet</p>
-                      <p className="mt-1">{userData.full_name || "-"}</p>
+                      <p className="mt-1">{userData?.full_name || "-"}</p>
                     </div>
 
                     <div>
                       <p className="text-sm font-medium text-gray-500">Téléphone</p>
-                      <p className="mt-1">{userData.phone_number || "-"}</p>
+                      <p className="mt-1">{userData?.phone_number || "-"}</p>
                     </div>
 
-                    {userData.is_company && (
+                    {userData?.is_company && userData?.company_name && (
                       <div className="md:col-span-2">
                         <p className="text-sm font-medium text-gray-500">Entreprise</p>
-                        <p className="mt-1">{userData.company_name || "-"}</p>
+                        <p className="mt-1">{userData.company_name}</p>
                       </div>
                     )}
                   </div>
@@ -251,15 +270,15 @@ const ProfilePage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="md:col-span-2">
                         <p className="text-sm font-medium text-gray-500">Adresse</p>
-                        <p className="mt-1">{userData.address || "-"}</p>
+                        <p className="mt-1">{userData?.address || "-"}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-500">Ville</p>
-                        <p className="mt-1">{userData.city || "-"}</p>
+                        <p className="mt-1">{userData?.city || "-"}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-500">Code postal</p>
-                        <p className="mt-1">{userData.postal_code || "-"}</p>
+                        <p className="mt-1">{userData?.postal_code || "-"}</p>
                       </div>
                     </div>
                   </div>
