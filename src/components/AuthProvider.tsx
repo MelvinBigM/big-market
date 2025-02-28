@@ -12,7 +12,61 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const navigate = useNavigate();
 
-  // Fonction pour récupérer le profil utilisateur
+  useEffect(() => {
+    console.log("AuthProvider initialisé");
+    
+    // Fonction pour récupérer la session et le profil
+    const initializeAuth = async () => {
+      setIsLoading(true);
+      
+      try {
+        // Récupérer la session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error("Erreur lors de la récupération de la session:", sessionError);
+          throw sessionError;
+        }
+        
+        console.log("Session récupérée:", session ? "Connecté" : "Non connecté");
+        setSession(session);
+        
+        // Si utilisateur connecté, récupérer son profil
+        if (session) {
+          await fetchProfile(session.user.id);
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'initialisation de l'auth:", error);
+        setIsLoading(false);
+      }
+    };
+    
+    // Initialiser l'authentification au chargement
+    initializeAuth();
+    
+    // Configurer les écouteurs d'événements d'authentification
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        console.log("Changement d'état d'authentification:", _event);
+        setSession(session);
+        
+        if (session) {
+          await fetchProfile(session.user.id);
+        } else {
+          setProfile(null);
+          setIsLoading(false);
+        }
+      }
+    );
+
+    // Nettoyer l'abonnement
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   const fetchProfile = async (userId: string) => {
     try {
       console.log("Récupération du profil pour l'utilisateur:", userId);
@@ -28,85 +82,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       if (data) {
-        console.log("Profil récupéré avec succès:", data.role);
+        console.log("Profil récupéré:", data.role);
         setProfile(data as Profile);
-      } else {
-        console.warn("Aucun profil trouvé pour l'utilisateur:", userId);
-        setProfile(null);
       }
     } catch (error: any) {
-      console.error("Erreur lors du chargement du profil:", error.message);
-      // Ne pas afficher de toast ici, car cela pourrait être gênant lors du chargement initial
+      toast.error("Erreur lors du chargement du profil");
+      console.error("Error fetching profile:", error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    console.log("🔒 Initialisation de l'authentification");
-    
-    // Configurer l'écouteur pour les changements d'état d'authentification
-    // Cela doit être fait avant getSession pour éviter les problèmes de course
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, currentSession) => {
-        console.log("🔄 Changement d'état d'authentification:", event, currentSession ? "Session présente" : "Pas de session");
-        
-        // Mettre à jour l'état de la session
-        setSession(currentSession);
-        
-        if (currentSession) {
-          // Si une session existe, récupérer le profil
-          await fetchProfile(currentSession.user.id);
-        } else {
-          // Si pas de session, réinitialiser le profil et terminer le chargement
-          setProfile(null);
-          setIsLoading(false);
-        }
-      }
-    );
-    
-    // Vérifier s'il existe déjà une session active
-    const checkExistingSession = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("❌ Erreur lors de la récupération de la session:", error);
-          setIsLoading(false);
-          return;
-        }
-        
-        console.log("📝 Vérification de session existante:", data.session ? "Session trouvée" : "Pas de session");
-        
-        if (data.session) {
-          // Ne pas appeler setSession ici pour éviter une double mise à jour
-          // L'écouteur onAuthStateChange s'en chargera
-          await fetchProfile(data.session.user.id);
-        } else {
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error("❌ Erreur lors de l'initialisation de l'auth:", error);
-        setIsLoading(false);
-      }
-    };
-    
-    // Vérifier la session existante
-    checkExistingSession();
-    
-    // Nettoyer l'écouteur lors du démontage du composant
-    return () => {
-      console.log("🧹 Nettoyage de l'écouteur d'authentification");
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
-
-  console.log("🔐 État actuel de l'authentification:", { 
-    isLoading, 
-    isAuthenticated: !!session,
-    userId: session?.user?.id,
-    role: profile?.role
-  });
+  console.log("État de l'authentification:", { isLoading, isAuthenticated: !!session });
 
   return (
     <AuthContext.Provider value={{ isLoading, session, profile }}>
