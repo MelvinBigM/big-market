@@ -21,3 +21,13 @@ export const useAuth = () => {
   }
   return context;
 };
+
+// Fonction utilitaire pour vérifier si l'utilisateur est authentifié
+export const isAuthenticated = (context: AuthContextType) => {
+  return !context.isLoading && !!context.session;
+};
+
+// Fonction utilitaire pour vérifier si l'utilisateur est admin
+export const isAdmin = (context: AuthContextType) => {
+  return isAuthenticated(context) && context.profile?.role === 'admin';
+};
