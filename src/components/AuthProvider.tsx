@@ -13,63 +13,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("AuthProvider initialisé");
-    
-    // Fonction pour récupérer la session et le profil
-    const initializeAuth = async () => {
-      setIsLoading(true);
-      
-      try {
-        // Récupérer la session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-          console.error("Erreur lors de la récupération de la session:", sessionError);
-          throw sessionError;
-        }
-        
-        console.log("Session récupérée:", session ? "Connecté" : "Non connecté");
-        setSession(session);
-        
-        // Si utilisateur connecté, récupérer son profil
-        if (session) {
-          await fetchProfile(session.user.id);
-        } else {
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error("Erreur lors de l'initialisation de l'auth:", error);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+        fetchProfile(session.user.id);
+      } else {
         setIsLoading(false);
       }
-    };
-    
-    // Initialiser l'authentification au chargement
-    initializeAuth();
-    
-    // Configurer les écouteurs d'événements d'authentification
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        console.log("Changement d'état d'authentification:", _event);
-        setSession(session);
-        
-        if (session) {
-          await fetchProfile(session.user.id);
-        } else {
-          setProfile(null);
-          setIsLoading(false);
-        }
-      }
-    );
+    });
 
-    // Nettoyer l'abonnement
-    return () => {
-      subscription.unsubscribe();
-    };
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        fetchProfile(session.user.id);
+      } else {
+        setProfile(null);
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const fetchProfile = async (userId: string) => {
     try {
-      console.log("Récupération du profil pour l'utilisateur:", userId);
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -77,12 +46,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .single();
 
       if (error) {
-        console.error("Erreur lors du chargement du profil:", error);
         throw error;
       }
 
       if (data) {
-        console.log("Profil récupéré:", data.role);
         setProfile(data as Profile);
       }
     } catch (error: any) {
@@ -92,8 +59,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(false);
     }
   };
-
-  console.log("État de l'authentification:", { isLoading, isAuthenticated: !!session });
 
   return (
     <AuthContext.Provider value={{ isLoading, session, profile }}>
