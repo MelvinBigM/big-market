@@ -31,7 +31,7 @@ type UserProfileData = {
 };
 
 const ProfilePage = () => {
-  const { session, profile } = useAuth();
+  const { session, profile, isLoading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -48,7 +48,7 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
 
   // Récupérer les détails de l'utilisateur connecté
-  const { data: userData, isLoading } = useQuery({
+  const { data: userData, isLoading: profileLoading } = useQuery({
     queryKey: ["userProfile", profile?.id],
     queryFn: async () => {
       if (!profile?.id) throw new Error("Utilisateur non connecté");
@@ -68,7 +68,7 @@ const ProfilePage = () => {
       console.log("Données du profil récupérées:", data);
       return data as UserProfileData;
     },
-    enabled: !!profile?.id,
+    enabled: !!profile?.id, // N'exécute la requête que si nous avons un profil
   });
 
   // Utiliser useEffect pour mettre à jour le formulaire quand userData change
@@ -136,17 +136,15 @@ const ProfilePage = () => {
     updateProfileMutation.mutate(formData);
   };
 
-  // Redirection si non connecté
+  // Ne rediriger que si le chargement est terminé ET qu'il n'y a pas de session
   useEffect(() => {
-    if (!session) {
+    if (!isLoading && !session) {
+      console.log("Redirection vers login: chargement terminé et pas de session");
       navigate("/login");
     }
-  }, [session, navigate]);
-
-  if (!session) {
-    return null;
-  }
-
+  }, [isLoading, session, navigate]);
+  
+  // Afficher un écran de chargement pendant que l'état d'authentification est vérifié
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -163,6 +161,12 @@ const ProfilePage = () => {
     );
   }
 
+  // Si le chargement est terminé mais qu'il n'y a pas de session, ne rien afficher
+  // La redirection sera gérée par l'effet ci-dessus
+  if (!session) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
@@ -177,7 +181,11 @@ const ProfilePage = () => {
             </CardHeader>
 
             <CardContent>
-              {isEditing ? (
+              {profileLoading || !userData ? (
+                <div className="text-center py-4">
+                  <p>Chargement du profil...</p>
+                </div>
+              ) : isEditing ? (
                 <form id="profile-form" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2 md:col-span-2">
