@@ -31,7 +31,7 @@ type UserProfileData = {
 };
 
 const ProfilePage = () => {
-  const { session, profile } = useAuth();
+  const { session, profile, refreshProfile } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -109,9 +109,15 @@ const ProfilePage = () => {
       console.log("Réponse de mise à jour:", data);
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       console.log("Mise à jour réussie:", data);
+      
+      // Invalider le cache de la requête
       queryClient.invalidateQueries({ queryKey: ["userProfile", profile?.id] });
+      
+      // Rafraîchir le profil dans le contexte d'authentification
+      await refreshProfile();
+      
       toast.success("Profil mis à jour avec succès");
       setIsEditing(false);
     },

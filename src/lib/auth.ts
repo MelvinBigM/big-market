@@ -6,12 +6,14 @@ export type AuthContextType = {
   isLoading: boolean;
   session: any | null;
   profile: Profile | null;
+  refreshProfile: () => Promise<void>; // Ajout de la fonction de rafraîchissement
 };
 
 export const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   session: null,
   profile: null,
+  refreshProfile: async () => {}, // Fonction vide par défaut
 });
 
 export const useAuth = () => {

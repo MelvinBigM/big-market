@@ -13,7 +13,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Initial session check
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session);
       setSession(session);
       if (session) {
         fetchProfile(session.user.id);
@@ -22,9 +24,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     });
 
+    // Subscribe to auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', _event, session?.user?.id);
       setSession(session);
       if (session) {
         fetchProfile(session.user.id);
@@ -39,6 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchProfile = async (userId: string) => {
     try {
+      console.log('Fetching profile for:', userId);
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -50,6 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       if (data) {
+        console.log('Profile retrieved:', data);
         setProfile(data as Profile);
       }
     } catch (error: any) {
@@ -60,8 +66,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  // Fonction pour rafraîchir le profil après une mise à jour
+  const refreshProfile = async () => {
+    if (session?.user?.id) {
+      await fetchProfile(session.user.id);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoading, session, profile }}>
+    <AuthContext.Provider value={{ isLoading, session, profile, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
