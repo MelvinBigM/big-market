@@ -45,3 +45,13 @@ export type AccessRequest = {
   updated_at: string;
 };
 
+export type Banner = {
+  id: string;
+  title: string;
+  description: string | null;
+  image_url: string | null;
+  bgColor: string;
+  position: number;
+  created_at: string;
+  updated_at: string;
+};

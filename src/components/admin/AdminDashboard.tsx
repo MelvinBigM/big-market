@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Layers, Package, UserCheck, MessageCircle } from "lucide-react";
+import { Users, Layers, Package, UserCheck, MessageCircle, ImageIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -69,6 +69,13 @@ const AdminDashboard = () => {
       icon: <MessageCircle className="h-8 w-8" />,
       link: "/admin/chat",
       color: "bg-indigo-500",
+    },
+    {
+      title: "Bannières",
+      description: "Gérer les bannières de la page d'accueil",
+      icon: <ImageIcon className="h-8 w-8" />,
+      link: "/admin/banners",
+      color: "bg-pink-500",
     },
   ];
 
