@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 interface ProfileFormProps {
   formData: {
@@ -60,6 +61,7 @@ const ProfileForm = ({
             name="full_name"
             value={formData.full_name || ""}
             onChange={handleInputChange}
+            required
           />
         </div>
 
@@ -124,7 +126,12 @@ const ProfileForm = ({
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Enregistrement..." : "Enregistrer"}
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              Enregistrement...
+            </>
+          ) : "Enregistrer"}
         </Button>
       </div>
     </form>

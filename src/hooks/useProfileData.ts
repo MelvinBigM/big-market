@@ -84,33 +84,38 @@ export const useProfileData = () => {
       
       console.log("Sending profile update with data:", updatedData);
       
+      // Make sure we're updating the correct user record
       const { data, error } = await supabase
         .from("profiles")
         .update(updatedData)
-        .eq("id", userId);
+        .eq("id", userId)
+        .select();
 
       if (error) {
         console.error("Profile update error:", error);
         throw error;
       }
       
+      console.log("Profile update response:", data);
       return data;
     },
     onSuccess: async () => {
-      // Refresh profile in auth context
-      await refreshProfile();
-      
-      // Invalidate and refetch query
-      queryClient.invalidateQueries({ queryKey: ["userProfile", userId] });
-      
       // Show success message
       toast.success("Profil mis à jour avec succès");
       
       // Exit edit mode
       setIsEditing(false);
       
+      // Refresh profile in auth context
+      await refreshProfile();
+      
+      // Invalidate and refetch query
+      queryClient.invalidateQueries({ queryKey: ["userProfile", userId] });
+      
       // Force refetch to ensure we have the latest data
-      refetch();
+      setTimeout(() => {
+        refetch();
+      }, 500);
     },
     onError: (error: any) => {
       console.error("Profile update error:", error);
