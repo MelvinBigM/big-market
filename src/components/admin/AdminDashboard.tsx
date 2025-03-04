@@ -5,7 +5,7 @@ import { Users, Layers, Package, UserCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
-import NavBar from "../navbar";
+import NavBar from "../NavBar";
 import Footer from "../Footer";
 
 const AdminDashboard = () => {

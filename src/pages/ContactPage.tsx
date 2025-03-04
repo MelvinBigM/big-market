@@ -1,5 +1,5 @@
 
-import NavBar from "@/components/navbar";
+import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Mail, MapPin, Phone } from "lucide-react";

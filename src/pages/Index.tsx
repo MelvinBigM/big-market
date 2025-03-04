@@ -1,6 +1,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
-import NavBar from "@/components/navbar";
+import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
