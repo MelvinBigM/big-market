@@ -5,6 +5,7 @@ import HeroBanner from "@/components/home/HeroBanner";
 import LatestProducts from "@/components/home/LatestProducts";
 import LocationMap from "@/components/home/LocationMap";
 import OpeningHours from "@/components/home/OpeningHours";
+import ChatBubble from "@/components/ChatBubble";
 
 const Index = () => {
   return (
@@ -14,6 +15,7 @@ const Index = () => {
       <LatestProducts />
       <LocationMap />
       <OpeningHours />
+      <ChatBubble />
       <Footer />
     </div>
   );
