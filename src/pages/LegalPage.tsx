@@ -1,5 +1,5 @@
 
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/navbar";
 import Footer from "@/components/Footer";
 
 const LegalPage = () => {
