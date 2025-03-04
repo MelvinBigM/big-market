@@ -1,4 +1,3 @@
-
 import { motion, AnimatePresence } from "framer-motion";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -9,7 +8,7 @@ import { Product } from "@/lib/types";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Phone, Mail, ExternalLink } from "lucide-react";
+import { MapPin, Phone, Mail, ExternalLink, Clock } from "lucide-react";
 
 const banners = [
   {
@@ -159,7 +158,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Location & Contact Section (replacing About Section) */}
+      {/* Location & Contact Section */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Retrouvez-nous</h2>
@@ -226,24 +225,6 @@ const Index = () => {
                 </div>
               </div>
               
-              <div className="pt-6">
-                <h3 className="text-2xl font-semibold mb-4">Horaires d'ouverture</h3>
-                <div className="space-y-2 text-gray-600">
-                  <p className="flex justify-between">
-                    <span>Lundi - Vendredi:</span>
-                    <span>9h00 - 18h00</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Samedi:</span>
-                    <span>Sur rendez-vous</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Dimanche:</span>
-                    <span>Fermé</span>
-                  </p>
-                </div>
-              </div>
-              
               <div className="pt-4">
                 <Link to="/contact">
                   <Button variant="default" size="lg" className="w-full">
@@ -253,6 +234,40 @@ const Index = () => {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+      
+      {/* Opening Hours Section - Full Width */}
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-secondary">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="bg-white rounded-lg shadow-md p-8"
+          >
+            <div className="flex items-center justify-center mb-6">
+              <Clock className="h-8 w-8 text-primary mr-3" />
+              <h3 className="text-2xl font-semibold">Horaires d'ouverture</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium text-lg mb-2">Lundi - Vendredi</p>
+                <p className="text-gray-600 text-xl">8h00 - 16h00</p>
+              </div>
+              
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium text-lg mb-2">Samedi</p>
+                <p className="text-gray-600 text-xl">Sur rendez-vous</p>
+              </div>
+              
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="font-medium text-lg mb-2">Dimanche</p>
+                <p className="text-gray-600 text-xl">Fermé</p>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
