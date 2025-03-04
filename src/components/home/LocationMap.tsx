@@ -1,9 +1,7 @@
 
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { MapPin, Phone, Mail, ExternalLink } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 
 const LocationMap = () => {
   const handleOpenGoogleMaps = () => {
@@ -88,14 +86,6 @@ const LocationMap = () => {
                   <p className="text-gray-600">contact@bigimex.fr</p>
                 </div>
               </motion.div>
-            </div>
-            
-            <div className="pt-4">
-              <Link to="/contact">
-                <Button variant="default" size="lg" className="w-full">
-                  Nous contacter
-                </Button>
-              </Link>
             </div>
           </motion.div>
         </div>
