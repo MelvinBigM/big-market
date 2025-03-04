@@ -13,7 +13,7 @@ const ContactPage = () => {
             <div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-8 text-center">Nos Coordonnées</h2>
               <div className="space-y-6">
-                <div className="flex p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="flex items-center p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="h-12 w-12 flex-shrink-0 flex items-center justify-center bg-primary/10 rounded-full mr-4">
                     <MapPin className="w-6 h-6 text-primary" />
                   </div>
@@ -25,7 +25,7 @@ const ContactPage = () => {
                   </div>
                 </div>
 
-                <div className="flex p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="flex items-center p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="h-12 w-12 flex-shrink-0 flex items-center justify-center bg-primary/10 rounded-full mr-4">
                     <Phone className="w-6 h-6 text-primary" />
                   </div>
@@ -35,7 +35,7 @@ const ContactPage = () => {
                   </div>
                 </div>
 
-                <div className="flex p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
+                <div className="flex items-center p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="h-12 w-12 flex-shrink-0 flex items-center justify-center bg-primary/10 rounded-full mr-4">
                     <Mail className="w-6 h-6 text-primary" />
                   </div>
