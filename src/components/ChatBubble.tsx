@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/lib/auth';
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +12,10 @@ const ChatBubble = () => {
     { text: 'Bonjour ! Comment puis-je vous aider ?', isUser: false },
   ]);
   const { toast } = useToast();
+  const { session } = useAuth();
+
+  // If user is not authenticated, don't render the chat bubble
+  if (!session) return null;
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
