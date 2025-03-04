@@ -51,9 +51,6 @@ const LoginPage = () => {
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Connexion à Big Market
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Accédez à votre compte pour commander
-          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="rounded-md shadow-sm space-y-4">
