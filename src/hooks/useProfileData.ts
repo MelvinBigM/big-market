@@ -68,7 +68,7 @@ export const useProfileData = () => {
 
   // Mutation pour mettre à jour le profil
   const updateProfileMutation = useMutation({
-    mutationFn: async (updatedProfile: any) => {
+    mutationFn: async (updatedProfile: Partial<UserProfileData>) => {
       console.log("Envoi des données de mise à jour:", updatedProfile);
       
       if (!profile?.id) {

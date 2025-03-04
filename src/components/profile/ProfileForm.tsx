@@ -22,7 +22,7 @@ interface ProfileFormProps {
 
 const ProfileForm = ({ formData, handleInputChange, handleCheckboxChange }: ProfileFormProps) => {
   return (
-    <form id="profile-form" onSubmit={(e) => e.preventDefault()}>
+    <form id="profile-form">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2 md:col-span-2">
           <div className="flex items-center space-x-2">

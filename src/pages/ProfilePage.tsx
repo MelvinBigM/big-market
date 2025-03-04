@@ -101,7 +101,7 @@ const ProfilePage = () => {
                   <Button variant="outline" onClick={() => setIsEditing(false)}>
                     Annuler
                   </Button>
-                  <Button type="submit" onClick={handleSubmit}>
+                  <Button onClick={handleSubmit}>
                     Enregistrer
                   </Button>
                 </>
