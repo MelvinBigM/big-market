@@ -16,9 +16,11 @@ const ContactPage = () => {
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Nos Coordonnées</h2>
               <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <MapPin className="w-5 h-5 text-primary mt-1" />
-                  <div>
+                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="h-10 w-10 flex items-center justify-center bg-primary/10 rounded-full">
+                    <MapPin className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
                     <p className="font-medium">Adresse</p>
                     <p className="text-gray-600">45 ALLÉE DES ORMES</p>
                     <p className="text-gray-600">06250 MOUGINS</p>
@@ -26,17 +28,21 @@ const ContactPage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
-                  <Phone className="w-5 h-5 text-primary mt-1" />
-                  <div>
+                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="h-10 w-10 flex items-center justify-center bg-primary/10 rounded-full">
+                    <Phone className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
                     <p className="font-medium">Téléphone</p>
                     <p className="text-gray-600">+(4) 93 90 90 92</p>
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
-                  <Mail className="w-5 h-5 text-primary mt-1" />
-                  <div>
+                <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                  <div className="h-10 w-10 flex items-center justify-center bg-primary/10 rounded-full">
+                    <Mail className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
                     <p className="font-medium">Email</p>
                     <p className="text-gray-600">contact@bigimex.fr</p>
                   </div>
