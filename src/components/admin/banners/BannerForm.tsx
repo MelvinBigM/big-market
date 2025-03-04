@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Banner } from "@/lib/types";
 import { Image } from "lucide-react";
@@ -96,6 +97,16 @@ const BannerForm: React.FC<BannerFormProps> = ({
     }
   };
 
+  // Helper function to update banner properties
+  const updateBanner = (updates: Partial<Banner>) => {
+    if (selectedBanner) {
+      setSelectedBanner({
+        ...selectedBanner,
+        ...updates
+      });
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-lg">
@@ -113,7 +124,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
             <Input
               id="title"
               value={selectedBanner?.title || ''}
-              onChange={(e) => setSelectedBanner(prev => prev ? {...prev, title: e.target.value} : null)}
+              onChange={(e) => updateBanner({ title: e.target.value })}
               placeholder="Titre de la bannière"
             />
           </div>
@@ -123,7 +134,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
             <Input
               id="description"
               value={selectedBanner?.description || ''}
-              onChange={(e) => setSelectedBanner(prev => prev ? {...prev, description: e.target.value} : null)}
+              onChange={(e) => updateBanner({ description: e.target.value })}
               placeholder="Description de la bannière"
             />
           </div>
@@ -135,7 +146,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
               type="number"
               min="1"
               value={selectedBanner?.position || 1}
-              onChange={(e) => setSelectedBanner(prev => prev ? {...prev, position: parseInt(e.target.value)} : null)}
+              onChange={(e) => updateBanner({ position: parseInt(e.target.value) })}
             />
           </div>
 
@@ -178,7 +189,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
               <select
                 id="bgColor"
                 value={selectedBanner?.bgColor || ''}
-                onChange={(e) => setSelectedBanner(prev => prev ? {...prev, bgColor: e.target.value} : null)}
+                onChange={(e) => updateBanner({ bgColor: e.target.value })}
                 className="w-full rounded-md border border-gray-300 px-4 py-2"
               >
                 <option value="bg-gradient-to-r from-blue-50 to-indigo-50">Bleu</option>
@@ -194,7 +205,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
             <Label htmlFor="text_color">Couleur du texte</Label>
             <Select
               value={selectedBanner?.text_color || 'text-white'}
-              onValueChange={(value) => setSelectedBanner(prev => prev ? {...prev, text_color: value} : null)}
+              onValueChange={(value) => updateBanner({ text_color: value })}
             >
               <SelectTrigger id="text_color">
                 <SelectValue placeholder="Choisir une couleur" />
