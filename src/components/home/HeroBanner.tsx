@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
 import { banners as defaultBanners } from "@/data/bannerData";
 
-const BANNER_HEIGHT = "250px"; // Reduced height from 350px to 250px
+const BANNER_HEIGHT = "200px"; // Reduced height from 250px to 200px
 
 const HeroBanner = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -77,7 +77,7 @@ const HeroBanner = () => {
 
   return (
     <section className="pt-16 pb-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto w-full">
         <AnimatePresence mode="wait">
           <motion.div 
             key={currentBanner}
@@ -85,7 +85,7 @@ const HeroBanner = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="relative rounded-xl shadow-md border border-gray-100 overflow-hidden"
+            className="relative rounded-xl shadow-md border border-gray-100 overflow-hidden w-full"
             style={{ height: BANNER_HEIGHT }}
           >
             {/* Background: Either Image or Gradient */}
@@ -102,9 +102,9 @@ const HeroBanner = () => {
             )}
             
             {/* Content overlay with text directly on banner (no white box) */}
-            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-12">
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-8">
               <motion.h1 
-                className={`text-4xl sm:text-5xl font-bold ${getTextColor(banners[currentBanner])} mb-6 text-shadow-lg`}
+                className={`text-3xl sm:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-4 text-shadow-lg`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -113,7 +113,7 @@ const HeroBanner = () => {
               </motion.h1>
               {banners[currentBanner].description && (
                 <motion.p 
-                  className={`text-xl ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
+                  className={`text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
