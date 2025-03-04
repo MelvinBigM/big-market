@@ -11,13 +11,13 @@ import ProfileDisplay from "@/components/profile/ProfileDisplay";
 import { useProfileData } from "@/hooks/useProfileData";
 
 const ProfilePage = () => {
-  const { session } = useAuth();
+  const { session, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   
   const { 
     userData, 
     formData, 
-    isLoading, 
+    isLoading: profileDataLoading, 
     isEditing, 
     setIsEditing, 
     handleInputChange, 
@@ -25,18 +25,36 @@ const ProfilePage = () => {
     handleSubmit 
   } = useProfileData();
 
-  // Redirection si non connecté
+  // Redirection only if not logged in AND auth loading is complete
   useEffect(() => {
-    if (!session) {
+    if (!session && !authLoading) {
       navigate("/login");
     }
-  }, [session, navigate]);
+  }, [session, authLoading, navigate]);
 
-  if (!session) {
+  // Don't render anything while auth is loading to prevent flash redirects
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <NavBar />
+        <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center">
+              <p>Vérification de l'authentification...</p>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // If auth loading is complete but no session, return null (redirection will happen)
+  if (!session && !authLoading) {
     return null;
   }
 
-  if (isLoading) {
+  if (profileDataLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <NavBar />

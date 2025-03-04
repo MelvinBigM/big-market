@@ -26,7 +26,10 @@ export const useProfileData = () => {
   const { data: userData, isLoading } = useQuery({
     queryKey: ["userProfile", profile?.id],
     queryFn: async () => {
-      if (!profile?.id) throw new Error("Utilisateur non connecté");
+      if (!profile?.id) {
+        console.log("Utilisateur non connecté ou profil non chargé");
+        return null;
+      }
       
       console.log("Récupération du profil pour l'ID:", profile.id);
       const { data, error } = await supabase
@@ -44,6 +47,8 @@ export const useProfileData = () => {
       return data as UserProfileData;
     },
     enabled: !!profile?.id,
+    retry: 3,
+    retryDelay: 1000,
   });
 
   // Utiliser useEffect pour mettre à jour le formulaire quand userData change
