@@ -26,6 +26,7 @@ const HeroBanner = () => {
         if (error) throw error;
         
         if (data && data.length > 0) {
+          console.log("Fetched banners:", data); // Debug log
           setBanners(data as Banner[]);
         }
       } catch (error) {
@@ -66,6 +67,11 @@ const HeroBanner = () => {
     return null;
   }
 
+  // Make sure we're using the correct field name (bgcolor from database vs bgColor in our code)
+  const getBannerBackground = (banner: Banner) => {
+    return banner.bgColor || (banner as any).bgcolor || 'bg-gradient-to-r from-blue-50 to-indigo-50';
+  };
+
   return (
     <section className="pt-16 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -89,7 +95,7 @@ const HeroBanner = () => {
                 }}
               />
             ) : (
-              <div className={`absolute inset-0 w-full h-full ${banners[currentBanner].bgColor}`} />
+              <div className={`absolute inset-0 w-full h-full ${getBannerBackground(banners[currentBanner])}`} />
             )}
             
             {/* Content overlay with semi-transparent background for better text visibility */}

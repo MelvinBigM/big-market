@@ -124,6 +124,7 @@ const AdminBannersPage = () => {
     }
 
     setIsSaving(true);
+    console.log("Saving banner:", selectedBanner); // Debug log
 
     try {
       const updatedBanner = {
@@ -131,33 +132,47 @@ const AdminBannersPage = () => {
         updated_at: new Date().toISOString()
       };
 
+      // Make sure we're working with a proper banner object
+      const bannerToSave = {
+        title: updatedBanner.title,
+        description: updatedBanner.description,
+        image_url: updatedBanner.image_url,
+        bgcolor: updatedBanner.bgColor, // Note: column name is bgcolor, not bgColor
+        position: updatedBanner.position,
+        updated_at: updatedBanner.updated_at
+      };
+
       if (selectedBanner.id) {
         // Update existing banner
-        const { error } = await (supabase as any)
+        const { error, data } = await (supabase as any)
           .from('banners')
-          .update(updatedBanner)
-          .eq('id', selectedBanner.id);
+          .update(bannerToSave)
+          .eq('id', selectedBanner.id)
+          .select();
 
         if (error) throw error;
+        console.log("Updated banner:", data); // Debug log
         toast.success("Bannière mise à jour");
       } else {
         // Create new banner
-        const { error } = await (supabase as any)
+        const { error, data } = await (supabase as any)
           .from('banners')
           .insert({
-            ...updatedBanner,
+            ...bannerToSave,
             created_at: new Date().toISOString()
-          });
+          })
+          .select();
 
         if (error) throw error;
+        console.log("Created banner:", data); // Debug log
         toast.success("Bannière créée");
       }
 
       setIsDialogOpen(false);
-      fetchBanners();
-    } catch (error) {
+      await fetchBanners(); // Refresh the banners list
+    } catch (error: any) {
       console.error("Erreur lors de l'enregistrement:", error);
-      toast.error("Impossible d'enregistrer la bannière");
+      toast.error(`Impossible d'enregistrer la bannière: ${error.message || "Erreur inconnue"}`);
     } finally {
       setIsSaving(false);
     }
