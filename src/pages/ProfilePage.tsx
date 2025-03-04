@@ -44,6 +44,11 @@ const ProfilePage = () => {
     }
   }, [session, profileDataLoading, isEditing, refetchProfile]);
 
+  // Create a proper event handler for the refetch button
+  const handleRefetchClick = () => {
+    refetchProfile();
+  };
+
   // Show loading state during authentication check
   if (authLoading) {
     return (
@@ -101,7 +106,7 @@ const ProfilePage = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-red-500 mb-4">Impossible de charger les données du profil.</p>
-                <Button onClick={refetchProfile}>Réessayer</Button>
+                <Button onClick={handleRefetchClick}>Réessayer</Button>
               </CardContent>
             </Card>
           </div>
