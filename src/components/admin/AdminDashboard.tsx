@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Layers, Package, UserCheck } from "lucide-react";
+import { Users, Layers, Package, UserCheck, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -62,6 +62,13 @@ const AdminDashboard = () => {
       icon: <UserCheck className="h-8 w-8" />,
       link: "/admin/access-requests",
       color: "bg-yellow-500",
+    },
+    {
+      title: "Conversations",
+      description: "Gérer les conversations avec les clients",
+      icon: <MessageCircle className="h-8 w-8" />,
+      link: "/admin/chat",
+      color: "bg-indigo-500",
     },
   ];
 
