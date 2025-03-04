@@ -7,7 +7,7 @@ const ContactPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
-      <main className="max-w-4xl mx-auto px-4 py-24">
+      <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
           <div className="space-y-12">
             <div>
