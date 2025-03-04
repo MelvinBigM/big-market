@@ -72,7 +72,7 @@ const LocationMap = () => {
                 </div>
                 <div className="flex-1 text-center">
                   <p className="font-medium mb-1">Téléphone</p>
-                  <p className="text-gray-600">+(4) 93 90 90 92</p>
+                  <p className="text-gray-600">04 93 90 90 92</p>
                 </div>
               </motion.div>
               

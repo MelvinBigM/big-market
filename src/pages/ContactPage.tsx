@@ -34,7 +34,7 @@ const ContactPage = () => {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">Téléphone</p>
-                    <p className="text-gray-600">+(4) 93 90 90 92</p>
+                    <p className="text-gray-600">04 93 90 90 92</p>
                   </div>
                 </div>
 

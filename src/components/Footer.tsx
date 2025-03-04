@@ -59,7 +59,7 @@ const Footer = () => {
               <p>06250 MOUGINS</p>
               <p>FRANCE</p>
               <p className="mt-2">contact@bigimex.fr</p>
-              <p>+(4) 93 90 90 92</p>
+              <p>04 93 90 90 92</p>
             </address>
           </div>
         </div>
