@@ -1,50 +1,164 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, X, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
+import { supabase } from '@/integrations/supabase/client';
+
+// Type pour les messages de chat
+type ChatMessage = {
+  id: string;
+  message: string;
+  sender_id: string;
+  receiver_id: string | null;
+  is_admin_message: boolean;
+  created_at: string;
+};
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([
-    { text: 'Bonjour ! Comment puis-je vous aider ?', isUser: false },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { session } = useAuth();
-
-  // If user is not authenticated, don't render the chat bubble
+  
+  // Si l'utilisateur n'est pas authentifié, ne pas afficher la bulle de chat
   if (!session) return null;
+
+  const userId = session.user.id;
+
+  // Charger les messages au chargement du composant
+  useEffect(() => {
+    if (isOpen) {
+      fetchMessages();
+      subscribeToMessages();
+    }
+  }, [isOpen, userId]);
+
+  // Défiler automatiquement vers le bas quand de nouveaux messages arrivent
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const fetchMessages = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .or(`sender_id.eq.${userId},receiver_id.eq.${userId},receiver_id.is.null`)
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        setMessages(data as ChatMessage[]);
+      } else {
+        // Message par défaut si aucun message dans la base de données
+        sendAdminMessage("Bonjour ! Comment puis-je vous aider ?");
+      }
+    } catch (error) {
+      console.error('Erreur lors du chargement des messages:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les messages",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const subscribeToMessages = () => {
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'chat_messages',
+        },
+        (payload) => {
+          const newMessage = payload.new as ChatMessage;
+          
+          // Vérifier si le message est destiné à cet utilisateur ou est un message admin
+          if (
+            newMessage.sender_id === userId || 
+            newMessage.receiver_id === userId || 
+            newMessage.receiver_id === null
+          ) {
+            setMessages((current) => [...current, newMessage]);
+          }
+        }
+      )
+      .subscribe();
+
+    // Nettoyer l'abonnement quand le composant se démonte
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  };
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleSendMessage = () => {
+  const sendAdminMessage = async (text: string) => {
+    try {
+      const { error } = await supabase.from('chat_messages').insert({
+        message: text,
+        sender_id: userId, // Pour respecter la RLS, mais marqué comme admin
+        is_admin_message: true,
+        receiver_id: userId, // Message destiné à l'utilisateur
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du message administrateur:', error);
+    }
+  };
+
+  const handleSendMessage = async () => {
     if (!message.trim()) return;
     
-    // Add user message
-    setMessages(prev => [...prev, { text: message, isUser: true }]);
-    
-    // Clear input
-    setMessage('');
-    
-    // Simulate response after a short delay
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev, 
-        { 
-          text: "Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.", 
-          isUser: false 
-        }
-      ]);
-      
-      toast({
-        title: "Message envoyé",
-        description: "Notre équipe vous répondra bientôt",
+    try {
+      // Ajouter message de l'utilisateur
+      const { error } = await supabase.from('chat_messages').insert({
+        message: message.trim(),
+        sender_id: userId,
+        receiver_id: null, // Message pour tous les admins
       });
-    }, 1000);
+
+      if (error) throw error;
+      
+      // Effacer l'input
+      setMessage('');
+      
+      // Simuler réponse après un court délai
+      setTimeout(async () => {
+        await sendAdminMessage("Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.");
+        
+        toast({
+          title: "Message envoyé",
+          description: "Notre équipe vous répondra bientôt",
+        });
+      }, 1000);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du message:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'envoyer votre message",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -52,6 +166,11 @@ const ChatBubble = () => {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
@@ -65,19 +184,33 @@ const ChatBubble = () => {
             </button>
           </div>
           
-          <div className="flex-1 p-3 max-h-96 overflow-y-auto flex flex-col space-y-3">
-            {messages.map((msg, index) => (
-              <div 
-                key={index} 
-                className={`max-w-[80%] p-3 rounded-lg ${
-                  msg.isUser 
-                    ? 'bg-primary text-white self-end rounded-br-none'
-                    : 'bg-gray-100 text-gray-800 self-start rounded-bl-none'
-                }`}
-              >
-                {msg.text}
-              </div>
-            ))}
+          <div className="flex-1 p-3 h-96 overflow-y-auto flex flex-col space-y-3">
+            {isLoading ? (
+              <div className="text-center py-4 text-gray-500">Chargement des messages...</div>
+            ) : messages.length === 0 ? (
+              <div className="text-center py-4 text-gray-500">Aucun message</div>
+            ) : (
+              messages.map((msg) => (
+                <div 
+                  key={msg.id} 
+                  className={`max-w-[80%] p-3 rounded-lg flex flex-col ${
+                    msg.sender_id === userId && !msg.is_admin_message
+                      ? 'bg-primary text-white self-end rounded-br-none'
+                      : 'bg-gray-100 text-gray-800 self-start rounded-bl-none'
+                  }`}
+                >
+                  <div>{msg.message}</div>
+                  <div className={`text-xs mt-1 ${
+                    msg.sender_id === userId && !msg.is_admin_message 
+                      ? 'text-primary-foreground/70' 
+                      : 'text-gray-500'
+                  }`}>
+                    {formatDate(msg.created_at)}
+                  </div>
+                </div>
+              ))
+            )}
+            <div ref={messagesEndRef} />
           </div>
           
           <div className="border-t border-gray-200 p-3 flex items-center">
@@ -90,8 +223,8 @@ const ChatBubble = () => {
             />
             <button 
               onClick={handleSendMessage}
-              className="ml-2 bg-primary text-white p-2 rounded-full hover:bg-primary/90"
-              disabled={!message.trim()}
+              className="ml-2 bg-primary text-white p-2 rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!message.trim() || isLoading}
             >
               <Send size={20} />
             </button>
