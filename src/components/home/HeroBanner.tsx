@@ -1,13 +1,11 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
 import { banners as defaultBanners } from "@/data/bannerData";
 
-const BANNER_HEIGHT = "500px"; // Fixed banner height
+const BANNER_HEIGHT = "350px"; // Reduced height from 500px to 350px
 
 const HeroBanner = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -98,39 +96,26 @@ const HeroBanner = () => {
               <div className={`absolute inset-0 w-full h-full ${getBannerBackground(banners[currentBanner])}`} />
             )}
             
-            {/* Content overlay with semi-transparent background for better text visibility */}
+            {/* Content overlay with text directly on banner (no white box) */}
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-12">
-              <div className="bg-white bg-opacity-80 p-8 rounded-lg max-w-3xl">
-                <motion.h1 
-                  className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6"
+              <motion.h1 
+                className="text-4xl sm:text-5xl font-bold text-white mb-6 text-shadow-lg"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {banners[currentBanner].title}
+              </motion.h1>
+              {banners[currentBanner].description && (
+                <motion.p 
+                  className="text-xl text-white max-w-2xl mx-auto text-shadow"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
+                  transition={{ delay: 0.4 }}
                 >
-                  {banners[currentBanner].title}
-                </motion.h1>
-                {banners[currentBanner].description && (
-                  <motion.p 
-                    className="text-xl text-gray-700 max-w-2xl mx-auto mb-8"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    {banners[currentBanner].description}
-                  </motion.p>
-                )}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  <Link to="/categories">
-                    <Button size="lg" className="font-medium">
-                      Découvrir nos produits
-                    </Button>
-                  </Link>
-                </motion.div>
-              </div>
+                  {banners[currentBanner].description}
+                </motion.p>
+              )}
             </div>
           </motion.div>
         </AnimatePresence>
