@@ -9,39 +9,51 @@ import ProfileForm from "@/components/profile/ProfileForm";
 import ProfileDisplay from "@/components/profile/ProfileDisplay";
 import { useProfileData } from "@/hooks/useProfileData";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 const ProfilePage = () => {
   const { session, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   
-  // Récupérer les données du profil avec le hook customisé
+  // Use the custom hook to manage profile data and interactions
   const { 
     userData, 
     formData, 
     isLoading: profileDataLoading, 
+    isError,
     isEditing, 
     setIsEditing, 
+    isSubmitting,
     handleInputChange, 
     handleCheckboxChange, 
-    handleSubmit 
+    handleSubmit,
+    refetchProfile
   } = useProfileData();
 
-  // Redirection si l'utilisateur n'est pas connecté
+  // Redirect if user is not authenticated
   useEffect(() => {
     if (!session && !authLoading) {
       navigate("/login");
     }
   }, [session, authLoading, navigate]);
 
-  // Afficher un chargement pendant la vérification de l'authentification
+  // Handle data refresh when page loads
+  useEffect(() => {
+    if (session && !profileDataLoading && !isEditing) {
+      refetchProfile();
+    }
+  }, [session, profileDataLoading, isEditing, refetchProfile]);
+
+  // Show loading state during authentication check
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <NavBar />
         <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center">
-              <p>Vérification de l'authentification...</p>
+            <div className="text-center flex flex-col items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="mt-2">Vérification de l'authentification...</p>
             </div>
           </div>
         </main>
@@ -50,20 +62,21 @@ const ProfilePage = () => {
     );
   }
 
-  // Redirection si l'utilisateur n'est pas connecté
+  // Redirect if user is not authenticated
   if (!session && !authLoading) {
     return null;
   }
 
-  // Afficher un chargement pendant la récupération des données du profil
+  // Show loading state during profile data fetching
   if (profileDataLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
         <NavBar />
         <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto">
-            <div className="text-center">
-              <p>Chargement des informations...</p>
+            <div className="text-center flex flex-col items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="mt-2">Chargement des informations...</p>
             </div>
           </div>
         </main>
@@ -72,6 +85,33 @@ const ProfilePage = () => {
     );
   }
 
+  // Show error state if profile data fetching failed
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <NavBar />
+        <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto">
+            <Card className="shadow-md">
+              <CardHeader>
+                <CardTitle>Erreur</CardTitle>
+                <CardDescription>
+                  Une erreur est survenue lors du chargement de votre profil
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-red-500 mb-4">Impossible de charger les données du profil.</p>
+                <Button onClick={refetchProfile}>Réessayer</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Get profile data from auth context for displaying account type
   const { profile } = useAuth();
 
   return (
@@ -95,6 +135,7 @@ const ProfilePage = () => {
                   handleCheckboxChange={handleCheckboxChange}
                   handleSubmit={handleSubmit}
                   onCancel={() => setIsEditing(false)}
+                  isSubmitting={isSubmitting}
                 />
               ) : (
                 <>

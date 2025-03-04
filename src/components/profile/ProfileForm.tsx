@@ -20,6 +20,7 @@ interface ProfileFormProps {
   handleCheckboxChange: (checked: boolean) => void;
   handleSubmit: () => void;
   onCancel: () => void;
+  isSubmitting?: boolean;
 }
 
 const ProfileForm = ({ 
@@ -27,7 +28,8 @@ const ProfileForm = ({
   handleInputChange, 
   handleCheckboxChange, 
   handleSubmit,
-  onCancel
+  onCancel,
+  isSubmitting = false
 }: ProfileFormProps) => {
   
   const onSubmit = (e: React.FormEvent) => {
@@ -56,7 +58,7 @@ const ProfileForm = ({
           <Input
             id="full_name"
             name="full_name"
-            value={formData.full_name}
+            value={formData.full_name || ""}
             onChange={handleInputChange}
           />
         </div>
@@ -66,7 +68,7 @@ const ProfileForm = ({
           <Input
             id="phone_number"
             name="phone_number"
-            value={formData.phone_number}
+            value={formData.phone_number || ""}
             onChange={handleInputChange}
           />
         </div>
@@ -81,7 +83,7 @@ const ProfileForm = ({
           <Textarea
             id="address"
             name="address"
-            value={formData.address}
+            value={formData.address || ""}
             onChange={handleInputChange}
             rows={3}
           />
@@ -93,7 +95,7 @@ const ProfileForm = ({
             <Input
               id="city"
               name="city"
-              value={formData.city}
+              value={formData.city || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -102,7 +104,7 @@ const ProfileForm = ({
             <Input
               id="postal_code"
               name="postal_code"
-              value={formData.postal_code}
+              value={formData.postal_code || ""}
               onChange={handleInputChange}
             />
           </div>
@@ -114,11 +116,15 @@ const ProfileForm = ({
           type="button" 
           variant="outline" 
           onClick={onCancel}
+          disabled={isSubmitting}
         >
           Annuler
         </Button>
-        <Button type="submit">
-          Enregistrer
+        <Button 
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Enregistrement..." : "Enregistrer"}
         </Button>
       </div>
     </form>
