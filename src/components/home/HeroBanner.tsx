@@ -17,7 +17,8 @@ const HeroBanner = () => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const { data, error } = await supabase
+        // Use any to work around type issues temporarily
+        const { data, error } = await (supabase as any)
           .from('banners')
           .select('*')
           .order('position', { ascending: true });
@@ -25,7 +26,7 @@ const HeroBanner = () => {
         if (error) throw error;
         
         if (data && data.length > 0) {
-          setBanners(data);
+          setBanners(data as Banner[]);
         }
       } catch (error) {
         console.error("Error fetching banners:", error);

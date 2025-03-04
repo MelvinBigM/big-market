@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Edit, Trash2, Image, Plus, ArrowUpDown } from "lucide-react";
+import { Edit, Trash2, Image, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { Banner } from "@/data/bannerData";
+import { Banner } from "@/lib/types";
 
 const AdminBannersPage = () => {
   const { profile, isLoading } = useAuth();
@@ -34,13 +34,14 @@ const AdminBannersPage = () => {
 
   const fetchBanners = async () => {
     try {
-      const { data, error } = await supabase
+      // Use any to work around type issues temporarily
+      const { data, error } = await (supabase as any)
         .from('banners')
         .select('*')
         .order('position', { ascending: true });
 
       if (error) throw error;
-      setBanners(data || []);
+      setBanners(data as Banner[] || []);
     } catch (error) {
       console.error("Erreur lors du chargement des bannières:", error);
       toast.error("Impossible de charger les bannières");
@@ -132,7 +133,7 @@ const AdminBannersPage = () => {
 
       if (selectedBanner.id) {
         // Update existing banner
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from('banners')
           .update(updatedBanner)
           .eq('id', selectedBanner.id);
@@ -141,7 +142,7 @@ const AdminBannersPage = () => {
         toast.success("Bannière mise à jour");
       } else {
         // Create new banner
-        const { error } = await supabase
+        const { error } = await (supabase as any)
           .from('banners')
           .insert({
             ...updatedBanner,
@@ -166,7 +167,7 @@ const AdminBannersPage = () => {
     if (!confirm("Êtes-vous sûr de vouloir supprimer cette bannière ?")) return;
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('banners')
         .delete()
         .eq('id', id);

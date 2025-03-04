@@ -36,6 +36,39 @@ export type Database = {
         }
         Relationships: []
       }
+      banners: {
+        Row: {
+          bgcolor: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          position: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          bgcolor?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          position?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          bgcolor?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          position?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
