@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
 
@@ -58,6 +59,7 @@ const AdminBannersPage = () => {
         description: '',
         image_url: null,
         bgColor: 'bg-gradient-to-r from-blue-50 to-indigo-50',
+        text_color: 'text-white',
         position: banners.length + 1,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
@@ -138,6 +140,7 @@ const AdminBannersPage = () => {
         description: updatedBanner.description,
         image_url: updatedBanner.image_url,
         bgcolor: updatedBanner.bgColor, // Note: column name is bgcolor, not bgColor
+        text_color: updatedBanner.text_color,
         position: updatedBanner.position,
         updated_at: updatedBanner.updated_at
       };
@@ -371,6 +374,27 @@ const AdminBannersPage = () => {
                 </select>
               </div>
             )}
+
+            <div className="space-y-2">
+              <Label htmlFor="text_color">Couleur du texte</Label>
+              <Select
+                value={selectedBanner?.text_color || 'text-white'}
+                onValueChange={(value) => setSelectedBanner(prev => prev ? {...prev, text_color: value} : null)}
+              >
+                <SelectTrigger id="text_color">
+                  <SelectValue placeholder="Choisir une couleur" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="text-white">Blanc</SelectItem>
+                  <SelectItem value="text-black">Noir</SelectItem>
+                  <SelectItem value="text-blue-600">Bleu</SelectItem>
+                  <SelectItem value="text-yellow-600">Jaune</SelectItem>
+                  <SelectItem value="text-green-600">Vert</SelectItem>
+                  <SelectItem value="text-red-600">Rouge</SelectItem>
+                  <SelectItem value="text-purple-600">Violet</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <DialogFooter>

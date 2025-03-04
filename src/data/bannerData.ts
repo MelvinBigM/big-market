@@ -5,6 +5,7 @@ export type Banner = {
   description: string | null;
   image_url: string | null;
   bgColor: string;
+  text_color: string;
   position: number;
   created_at: string;
   updated_at: string;
@@ -18,6 +19,7 @@ export const banners = [
     description: "Votre destination pour des produits alimentaires et des boissons de qualité. Découvrez notre large sélection de produits soigneusement sélectionnés.",
     image_url: null,
     bgColor: "bg-gradient-to-r from-blue-50 to-indigo-50",
+    text_color: "text-white",
     position: 1,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -28,6 +30,7 @@ export const banners = [
     description: "Une sélection premium de produits soigneusement choisis pour vous. Nous nous engageons à vous offrir uniquement le meilleur.",
     image_url: null,
     bgColor: "bg-gradient-to-r from-amber-50 to-yellow-50",
+    text_color: "text-black",
     position: 2,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -38,6 +41,7 @@ export const banners = [
     description: "Nous nous engageons à vous offrir les meilleurs produits du marché. La qualité est au cœur de nos préoccupations.",
     image_url: null,
     bgColor: "bg-gradient-to-r from-green-50 to-emerald-50",
+    text_color: "text-white",
     position: 3,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()

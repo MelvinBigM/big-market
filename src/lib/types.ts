@@ -51,6 +51,7 @@ export type Banner = {
   description: string | null;
   image_url: string | null;
   bgColor: string;
+  text_color: string;
   position: number;
   created_at: string;
   updated_at: string;

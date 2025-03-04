@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -69,6 +70,11 @@ const HeroBanner = () => {
     return banner.bgColor || (banner as any).bgcolor || 'bg-gradient-to-r from-blue-50 to-indigo-50';
   };
 
+  // Get the text color from the banner or use a default
+  const getTextColor = (banner: Banner) => {
+    return banner.text_color || (banner as any).text_color || 'text-white';
+  };
+
   return (
     <section className="pt-16 pb-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -98,7 +104,7 @@ const HeroBanner = () => {
             {/* Content overlay with text directly on banner (no white box) */}
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-12">
               <motion.h1 
-                className="text-4xl sm:text-5xl font-bold text-white mb-6 text-shadow-lg"
+                className={`text-4xl sm:text-5xl font-bold ${getTextColor(banners[currentBanner])} mb-6 text-shadow-lg`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -107,7 +113,7 @@ const HeroBanner = () => {
               </motion.h1>
               {banners[currentBanner].description && (
                 <motion.p 
-                  className="text-xl text-white max-w-2xl mx-auto text-shadow"
+                  className={`text-xl ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
