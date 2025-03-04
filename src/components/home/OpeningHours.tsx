@@ -17,15 +17,10 @@ const OpeningHours = () => {
             <h3 className="text-2xl font-semibold">Horaires d'ouverture</h3>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
             <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="font-medium text-lg mb-2">Lundi - Vendredi</p>
+              <p className="font-medium text-lg mb-2">Lundi - Samedi</p>
               <p className="text-gray-600 text-xl">8h00 - 16h00</p>
-            </div>
-            
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <p className="font-medium text-lg mb-2">Samedi</p>
-              <p className="text-gray-600 text-xl">Sur rendez-vous</p>
             </div>
             
             <div className="p-4 bg-gray-50 rounded-lg">
@@ -40,3 +35,4 @@ const OpeningHours = () => {
 };
 
 export default OpeningHours;
+
