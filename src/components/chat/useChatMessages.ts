@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ChatMessage } from './types';
@@ -9,7 +9,7 @@ export const useChatMessages = (userId: string) => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const fetchMessages = async () => {
+  const fetchMessages = useCallback(async () => {
     setIsLoading(true);
     try {
       const { data, error } = await supabase
@@ -36,9 +36,9 @@ export const useChatMessages = (userId: string) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userId, toast]);
 
-  const subscribeToMessages = () => {
+  const subscribeToMessages = useCallback(() => {
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -64,7 +64,7 @@ export const useChatMessages = (userId: string) => {
       .subscribe();
 
     return channel;
-  };
+  }, [userId]);
 
   const sendAdminMessage = async (text: string) => {
     try {
@@ -82,7 +82,7 @@ export const useChatMessages = (userId: string) => {
   };
 
   const sendMessage = async (message: string) => {
-    if (!message.trim()) return;
+    if (!message.trim()) return false;
     
     try {
       // Ajouter message de l'utilisateur à la base de données

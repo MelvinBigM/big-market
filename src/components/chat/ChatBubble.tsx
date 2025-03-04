@@ -43,6 +43,7 @@ const ChatWindow = ({ userId, onClose }: { userId: string; onClose: () => void }
   
   // Charger les messages au chargement du composant
   useEffect(() => {
+    console.log("Chargement des messages...");
     fetchMessages();
     const subscription = subscribeToMessages();
     
