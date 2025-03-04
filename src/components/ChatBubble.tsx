@@ -5,6 +5,7 @@ import { MessageCircle, X, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/lib/auth';
 import { supabase } from '@/integrations/supabase/client';
+import { Textarea } from '@/components/ui/textarea';
 
 // Type pour les messages de chat
 type ChatMessage = {
@@ -34,9 +35,16 @@ const ChatBubble = () => {
   useEffect(() => {
     if (isOpen) {
       fetchMessages();
-      subscribeToMessages();
+      const subscription = subscribeToMessages();
+      
+      // Nettoyer l'abonnement quand le composant se démonte
+      return () => {
+        if (subscription) {
+          supabase.removeChannel(subscription);
+        }
+      };
     }
-  }, [isOpen, userId]);
+  }, [isOpen]);
 
   // Défiler automatiquement vers le bas quand de nouveaux messages arrivent
   useEffect(() => {
@@ -101,10 +109,7 @@ const ChatBubble = () => {
       )
       .subscribe();
 
-    // Nettoyer l'abonnement quand le composant se démonte
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return channel;
   };
 
   const toggleChat = () => {
@@ -130,7 +135,7 @@ const ChatBubble = () => {
     if (!message.trim()) return;
     
     try {
-      // Ajouter message de l'utilisateur
+      // Ajouter message de l'utilisateur à la base de données
       const { error } = await supabase.from('chat_messages').insert({
         message: message.trim(),
         sender_id: userId,
@@ -145,11 +150,6 @@ const ChatBubble = () => {
       // Simuler réponse après un court délai
       setTimeout(async () => {
         await sendAdminMessage("Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.");
-        
-        toast({
-          title: "Message envoyé",
-          description: "Notre équipe vous répondra bientôt",
-        });
       }, 1000);
     } catch (error) {
       console.error('Erreur lors de l\'envoi du message:', error);
@@ -214,12 +214,12 @@ const ChatBubble = () => {
           </div>
           
           <div className="border-t border-gray-200 p-3 flex items-center">
-            <textarea
+            <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Écrivez votre message..."
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none h-10 min-h-10 max-h-32"
+              className="flex-1 min-h-10 max-h-32 resize-none"
             />
             <button 
               onClick={handleSendMessage}
