@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
 import { banners as defaultBanners } from "@/data/bannerData";
 
-const BANNER_HEIGHT = "350px"; // Reduced height from 500px to 350px
+const BANNER_HEIGHT = "250px"; // Reduced height from 350px to 250px
 
 const HeroBanner = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
