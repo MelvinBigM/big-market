@@ -2,8 +2,8 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import NavBar from "../NavBar";
-import Footer from "../Footer";
+import NavBar from "@/components/navbar";
+import Footer from "@/components/Footer";
 import { Building2, User } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 import AdminProtectedRoute from "./AdminProtectedRoute";

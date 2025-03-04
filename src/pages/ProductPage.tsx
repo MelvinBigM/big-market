@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/navbar";
 import Footer from "@/components/Footer";
 import { Product } from "@/lib/types";
 import { useAuth } from "@/lib/auth";
