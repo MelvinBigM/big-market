@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,6 +9,7 @@ import { UserProfileData } from "@/types/profile";
 export const useProfileData = () => {
   const { session, profile, refreshProfile } = useAuth();
   const queryClient = useQueryClient();
+  const userId = profile?.id;
 
   // État initial du formulaire
   const [formData, setFormData] = useState({
@@ -24,18 +25,18 @@ export const useProfileData = () => {
 
   // Récupérer les détails de l'utilisateur connecté
   const { data: userData, isLoading } = useQuery({
-    queryKey: ["userProfile", profile?.id],
+    queryKey: ["userProfile", userId],
     queryFn: async () => {
-      if (!profile?.id) {
+      if (!userId) {
         console.log("Utilisateur non connecté ou profil non chargé");
         return null;
       }
       
-      console.log("Récupération du profil pour l'ID:", profile.id);
+      console.log("Récupération du profil pour l'ID:", userId);
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", profile.id)
+        .eq("id", userId)
         .single();
 
       if (error) {
@@ -46,12 +47,10 @@ export const useProfileData = () => {
       console.log("Données du profil récupérées:", data);
       return data as UserProfileData;
     },
-    enabled: !!profile?.id,
-    retry: 3,
-    retryDelay: 1000,
+    enabled: !!userId,
   });
 
-  // Utiliser useEffect pour mettre à jour le formulaire quand userData change
+  // Mettre à jour le formulaire quand userData change
   useEffect(() => {
     if (userData) {
       console.log("Mise à jour du formulaire avec les données:", userData);
@@ -71,34 +70,33 @@ export const useProfileData = () => {
     mutationFn: async (updatedProfile: Partial<UserProfileData>) => {
       console.log("Envoi des données de mise à jour:", updatedProfile);
       
-      if (!profile?.id) {
+      if (!userId) {
         throw new Error("ID utilisateur non disponible");
       }
       
       const { data, error } = await supabase
         .from("profiles")
         .update(updatedProfile)
-        .eq("id", profile.id)
-        .select();
+        .eq("id", userId);
 
       if (error) {
         console.error("Erreur de mise à jour:", error);
         throw error;
       }
       
-      console.log("Réponse de mise à jour:", data);
       return data;
     },
     onSuccess: async () => {
-      console.log("Mise à jour réussie");
-      
-      // Invalider le cache de la requête
-      queryClient.invalidateQueries({ queryKey: ["userProfile", profile?.id] });
-      
-      // Rafraîchir le profil dans le contexte d'authentification
+      // Rafraîchir les données
       await refreshProfile();
       
+      // Invalider le cache de la requête pour forcer un nouveau chargement
+      queryClient.invalidateQueries({ queryKey: ["userProfile", userId] });
+      
+      // Afficher un message de succès
       toast.success("Profil mis à jour avec succès");
+      
+      // Fermer le mode édition
       setIsEditing(false);
     },
     onError: (error: any) => {
@@ -107,22 +105,19 @@ export const useProfileData = () => {
     },
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }, []);
 
-  const handleCheckboxChange = (checked: boolean) => {
-    setFormData((prev) => ({ ...prev, is_company: checked }));
-  };
+  const handleCheckboxChange = useCallback((checked: boolean) => {
+    setFormData(prev => ({ ...prev, is_company: checked }));
+  }, []);
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    if (e) {
-      e.preventDefault();
-    }
+  const handleSubmit = useCallback(() => {
     console.log("Soumission du formulaire avec les données:", formData);
     updateProfileMutation.mutate(formData);
-  };
+  }, [formData, updateProfileMutation]);
 
   return {
     userData,

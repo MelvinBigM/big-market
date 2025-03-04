@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface ProfileFormProps {
   formData: {
@@ -17,11 +18,25 @@ interface ProfileFormProps {
   };
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleCheckboxChange: (checked: boolean) => void;
+  handleSubmit: () => void;
+  onCancel: () => void;
 }
 
-const ProfileForm = ({ formData, handleInputChange, handleCheckboxChange }: ProfileFormProps) => {
+const ProfileForm = ({ 
+  formData, 
+  handleInputChange, 
+  handleCheckboxChange, 
+  handleSubmit,
+  onCancel
+}: ProfileFormProps) => {
+  
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit();
+  };
+  
   return (
-    <form id="profile-form">
+    <form onSubmit={onSubmit}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2 md:col-span-2">
           <div className="flex items-center space-x-2">
@@ -92,6 +107,19 @@ const ProfileForm = ({ formData, handleInputChange, handleCheckboxChange }: Prof
             />
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-end gap-2 mt-6">
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={onCancel}
+        >
+          Annuler
+        </Button>
+        <Button type="submit">
+          Enregistrer
+        </Button>
       </div>
     </form>
   );

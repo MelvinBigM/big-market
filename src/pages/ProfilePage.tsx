@@ -4,17 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
 import NavBar from "@/components/navbar";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import ProfileForm from "@/components/profile/ProfileForm";
 import ProfileDisplay from "@/components/profile/ProfileDisplay";
 import { useProfileData } from "@/hooks/useProfileData";
+import { Button } from "@/components/ui/button";
 
 const ProfilePage = () => {
   const { session, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   
-  // Utiliser le hook customisé pour gérer les données du profil
+  // Récupérer les données du profil avec le hook customisé
   const { 
     userData, 
     formData, 
@@ -33,7 +33,7 @@ const ProfilePage = () => {
     }
   }, [session, authLoading, navigate]);
 
-  // Page de chargement pendant la vérification de l'authentification
+  // Afficher un chargement pendant la vérification de l'authentification
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -55,7 +55,7 @@ const ProfilePage = () => {
     return null;
   }
 
-  // Page de chargement pendant la récupération des données du profil
+  // Afficher un chargement pendant la récupération des données du profil
   if (profileDataLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -71,6 +71,8 @@ const ProfilePage = () => {
       </div>
     );
   }
+
+  const { profile } = useAuth();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -91,28 +93,20 @@ const ProfilePage = () => {
                   formData={formData}
                   handleInputChange={handleInputChange}
                   handleCheckboxChange={handleCheckboxChange}
+                  handleSubmit={handleSubmit}
+                  onCancel={() => setIsEditing(false)}
                 />
               ) : (
-                <ProfileDisplay userData={userData} profile={useAuth().profile} />
+                <>
+                  <ProfileDisplay userData={userData} profile={profile} />
+                  <div className="flex justify-end mt-6">
+                    <Button onClick={() => setIsEditing(true)}>
+                      Modifier
+                    </Button>
+                  </div>
+                </>
               )}
             </CardContent>
-
-            <CardFooter className="flex justify-end gap-2">
-              {isEditing ? (
-                <>
-                  <Button variant="outline" onClick={() => setIsEditing(false)}>
-                    Annuler
-                  </Button>
-                  <Button onClick={handleSubmit}>
-                    Enregistrer
-                  </Button>
-                </>
-              ) : (
-                <Button onClick={() => setIsEditing(true)}>
-                  Modifier
-                </Button>
-              )}
-            </CardFooter>
           </Card>
         </div>
       </main>
