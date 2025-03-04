@@ -18,8 +18,8 @@ export const banners = [
     title: "Bienvenue chez BIG IMEX",
     description: "Votre destination pour des produits alimentaires et des boissons de qualité. Découvrez notre large sélection de produits soigneusement sélectionnés.",
     image_url: null,
-    bgColor: "bg-gradient-to-r from-blue-50 to-indigo-50",
-    text_color: "text-white",
+    bgColor: "bg-gradient-to-r from-blue-50 to-indigo-100",
+    text_color: "text-gray-800",
     position: 1,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -29,8 +29,8 @@ export const banners = [
     title: "Découvrez nos Produits",
     description: "Une sélection premium de produits soigneusement choisis pour vous. Nous nous engageons à vous offrir uniquement le meilleur.",
     image_url: null,
-    bgColor: "bg-gradient-to-r from-amber-50 to-yellow-50",
-    text_color: "text-black",
+    bgColor: "bg-gradient-to-r from-gray-50 to-slate-100",
+    text_color: "text-gray-800",
     position: 2,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -40,8 +40,8 @@ export const banners = [
     title: "Qualité Garantie",
     description: "Nous nous engageons à vous offrir les meilleurs produits du marché. La qualité est au cœur de nos préoccupations.",
     image_url: null,
-    bgColor: "bg-gradient-to-r from-green-50 to-emerald-50",
-    text_color: "text-white",
+    bgColor: "bg-gradient-to-r from-blue-100 to-sky-50",
+    text_color: "text-gray-800",
     position: 3,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()

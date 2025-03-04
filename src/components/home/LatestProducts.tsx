@@ -28,7 +28,7 @@ const LatestProducts = () => {
   });
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-secondary">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-slate-50">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-10">
           <h2 className="text-3xl font-bold">Nos Nouveautés</h2>

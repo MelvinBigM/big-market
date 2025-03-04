@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
 import { banners as defaultBanners } from "@/data/bannerData";
 
-const BANNER_HEIGHT = "200px"; // Reduced height from 250px to 200px
+const BANNER_HEIGHT = "200px";
 
 const HeroBanner = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -24,7 +24,7 @@ const HeroBanner = () => {
         if (error) throw error;
         
         if (data && data.length > 0) {
-          console.log("Fetched banners:", data); // Debug log
+          console.log("Fetched banners:", data);
           setBanners(data as Banner[]);
         }
       } catch (error) {
@@ -67,12 +67,17 @@ const HeroBanner = () => {
 
   // Make sure we're using the correct field name (bgcolor from database vs bgColor in our code)
   const getBannerBackground = (banner: Banner) => {
-    return banner.bgColor || (banner as any).bgcolor || 'bg-gradient-to-r from-blue-50 to-indigo-50';
+    // Si la bannière a déjà une couleur définie, on la garde
+    const storedColor = banner.bgColor || (banner as any).bgcolor;
+    if (storedColor) return storedColor;
+    
+    // Sinon on utilise une couleur de notre palette uniformisée
+    return 'bg-gradient-to-r from-blue-50 to-indigo-100';
   };
 
   // Get the text color from the banner or use a default
   const getTextColor = (banner: Banner) => {
-    return banner.text_color || (banner as any).text_color || 'text-white';
+    return banner.text_color || (banner as any).text_color || 'text-gray-800';
   };
 
   return (

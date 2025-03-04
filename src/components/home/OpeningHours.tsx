@@ -4,7 +4,7 @@ import { Clock } from "lucide-react";
 
 const OpeningHours = () => {
   return (
-    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-secondary">
+    <section className="py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -18,12 +18,12 @@ const OpeningHours = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-center">
-            <div className="p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-slate-50 rounded-lg">
               <p className="font-medium text-lg mb-2">Lundi - Samedi</p>
               <p className="text-gray-600 text-xl">8h00 - 16h00</p>
             </div>
             
-            <div className="p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-slate-50 rounded-lg">
               <p className="font-medium text-lg mb-2">Dimanche</p>
               <p className="text-gray-600 text-xl">Fermé</p>
             </div>
@@ -35,4 +35,3 @@ const OpeningHours = () => {
 };
 
 export default OpeningHours;
-
