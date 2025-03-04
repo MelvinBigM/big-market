@@ -14,6 +14,7 @@ const ProfilePage = () => {
   const { session, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   
+  // Utiliser le hook customisé pour gérer les données du profil
   const { 
     userData, 
     formData, 
@@ -25,14 +26,14 @@ const ProfilePage = () => {
     handleSubmit 
   } = useProfileData();
 
-  // Redirection only if not logged in AND auth loading is complete
+  // Redirection si l'utilisateur n'est pas connecté
   useEffect(() => {
     if (!session && !authLoading) {
       navigate("/login");
     }
   }, [session, authLoading, navigate]);
 
-  // Don't render anything while auth is loading to prevent flash redirects
+  // Page de chargement pendant la vérification de l'authentification
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -49,11 +50,12 @@ const ProfilePage = () => {
     );
   }
 
-  // If auth loading is complete but no session, return null (redirection will happen)
+  // Redirection si l'utilisateur n'est pas connecté
   if (!session && !authLoading) {
     return null;
   }
 
+  // Page de chargement pendant la récupération des données du profil
   if (profileDataLoading) {
     return (
       <div className="min-h-screen bg-gray-50">

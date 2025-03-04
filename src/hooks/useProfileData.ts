@@ -89,8 +89,8 @@ export const useProfileData = () => {
       console.log("Réponse de mise à jour:", data);
       return data;
     },
-    onSuccess: async (data) => {
-      console.log("Mise à jour réussie:", data);
+    onSuccess: async () => {
+      console.log("Mise à jour réussie");
       
       // Invalider le cache de la requête
       queryClient.invalidateQueries({ queryKey: ["userProfile", profile?.id] });
@@ -116,8 +116,10 @@ export const useProfileData = () => {
     setFormData((prev) => ({ ...prev, is_company: checked }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
     console.log("Soumission du formulaire avec les données:", formData);
     updateProfileMutation.mutate(formData);
   };
