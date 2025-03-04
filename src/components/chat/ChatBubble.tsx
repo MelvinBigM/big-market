@@ -10,10 +10,11 @@ import { supabase } from '@/integrations/supabase/client';
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { session } = useAuth();
+  const { session, profile } = useAuth();
   
-  // Si l'utilisateur n'est pas authentifié, ne pas afficher la bulle de chat
-  if (!session) return null;
+  // Ne pas afficher la bulle de chat si l'utilisateur n'est pas authentifié
+  // ou si l'utilisateur est un admin
+  if (!session || (profile && profile.role === 'admin')) return null;
 
   const userId = session.user.id;
   
