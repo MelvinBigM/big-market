@@ -17,7 +17,7 @@ const initialFormData = {
 };
 
 export const useProfileData = () => {
-  const { session, profile, refreshProfile } = useAuth();
+  const { session, refreshProfile } = useAuth();
   const queryClient = useQueryClient();
   const userId = session?.user?.id;
   
@@ -40,8 +40,6 @@ export const useProfileData = () => {
         throw new Error("User ID not available");
       }
       
-      console.log("Fetching profile for user ID:", userId);
-      
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -63,7 +61,6 @@ export const useProfileData = () => {
   // Update form data when userData changes
   useEffect(() => {
     if (userData) {
-      console.log("Updating form with retrieved data:", userData);
       setFormData({
         full_name: userData.full_name || "",
         is_company: userData.is_company || false,
@@ -82,8 +79,6 @@ export const useProfileData = () => {
         throw new Error("User ID not available");
       }
       
-      console.log("Sending profile update with data:", updatedData);
-      
       // Make sure we're updating the correct user record
       const { data, error } = await supabase
         .from("profiles")
@@ -92,38 +87,35 @@ export const useProfileData = () => {
         .select();
 
       if (error) {
-        console.error("Profile update error:", error);
         throw error;
       }
       
-      console.log("Profile update response:", data);
       return data;
     },
-    onSuccess: async () => {
-      // Show success message
+    onSuccess: () => {
+      // Show success toast
       toast.success("Profil mis à jour avec succès");
       
       // Exit edit mode
       setIsEditing(false);
       
-      // Refresh profile in auth context
-      await refreshProfile();
+      // Refresh the profile in auth context
+      refreshProfile();
       
-      // Invalidate and refetch query
-      queryClient.invalidateQueries({ queryKey: ["userProfile", userId] });
+      // Invalidate the cache
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       
-      // Force refetch to ensure we have the latest data
+      // Force refetch after a short delay
       setTimeout(() => {
         refetch();
-      }, 500);
+      }, 300);
     },
     onError: (error: any) => {
-      console.error("Profile update error:", error);
-      toast.error(`Erreur lors de la mise à jour du profil: ${error.message}`);
+      toast.error(`Erreur: ${error.message}`);
     },
   });
 
-  // Form input handlers
+  // Form handlers
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -135,22 +127,25 @@ export const useProfileData = () => {
 
   // Submit handler
   const handleSubmit = useCallback(() => {
-    console.log("Submitting profile update with form data:", formData);
     updateProfileMutation.mutate(formData);
   }, [formData, updateProfileMutation]);
+
+  // Refetch profile data
+  const refetchProfileData = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   return {
     userData,
     formData,
     isLoading,
     isError,
-    error,
     isEditing,
     setIsEditing,
     isSubmitting: updateProfileMutation.isPending,
     handleInputChange,
     handleCheckboxChange,
     handleSubmit,
-    refetchProfile: refetch
+    refetchProfileData
   };
 };

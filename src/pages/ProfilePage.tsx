@@ -12,10 +12,9 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
 const ProfilePage = () => {
-  const { session, isLoading: authLoading } = useAuth();
+  const { session, isLoading: authLoading, profile } = useAuth();
   const navigate = useNavigate();
   
-  // Use the custom hook to manage profile data and interactions
   const { 
     userData, 
     formData, 
@@ -27,7 +26,7 @@ const ProfilePage = () => {
     handleInputChange, 
     handleCheckboxChange, 
     handleSubmit,
-    refetchProfile
+    refetchProfileData
   } = useProfileData();
 
   // Redirect if user is not authenticated
@@ -40,13 +39,13 @@ const ProfilePage = () => {
   // Handle data refresh when page loads
   useEffect(() => {
     if (session && !profileDataLoading && !isEditing) {
-      refetchProfile();
+      refetchProfileData();
     }
-  }, [session, profileDataLoading, isEditing, refetchProfile]);
+  }, [session, profileDataLoading, isEditing, refetchProfileData]);
 
   // Create a proper event handler for the refetch button
   const handleRefetchClick = () => {
-    refetchProfile();
+    refetchProfileData();
   };
 
   // Show loading state during authentication check
@@ -116,9 +115,6 @@ const ProfilePage = () => {
     );
   }
 
-  // Get profile data from auth context for displaying account type
-  const { profile } = useAuth();
-
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
@@ -144,12 +140,16 @@ const ProfilePage = () => {
                 />
               ) : (
                 <>
-                  <ProfileDisplay userData={userData} profile={profile} />
-                  <div className="flex justify-end mt-6">
-                    <Button onClick={() => setIsEditing(true)}>
-                      Modifier
-                    </Button>
-                  </div>
+                  {userData && profile && (
+                    <>
+                      <ProfileDisplay userData={userData} profile={profile} />
+                      <div className="flex justify-end mt-6">
+                        <Button onClick={() => setIsEditing(true)}>
+                          Modifier
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </>
               )}
             </CardContent>

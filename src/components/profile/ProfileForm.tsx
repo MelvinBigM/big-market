@@ -39,7 +39,7 @@ const ProfileForm = ({
   };
   
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2 md:col-span-2">
           <div className="flex items-center space-x-2">
@@ -59,7 +59,7 @@ const ProfileForm = ({
           <Input
             id="full_name"
             name="full_name"
-            value={formData.full_name || ""}
+            value={formData.full_name}
             onChange={handleInputChange}
             required
           />
@@ -76,7 +76,7 @@ const ProfileForm = ({
         </div>
       </div>
 
-      <Separator className="my-6" />
+      <Separator className="my-4" />
 
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Adresse</h3>
