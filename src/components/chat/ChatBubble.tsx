@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth';
 import { MessagesContainer } from './MessagesContainer';
 import { ChatInput } from './ChatInput';
 import { useChatMessages } from './useChatMessages';
+import { supabase } from '@/integrations/supabase/client';
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);

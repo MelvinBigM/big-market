@@ -4,7 +4,7 @@ import { ChatMessage as ChatMessageType } from './types';
 
 interface ChatMessageProps {
   message: ChatMessageType;
-  isCurrentUser: boolean;
+  isCurrentUser: string;
   formatDate: (dateString: string) => string;
 }
 
@@ -13,7 +13,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   isCurrentUser,
   formatDate 
 }) => {
-  const isUserMessage = message.sender_id === isCurrentUser && !message.is_admin_message;
+  const isUserMessage = message.sender_id === isCurrentUser && message.is_admin_message === false;
   
   return (
     <div 
