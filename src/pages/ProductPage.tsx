@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-import { Product } from "@/lib/types";
+import { AccessRequest, Product } from "@/lib/types";
 import { useAuth } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +18,7 @@ const ProductPage = () => {
   const { profile } = useAuth();
   const [showAccessDialog, setShowAccessDialog] = useState(false);
 
+  // Récupérer les informations du produit
   const { data: product } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
@@ -37,8 +38,28 @@ const ProductPage = () => {
     },
   });
 
+  // Vérifier si l'utilisateur a déjà une demande d'accès en attente
+  const { data: accessRequest, isLoading: isLoadingAccessRequest } = useQuery({
+    queryKey: ["accessRequest", profile?.id],
+    queryFn: async () => {
+      if (!profile?.id) return null;
+      
+      const { data, error } = await supabase
+        .from("access_requests")
+        .select("*")
+        .eq("user_id", profile.id)
+        .eq("status", "pending")
+        .maybeSingle();
+
+      if (error) throw error;
+      return data as AccessRequest | null;
+    },
+    enabled: !!profile?.id && profile.role === 'nouveau',
+  });
+
   const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
   const isNewUser = profile?.role === 'nouveau';
+  const hasPendingRequest = !!accessRequest;
 
   if (!product) return null;
 
@@ -94,14 +115,23 @@ const ProductPage = () => {
               ) : (
                 <div className="text-sm">
                   {isNewUser ? (
-                    <p className="text-gray-700 mb-2">
-                      Pour voir les prix : <button
-                        onClick={() => setShowAccessDialog(true)}
-                        className="text-blue-600 hover:text-blue-800 underline font-medium"
-                      >
-                        demander l'accès client
-                      </button>
-                    </p>
+                    hasPendingRequest ? (
+                      <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">
+                        <p className="text-amber-800 font-medium">
+                          Votre demande d'accès est en cours d'examen. 
+                          Vous pourrez voir les prix une fois qu'un administrateur l'aura approuvée.
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-gray-700 mb-2">
+                        Pour voir les prix : <button
+                          onClick={() => setShowAccessDialog(true)}
+                          className="text-blue-600 hover:text-blue-800 underline font-medium"
+                        >
+                          demander l'accès client
+                        </button>
+                      </p>
+                    )
                   ) : (
                     <p className="text-gray-700 italic">
                       Connectez-vous en tant que client pour voir le prix
