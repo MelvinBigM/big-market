@@ -43,12 +43,7 @@ const LatestProducts = () => {
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ 
-                y: -5, 
-                scale: 1.03,
-                transition: { duration: 0.2 }
-              }}
-              className="bg-white rounded-lg shadow-md overflow-hidden relative hover:shadow-lg transition-all duration-300"
+              className="bg-white rounded-lg shadow-md overflow-hidden relative hover:shadow-lg transition-shadow duration-300"
             >
               <div className="absolute top-2 right-2 z-10">
                 <span className="bg-primary text-white px-2 py-0.5 rounded-full text-xs font-semibold">
@@ -67,14 +62,9 @@ const LatestProducts = () => {
                 <h3 className="text-sm font-semibold mb-3 truncate">{product.name}</h3>
                 <div className="flex justify-center">
                   <Link to={`/product/${product.id}`}>
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Button variant="default" size="sm">
-                        Voir
-                      </Button>
-                    </motion.div>
+                    <Button variant="default" size="sm">
+                      Voir
+                    </Button>
                   </Link>
                 </div>
               </div>

@@ -46,15 +46,13 @@ const LocationMap = () => {
             <h3 className="text-2xl font-semibold">Nos coordonnées</h3>
             <div className="space-y-6">
               <div 
-                className="flex items-center space-x-4 p-5 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+                className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
                 onClick={handleOpenGoogleMaps}
               >
-                <div className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
-                  <MapPin className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 text-center">
-                  <p className="font-medium flex items-center justify-center gap-2">
-                    Adresse <ExternalLink className="h-4 w-4 text-gray-400" />
+                <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium flex items-center">
+                    Adresse <ExternalLink className="h-4 w-4 ml-2 text-gray-400" />
                   </p>
                   <p className="text-gray-600">42 Chemin de l'escadrille</p>
                   <p className="text-gray-600">06210 Mandelieu</p>
@@ -62,21 +60,17 @@ const LocationMap = () => {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-4 p-5 bg-gray-50 rounded-lg">
-                <div className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
-                  <Phone className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 text-center">
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Phone className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
                   <p className="font-medium">Téléphone</p>
                   <p className="text-gray-600">+(4) 93 90 90 92</p>
                 </div>
               </div>
               
-              <div className="flex items-center space-x-4 p-5 bg-gray-50 rounded-lg">
-                <div className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
-                  <Mail className="h-5 w-5 text-primary" />
-                </div>
-                <div className="flex-1 text-center">
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Mail className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
                   <p className="font-medium">Email</p>
                   <p className="text-gray-600">contact@bigimex.fr</p>
                 </div>
