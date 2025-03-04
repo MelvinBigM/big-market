@@ -1,0 +1,94 @@
+
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { MapPin, Phone, Mail, ExternalLink } from "lucide-react";
+
+const LocationMap = () => {
+  const handleOpenGoogleMaps = () => {
+    window.open("https://maps.app.goo.gl/JPccmraZVscgLL5u7", "_blank");
+  };
+
+  return (
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-12">Retrouvez-nous</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-6"
+          >
+            <Card className="overflow-hidden shadow-md border-none">
+              <CardContent className="p-0">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2891.5429189232896!2d6.937453375869258!3d43.55261895887715!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12ce8c1320fbf0a5%3A0xe901e493c9a1b4d8!2s42%20Chem.%20de%20l&#39;Escadrille%2C%2006210%20Mandelieu-la-Napoule!5e0!3m2!1sfr!2sfr!4v1718458531594!5m2!1sfr!2sfr" 
+                  width="100%" 
+                  height="450" 
+                  style={{ border: 0 }} 
+                  allowFullScreen={true} 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Google Maps - BIG IMEX location"
+                  className="rounded-lg"
+                ></iframe>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8"
+          >
+            <h3 className="text-2xl font-semibold">Nos coordonnées</h3>
+            <div className="space-y-6">
+              <div 
+                className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200"
+                onClick={handleOpenGoogleMaps}
+              >
+                <MapPin className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium flex items-center">
+                    Adresse <ExternalLink className="h-4 w-4 ml-2 text-gray-400" />
+                  </p>
+                  <p className="text-gray-600">42 Chemin de l'escadrille</p>
+                  <p className="text-gray-600">06210 Mandelieu</p>
+                  <p className="text-gray-600">FRANCE</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Phone className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">Téléphone</p>
+                  <p className="text-gray-600">+(4) 93 90 90 92</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Mail className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
+                <div>
+                  <p className="font-medium">Email</p>
+                  <p className="text-gray-600">contact@bigimex.fr</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="pt-4">
+              <Link to="/contact">
+                <Button variant="default" size="lg" className="w-full">
+                  Nous contacter
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default LocationMap;
