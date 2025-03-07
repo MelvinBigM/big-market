@@ -5,32 +5,12 @@ const Footer = () => {
   return (
     <footer className="bg-white border-t">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">BIG IMEX</h3>
             <p className="text-sm text-gray-600">
               Votre destination pour des produits alimentaires et des boissons de qualité.
             </p>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Nos produits</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/categories/sodas" className="text-sm text-gray-600 hover:text-primary">
-                  Sodas
-                </Link>
-              </li>
-              <li>
-                <Link to="/categories/jus" className="text-sm text-gray-600 hover:text-primary">
-                  Jus
-                </Link>
-              </li>
-              <li>
-                <Link to="/categories/eaux" className="text-sm text-gray-600 hover:text-primary">
-                  Eaux
-                </Link>
-              </li>
-            </ul>
           </div>
           <div>
             <h3 className="text-lg font-semibold mb-4">Informations</h3>
