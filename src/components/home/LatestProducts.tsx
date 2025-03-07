@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/lib/types";
-import { Sparkle } from "lucide-react";
 
 const LatestProducts = () => {
   const { data: latestProducts } = useQuery({
@@ -30,10 +29,9 @@ const LatestProducts = () => {
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-10">
-          <h2 className="text-3xl font-bold flex items-center gap-2">
-            Nos Nouveautés 
-            <Sparkle className="h-5 w-5 text-primary animate-pulse" />
+        <div className="mb-10 text-center">
+          <h2 className="text-3xl font-bold">
+            Nos Nouveautés
           </h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
