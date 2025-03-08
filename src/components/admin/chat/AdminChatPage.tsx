@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import NavBar from "../../NavBar";
 import Footer from "../../Footer";
-import { useChatAdmin } from "./useChatAdmin";
+import { useChatAdmin } from "./hooks/useChatAdmin";
 import ConversationsList from "./ConversationsList";
 import ChatMessageArea from "./ChatMessageArea";
 import { useEffect } from "react";
