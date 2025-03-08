@@ -3,8 +3,8 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChatMessage as MessageType } from './types';
-import ChatInput from './ChatInput';
-import MessagesContainer from './MessagesContainer';
+import { ChatInput } from './ChatInput';
+import { MessagesContainer } from './MessagesContainer';
 
 interface ChatBoxProps {
   onClose: () => void;
@@ -39,7 +39,10 @@ const ChatBox = ({ onClose, messages, isLoading, sendMessage, userId }: ChatBoxP
       
       {/* Input area */}
       <div className="p-3 border-t mt-auto">
-        <ChatInput onSendMessage={sendMessage} />
+        <ChatInput 
+          onSendMessage={sendMessage} 
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );
