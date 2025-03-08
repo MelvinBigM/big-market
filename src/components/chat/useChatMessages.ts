@@ -196,6 +196,7 @@ export const useChatMessages = (userId: string) => {
     fetchMessages,
     subscribeToMessages,
     sendMessage,
-    markAdminMessagesAsRead
+    markAdminMessagesAsRead,
+    countUnreadMessages // Added this to include it in the returned object
   };
 };
