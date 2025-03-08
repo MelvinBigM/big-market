@@ -68,6 +68,11 @@ export const useChatAdmin = (profile: Profile | null) => {
         .sort((a, b) => new Date(b.last_message_date).getTime() - new Date(a.last_message_date).getTime());
 
       setConversations(sortedConversations);
+      
+      // If a conversation is selected, make sure its unread count is 0
+      if (selectedUserId) {
+        await markMessagesAsRead(selectedUserId);
+      }
     } catch (error) {
       console.error('Erreur lors du chargement des conversations:', error);
       toast.error("Impossible de charger les conversations");
@@ -93,26 +98,8 @@ export const useChatAdmin = (profile: Profile | null) => {
       if (data) {
         setMessages(data as ChatMessage[]);
         
-        // Mark messages as read
-        const unreadMessages = data
-          .filter(msg => !msg.read && msg.sender_id === userId)
-          .map(msg => msg.id);
-        
-        if (unreadMessages.length > 0) {
-          await supabase
-            .from('chat_messages')
-            .update({ read: true })
-            .in('id', unreadMessages);
-          
-          // Update locally the unread count for the selected conversation
-          setConversations(prevConversations => 
-            prevConversations.map(conv => 
-              conv.user_id === userId 
-                ? { ...conv, unread_count: 0 } 
-                : conv
-            )
-          );
-        }
+        // Mark unread messages from this user as read
+        await markMessagesAsRead(userId);
       }
     } catch (error) {
       console.error('Erreur lors du chargement des messages:', error);
@@ -120,7 +107,7 @@ export const useChatAdmin = (profile: Profile | null) => {
     }
   };
 
-  // Mark all messages as read for a user
+  // Mark all messages as read for a user - optimized version
   const markMessagesAsRead = async (userId: string) => {
     if (!profile) return;
     
@@ -138,10 +125,12 @@ export const useChatAdmin = (profile: Profile | null) => {
         const unreadIds = data.map(msg => msg.id);
         
         // Update messages to read
-        await supabase
+        const { error: updateError } = await supabase
           .from('chat_messages')
           .update({ read: true })
           .in('id', unreadIds);
+          
+        if (updateError) throw updateError;
           
         // Update conversations locally
         setConversations(prevConversations => 
@@ -151,6 +140,8 @@ export const useChatAdmin = (profile: Profile | null) => {
               : conv
           )
         );
+        
+        console.log(`Marked ${unreadIds.length} messages as read for user ${userId}`);
       }
     } catch (error) {
       console.error('Erreur lors du marquage des messages comme lus:', error);
@@ -181,6 +172,7 @@ export const useChatAdmin = (profile: Profile | null) => {
   useEffect(() => {
     if (!profile) return;
 
+    // Load conversations on mount
     loadConversations();
     
     // Subscribe to new messages
@@ -200,6 +192,10 @@ export const useChatAdmin = (profile: Profile | null) => {
           // Update messages if the conversation is currently selected
           if (selectedUserId && (newMessage.sender_id === selectedUserId || newMessage.receiver_id === selectedUserId)) {
             setMessages((prev) => [...prev, newMessage]);
+            // If the message is from the selected user, mark it as read immediately
+            if (newMessage.sender_id === selectedUserId && !newMessage.is_admin_message) {
+              markMessagesAsRead(selectedUserId);
+            }
           }
         }
       )
@@ -217,17 +213,16 @@ export const useChatAdmin = (profile: Profile | null) => {
       )
       .subscribe();
 
+    // Clean up the subscription when the component unmounts
     return () => {
       supabase.removeChannel(channel);
     };
   }, [profile]);
 
-  // Load messages when user is selected
+  // Load messages when user is selected and mark messages as read
   useEffect(() => {
     if (selectedUserId) {
       loadMessages(selectedUserId);
-      // This ensures unread messages are marked as read when a conversation is selected
-      markMessagesAsRead(selectedUserId);
     }
   }, [selectedUserId]);
 

@@ -23,14 +23,29 @@ const AdminChatPage = () => {
     sendMessage,
     formatDate,
     loadConversations,
+    markMessagesAsRead,
   } = useChatAdmin(profile);
 
   // Force refresh conversations when component mounts to ensure we have latest read status
   useEffect(() => {
     if (profile) {
+      // Load conversations when component mounts and periodically refresh
       loadConversations();
+      
+      // Set up a periodic refresh every 30 seconds
+      const intervalId = setInterval(() => {
+        if (profile) {
+          loadConversations();
+          // If a conversation is selected, mark its messages as read again
+          if (selectedUserId) {
+            markMessagesAsRead(selectedUserId);
+          }
+        }
+      }, 30000);
+      
+      return () => clearInterval(intervalId);
     }
-  }, [profile]);
+  }, [profile, selectedUserId]);
 
   // Redirect non-admin users
   if (isLoading) {
@@ -52,6 +67,8 @@ const AdminChatPage = () => {
 
   const handleSelectConversation = (userId: string) => {
     setSelectedUserId(userId);
+    // Immediately mark messages as read when a conversation is selected
+    markMessagesAsRead(userId);
   };
 
   const handleSendReply = (message: string) => {
