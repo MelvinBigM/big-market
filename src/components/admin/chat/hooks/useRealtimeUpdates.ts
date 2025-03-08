@@ -48,18 +48,16 @@ export const useRealtimeUpdates = (
           schema: 'public',
           table: 'chat_messages',
         },
-        () => {
-          // Reload conversations to update the unread counters
-          loadConversations();
+        (payload) => {
+          const updatedMessage = payload.new as ChatMessage;
           
-          // Also update currently displayed messages if needed
-          if (selectedUserId) {
-            // Re-fetch the messages to get the updated read status
-            setMessages(prev => {
-              // This forces a re-fetch of messages with updated read status
-              return [...prev];
-            });
-          }
+          // Update the message in our local state too
+          setMessages(prev => prev.map(msg => 
+            msg.id === updatedMessage.id ? updatedMessage : msg
+          ));
+          
+          // Also reload conversations to update the unread counters
+          loadConversations();
         }
       )
       .subscribe();

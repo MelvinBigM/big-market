@@ -36,6 +36,13 @@ export const useChatMessages = (userId: string) => {
         
         console.log(`Marked ${unreadIds.length} admin messages as read`);
         setUnreadCount(0);
+        
+        // Update local message state to reflect read status
+        setMessages(prev => 
+          prev.map(msg => 
+            unreadIds.includes(msg.id) ? { ...msg, read: true } : msg
+          )
+        );
       }
     } catch (error) {
       console.error('Erreur lors du marquage des messages comme lus:', error);
@@ -144,7 +151,7 @@ export const useChatMessages = (userId: string) => {
     try {
       const { error } = await supabase.from('chat_messages').insert({
         message: text,
-        sender_id: userId, // Pour respecter la RLS, mais marqué comme admin
+        sender_id: null, // Changed from userId to null to represent system message
         is_admin_message: true,
         receiver_id: userId, // Message destiné à l'utilisateur
         read: true, // Auto-read for first message
@@ -169,11 +176,6 @@ export const useChatMessages = (userId: string) => {
       });
 
       if (error) throw error;
-      
-      // Simuler réponse après un court délai
-      setTimeout(async () => {
-        await sendAdminMessage("Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.");
-      }, 1000);
       
       return true;
     } catch (error) {

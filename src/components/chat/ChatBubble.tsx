@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
@@ -14,16 +15,21 @@ const ChatBubble = () => {
   const chat = profile ? useChatMessages(profile.id) : null;
   
   useEffect(() => {
-    if (isOpen && chat) {
-      // When opening chat, fetch messages and mark as read
-      chat.fetchMessages();
-      chat.markAdminMessagesAsRead();
+    if (chat) {
+      // Initialize unread count on mount
+      chat.countUnreadMessages();
       
-      // Set up real-time updates
-      const channel = chat.subscribeToMessages();
-      return () => {
-        supabase.removeChannel(channel);
-      };
+      // If chat is open, fetch messages and mark as read
+      if (isOpen) {
+        chat.fetchMessages();
+        chat.markAdminMessagesAsRead();
+        
+        // Set up real-time updates
+        const channel = chat.subscribeToMessages();
+        return () => {
+          supabase.removeChannel(channel);
+        };
+      }
     }
   }, [isOpen, chat]);
 

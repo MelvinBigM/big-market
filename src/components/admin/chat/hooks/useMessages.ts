@@ -58,6 +58,13 @@ export const useMessages = (profile: Profile | null, updateConversationReadStatu
           .in('id', unreadIds);
           
         if (updateError) throw updateError;
+        
+        // Also update the read status in our local state
+        setMessages(prev => 
+          prev.map(msg => 
+            unreadIds.includes(msg.id) ? { ...msg, read: true } : msg
+          )
+        );
           
         // Update conversations locally via the passed function
         updateConversationReadStatus(userId);
@@ -72,7 +79,7 @@ export const useMessages = (profile: Profile | null, updateConversationReadStatu
 
   // Send a message
   const sendMessage = async (message: string, userId: string) => {
-    if (!message.trim() || !userId || !profile) return;
+    if (!message.trim() || !userId || !profile) return false;
 
     try {
       const { error } = await supabase.from('chat_messages').insert({
@@ -84,9 +91,11 @@ export const useMessages = (profile: Profile | null, updateConversationReadStatu
       });
 
       if (error) throw error;
+      return true;
     } catch (error) {
       console.error('Erreur lors de l\'envoi de la réponse:', error);
       toast.error("Impossible d'envoyer votre réponse");
+      return false;
     }
   };
 
