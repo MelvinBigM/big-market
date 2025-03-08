@@ -8,6 +8,7 @@ import Footer from "../../Footer";
 import { useChatAdmin } from "./useChatAdmin";
 import ConversationsList from "./ConversationsList";
 import ChatMessageArea from "./ChatMessageArea";
+import { useEffect } from "react";
 
 const AdminChatPage = () => {
   const { profile, isLoading } = useAuth();
@@ -21,7 +22,15 @@ const AdminChatPage = () => {
     setSelectedUserId,
     sendMessage,
     formatDate,
+    loadConversations,
   } = useChatAdmin(profile);
+
+  // Force refresh conversations when component mounts to ensure we have latest read status
+  useEffect(() => {
+    if (profile) {
+      loadConversations();
+    }
+  }, [profile]);
 
   // Redirect non-admin users
   if (isLoading) {

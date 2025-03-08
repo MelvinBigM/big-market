@@ -104,7 +104,7 @@ export const useChatAdmin = (profile: Profile | null) => {
             .update({ read: true })
             .in('id', unreadMessages);
           
-          // Mettre à jour localement le nombre de messages non lus dans la conversation sélectionnée
+          // Update locally the unread count for the selected conversation
           setConversations(prevConversations => 
             prevConversations.map(conv => 
               conv.user_id === userId 
@@ -117,6 +117,44 @@ export const useChatAdmin = (profile: Profile | null) => {
     } catch (error) {
       console.error('Erreur lors du chargement des messages:', error);
       toast.error("Impossible de charger les messages");
+    }
+  };
+
+  // Mark all messages as read for a user
+  const markMessagesAsRead = async (userId: string) => {
+    if (!profile) return;
+    
+    try {
+      // Find unread messages for this user
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('id')
+        .eq('sender_id', userId)
+        .eq('read', false);
+        
+      if (error) throw error;
+      
+      if (data && data.length > 0) {
+        const unreadIds = data.map(msg => msg.id);
+        
+        // Update messages to read
+        await supabase
+          .from('chat_messages')
+          .update({ read: true })
+          .in('id', unreadIds);
+          
+        // Update conversations locally
+        setConversations(prevConversations => 
+          prevConversations.map(conv => 
+            conv.user_id === userId 
+              ? { ...conv, unread_count: 0 } 
+              : conv
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Erreur lors du marquage des messages comme lus:', error);
+      toast.error("Impossible de mettre à jour les messages");
     }
   };
 
@@ -173,7 +211,7 @@ export const useChatAdmin = (profile: Profile | null) => {
           table: 'chat_messages',
         },
         () => {
-          // Recharger les conversations pour mettre à jour les compteurs de messages non lus
+          // Reload conversations to update the unread counters
           loadConversations();
         }
       )
@@ -182,12 +220,14 @@ export const useChatAdmin = (profile: Profile | null) => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [profile, selectedUserId]);
+  }, [profile]);
 
   // Load messages when user is selected
   useEffect(() => {
     if (selectedUserId) {
       loadMessages(selectedUserId);
+      // This ensures unread messages are marked as read when a conversation is selected
+      markMessagesAsRead(selectedUserId);
     }
   }, [selectedUserId]);
 
@@ -199,6 +239,7 @@ export const useChatAdmin = (profile: Profile | null) => {
     setSelectedUserId,
     loadConversations,
     loadMessages,
+    markMessagesAsRead,
     sendMessage,
     formatDate,
   };

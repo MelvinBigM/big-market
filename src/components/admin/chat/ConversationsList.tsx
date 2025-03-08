@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Conversation } from "./types";
@@ -17,6 +17,15 @@ const ConversationsList = ({
   selectedUserId,
   onSelectConversation,
 }: ConversationsListProps) => {
+  // Add local state to track which conversations have been viewed this session
+  const [viewedConversations, setViewedConversations] = useState<Set<string>>(new Set());
+
+  // When a conversation is selected, add it to viewed conversations
+  const handleSelectConversation = (userId: string) => {
+    setViewedConversations(prev => new Set(prev).add(userId));
+    onSelectConversation(userId);
+  };
+
   return (
     <div className="md:col-span-1 border-r border-gray-200">
       <div className="py-4 px-3 bg-gray-50 border-b border-gray-200">
@@ -38,7 +47,7 @@ const ConversationsList = ({
               className={`p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors ${
                 selectedUserId === conversation.user_id ? 'bg-blue-50' : ''
               }`}
-              onClick={() => onSelectConversation(conversation.user_id)}
+              onClick={() => handleSelectConversation(conversation.user_id)}
               whileHover={{ x: 2 }}
             >
               <div className="flex items-center space-x-3">
