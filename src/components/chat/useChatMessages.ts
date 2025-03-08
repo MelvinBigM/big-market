@@ -1,5 +1,5 @@
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ChatMessage } from './types';
@@ -7,65 +7,7 @@ import { ChatMessage } from './types';
 export const useChatMessages = (userId: string) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
   const { toast } = useToast();
-
-  // Mark client-side messages from admin as read
-  const markAdminMessagesAsRead = useCallback(async () => {
-    try {
-      // Find unread messages from admin
-      const { data, error } = await supabase
-        .from('chat_messages')
-        .select('id')
-        .eq('receiver_id', userId)
-        .eq('is_admin_message', true)
-        .eq('read', false);
-        
-      if (error) throw error;
-      
-      if (data && data.length > 0) {
-        const unreadIds = data.map(msg => msg.id);
-        
-        // Update messages to read in the database
-        const { error: updateError } = await supabase
-          .from('chat_messages')
-          .update({ read: true })
-          .in('id', unreadIds);
-          
-        if (updateError) throw updateError;
-        
-        console.log(`Marked ${unreadIds.length} admin messages as read`);
-        setUnreadCount(0);
-        
-        // Update local message state to reflect read status
-        setMessages(prev => 
-          prev.map(msg => 
-            unreadIds.includes(msg.id) ? { ...msg, read: true } : msg
-          )
-        );
-      }
-    } catch (error) {
-      console.error('Erreur lors du marquage des messages comme lus:', error);
-    }
-  }, [userId]);
-
-  // Count unread messages from admin
-  const countUnreadMessages = useCallback(async () => {
-    try {
-      const { data, error } = await supabase
-        .from('chat_messages')
-        .select('id', { count: 'exact' })
-        .eq('receiver_id', userId)
-        .eq('is_admin_message', true)
-        .eq('read', false);
-        
-      if (error) throw error;
-      
-      setUnreadCount(data?.length || 0);
-    } catch (error) {
-      console.error('Erreur lors du comptage des messages non lus:', error);
-    }
-  }, [userId]);
 
   const fetchMessages = useCallback(async () => {
     setIsLoading(true);
@@ -80,8 +22,6 @@ export const useChatMessages = (userId: string) => {
       
       if (data && data.length > 0) {
         setMessages(data as ChatMessage[]);
-        // Mark admin messages as read when the chat is opened
-        await markAdminMessagesAsRead();
       } else {
         // Message par défaut si aucun message dans la base de données
         sendAdminMessage("Bonjour ! Comment puis-je vous aider ?");
@@ -96,7 +36,7 @@ export const useChatMessages = (userId: string) => {
     } finally {
       setIsLoading(false);
     }
-  }, [userId, toast, markAdminMessagesAsRead]);
+  }, [userId, toast]);
 
   const subscribeToMessages = useCallback(() => {
     const channel = supabase
@@ -118,43 +58,21 @@ export const useChatMessages = (userId: string) => {
             newMessage.receiver_id === null
           ) {
             setMessages((current) => [...current, newMessage]);
-            
-            // Si c'est un message de l'admin, le marquer comme lu automatiquement
-            // puisque l'utilisateur est actuellement dans le chat
-            if (newMessage.is_admin_message && newMessage.receiver_id === userId) {
-              markAdminMessagesAsRead();
-            } else {
-              // Update unread count
-              countUnreadMessages();
-            }
           }
         }
       )
       .subscribe();
 
     return channel;
-  }, [userId, markAdminMessagesAsRead, countUnreadMessages]);
-
-  // Check for unread messages on mount and periodically
-  useEffect(() => {
-    countUnreadMessages();
-    
-    // Check every 30 seconds for new unread messages
-    const interval = setInterval(() => {
-      countUnreadMessages();
-    }, 30000);
-    
-    return () => clearInterval(interval);
-  }, [countUnreadMessages]);
+  }, [userId]);
 
   const sendAdminMessage = async (text: string) => {
     try {
       const { error } = await supabase.from('chat_messages').insert({
         message: text,
-        sender_id: null, // Changed from userId to null to represent system message
+        sender_id: userId, // Pour respecter la RLS, mais marqué comme admin
         is_admin_message: true,
         receiver_id: userId, // Message destiné à l'utilisateur
-        read: true, // Auto-read for first message
       });
 
       if (error) throw error;
@@ -172,10 +90,14 @@ export const useChatMessages = (userId: string) => {
         message: message.trim(),
         sender_id: userId,
         receiver_id: null, // Message pour tous les admins
-        read: false, // Make sure it's marked as unread for admins
       });
 
       if (error) throw error;
+      
+      // Simuler réponse après un court délai
+      setTimeout(async () => {
+        await sendAdminMessage("Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.");
+      }, 1000);
       
       return true;
     } catch (error) {
@@ -192,11 +114,8 @@ export const useChatMessages = (userId: string) => {
   return {
     messages,
     isLoading,
-    unreadCount,
     fetchMessages,
     subscribeToMessages,
-    sendMessage,
-    markAdminMessagesAsRead,
-    countUnreadMessages // Added this to include it in the returned object
+    sendMessage
   };
 };

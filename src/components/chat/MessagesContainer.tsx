@@ -2,18 +2,19 @@
 import React, { useRef, useEffect } from 'react';
 import { ChatMessage as ChatMessageType } from './types';
 import { ChatMessage } from './ChatMessage';
-import { formatChatDate } from '../admin/chat/utils/chatFormatters';
 
 interface MessagesContainerProps {
   messages: ChatMessageType[];
   isLoading: boolean;
   userId: string;
+  formatDate: (dateString: string) => string;
 }
 
 export const MessagesContainer: React.FC<MessagesContainerProps> = ({ 
   messages, 
   isLoading, 
-  userId
+  userId,
+  formatDate 
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -41,7 +42,7 @@ export const MessagesContainer: React.FC<MessagesContainerProps> = ({
           key={msg.id}
           message={msg}
           isCurrentUser={userId}
-          formatDate={formatChatDate}
+          formatDate={formatDate}
         />
       ))}
       <div ref={messagesEndRef} />

@@ -1,79 +1,87 @@
 
 import React, { useState, useEffect } from 'react';
-import { MessageCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { MessageCircle, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
-import { motion, AnimatePresence } from 'framer-motion';
-import ChatBox from './ChatBox';
+import { MessagesContainer } from './MessagesContainer';
+import { ChatInput } from './ChatInput';
 import { useChatMessages } from './useChatMessages';
 import { supabase } from '@/integrations/supabase/client';
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { profile } = useAuth();
+  const { session, profile } = useAuth();
   
-  // Only create chat if there's a user profile
-  const chat = profile ? useChatMessages(profile.id) : null;
-  
-  useEffect(() => {
-    if (chat) {
-      // Initialize unread count on mount
-      chat.countUnreadMessages();
-      
-      // If chat is open, fetch messages and mark as read
-      if (isOpen) {
-        chat.fetchMessages();
-        chat.markAdminMessagesAsRead();
-        
-        // Set up real-time updates
-        const channel = chat.subscribeToMessages();
-        return () => {
-          supabase.removeChannel(channel);
-        };
-      }
-    }
-  }, [isOpen, chat]);
+  // Ne pas afficher la bulle de chat si l'utilisateur n'est pas authentifié
+  // ou si l'utilisateur est un admin
+  if (!session || (profile && profile.role === 'admin')) return null;
 
-  if (!profile) return null;
+  const userId = session.user.id;
+  
+  const toggleChat = () => {
+    setIsOpen(!isOpen);
+  };
 
   return (
-    <>
-      <div className="fixed bottom-4 right-4 z-50">
-        <motion.button
-          className="bg-primary text-white p-3 rounded-full shadow-lg relative"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setIsOpen(!isOpen)}
+    <div className="fixed bottom-4 right-4 z-50">
+      {isOpen ? (
+        <ChatWindow userId={userId} onClose={toggleChat} />
+      ) : (
+        <Button 
+          onClick={toggleChat} 
+          className="rounded-full h-14 w-14 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
         >
           <MessageCircle size={24} />
-          
-          {/* Notification badge for unread messages */}
-          {!isOpen && chat?.unreadCount > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-              {chat.unreadCount}
-            </span>
-          )}
-        </motion.button>
-      </div>
+        </Button>
+      )}
+    </div>
+  );
+};
 
-      <AnimatePresence>
-        {isOpen && chat && (
-          <motion.div
-            className="fixed bottom-20 right-4 z-50 w-80 md:w-96 bg-white rounded-lg shadow-xl"
-            initial={{ opacity: 0, y: 50, scale: 0.3 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
-          >
-            <ChatBox 
-              onClose={() => setIsOpen(false)}
-              messages={chat.messages}
-              isLoading={chat.isLoading}
-              sendMessage={chat.sendMessage}
-              userId={profile.id}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+// Séparation du composant de la fenêtre de chat pour éviter les erreurs de hooks
+const ChatWindow = ({ userId, onClose }: { userId: string; onClose: () => void }) => {
+  const { messages, isLoading, fetchMessages, subscribeToMessages, sendMessage } = useChatMessages(userId);
+  
+  // Charger les messages au chargement du composant
+  useEffect(() => {
+    console.log("Chargement des messages...");
+    fetchMessages();
+    const subscription = subscribeToMessages();
+    
+    // Nettoyer l'abonnement quand le composant se démonte
+    return () => {
+      if (subscription) {
+        supabase.removeChannel(subscription);
+      }
+    };
+  }, [fetchMessages, subscribeToMessages]);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-lg w-80 flex flex-col overflow-hidden border border-gray-200 animate-fadeIn">
+      <div className="bg-primary p-3 text-white flex justify-between items-center">
+        <h3 className="font-medium">Chat en direct</h3>
+        <button onClick={onClose} className="text-white hover:text-gray-200">
+          <X size={20} />
+        </button>
+      </div>
+      
+      <MessagesContainer
+        messages={messages}
+        isLoading={isLoading}
+        userId={userId}
+        formatDate={formatDate}
+      />
+      
+      <ChatInput
+        onSendMessage={sendMessage}
+        isLoading={isLoading}
+      />
+    </div>
   );
 };
 

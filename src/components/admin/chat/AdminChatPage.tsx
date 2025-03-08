@@ -5,10 +5,9 @@ import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import NavBar from "../../NavBar";
 import Footer from "../../Footer";
-import { useChatAdmin } from "./hooks/useChatAdmin";
+import { useChatAdmin } from "./useChatAdmin";
 import ConversationsList from "./ConversationsList";
 import ChatMessageArea from "./ChatMessageArea";
-import { useEffect } from "react";
 
 const AdminChatPage = () => {
   const { profile, isLoading } = useAuth();
@@ -22,30 +21,7 @@ const AdminChatPage = () => {
     setSelectedUserId,
     sendMessage,
     formatDate,
-    loadConversations,
-    markMessagesAsRead,
   } = useChatAdmin(profile);
-
-  // Force refresh conversations when component mounts to ensure we have latest read status
-  useEffect(() => {
-    if (profile) {
-      // Load conversations when component mounts and periodically refresh
-      loadConversations();
-      
-      // Set up a periodic refresh every 30 seconds
-      const intervalId = setInterval(() => {
-        if (profile) {
-          loadConversations();
-          // If a conversation is selected, mark its messages as read again
-          if (selectedUserId) {
-            markMessagesAsRead(selectedUserId);
-          }
-        }
-      }, 30000);
-      
-      return () => clearInterval(intervalId);
-    }
-  }, [profile, selectedUserId]);
 
   // Redirect non-admin users
   if (isLoading) {
@@ -67,8 +43,6 @@ const AdminChatPage = () => {
 
   const handleSelectConversation = (userId: string) => {
     setSelectedUserId(userId);
-    // Immediately mark messages as read when a conversation is selected
-    markMessagesAsRead(userId);
   };
 
   const handleSendReply = (message: string) => {
