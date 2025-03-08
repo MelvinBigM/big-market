@@ -14,7 +14,7 @@ import AdminUsersPage from "@/components/admin/AdminUsersPage";
 import AdminCategoriesPage from "@/components/admin/AdminCategoriesPage";
 import AdminProductsPage from "@/components/admin/AdminProductsPage";
 import AdminAccessRequestsPage from "@/components/admin/AdminAccessRequestsPage";
-import AdminChatPage from "@/components/admin/AdminChatPage";
+import AdminChatPage from "@/components/admin/chat/AdminChatPage";
 import AdminBannersPage from "@/components/admin/AdminBannersPage";
 import UserDetailsPage from "@/components/admin/UserDetailsPage";
 import AdminProtectedRoute from "@/components/admin/AdminProtectedRoute";
@@ -106,3 +106,4 @@ function App() {
 }
 
 export default App;
+
