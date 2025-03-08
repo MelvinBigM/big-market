@@ -71,6 +71,18 @@ const AdminChatPage = () => {
             }
           }
         )
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'chat_messages',
+          },
+          () => {
+            // Recharger les conversations pour mettre à jour les compteurs de messages non lus
+            loadConversations();
+          }
+        )
         .subscribe();
 
       return () => {
@@ -170,8 +182,14 @@ const AdminChatPage = () => {
             .update({ read: true })
             .in('id', unreadMessages);
           
-          // Refresh conversations to update unread count
-          loadConversations();
+          // Mettre à jour localement le nombre de messages non lus dans la conversation sélectionnée
+          setConversations(prevConversations => 
+            prevConversations.map(conv => 
+              conv.user_id === userId 
+                ? { ...conv, unread_count: 0 } 
+                : conv
+            )
+          );
         }
       }
     } catch (error) {
