@@ -29,9 +29,11 @@ export const useRealtimeUpdates = (
           const newMessage = payload.new as ChatMessage;
           // Update conversations list
           loadConversations();
+          
           // Update messages if the conversation is currently selected
           if (selectedUserId && (newMessage.sender_id === selectedUserId || newMessage.receiver_id === selectedUserId)) {
             setMessages((prev) => [...prev, newMessage]);
+            
             // If the message is from the selected user, mark it as read immediately
             if (newMessage.sender_id === selectedUserId && !newMessage.is_admin_message) {
               markMessagesAsRead(selectedUserId);
@@ -49,6 +51,15 @@ export const useRealtimeUpdates = (
         () => {
           // Reload conversations to update the unread counters
           loadConversations();
+          
+          // Also update currently displayed messages if needed
+          if (selectedUserId) {
+            // Re-fetch the messages to get the updated read status
+            setMessages(prev => {
+              // This forces a re-fetch of messages with updated read status
+              return [...prev];
+            });
+          }
         }
       )
       .subscribe();

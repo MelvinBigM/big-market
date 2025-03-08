@@ -1,8 +1,8 @@
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Conversation } from "./types";
+import { formatChatDate } from "./utils/chatFormatters";
 
 interface ConversationsListProps {
   conversations: Conversation[];
@@ -53,7 +53,7 @@ const ConversationsList = ({
                       {conversation.user_name || 'Utilisateur'}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {new Date(conversation.last_message_date).toLocaleDateString()}
+                      {formatChatDate(conversation.last_message_date).split(' ')[0]}
                     </p>
                   </div>
                   <p className="text-xs text-gray-500 truncate">{conversation.last_message}</p>

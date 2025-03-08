@@ -51,7 +51,7 @@ export const useMessages = (profile: Profile | null, updateConversationReadStatu
       if (data && data.length > 0) {
         const unreadIds = data.map(msg => msg.id);
         
-        // Update messages to read
+        // Update messages to read in the database
         const { error: updateError } = await supabase
           .from('chat_messages')
           .update({ read: true })
@@ -80,6 +80,7 @@ export const useMessages = (profile: Profile | null, updateConversationReadStatu
         sender_id: profile.id,
         receiver_id: userId,
         is_admin_message: true,
+        read: false, // Make sure admin messages are also marked as unread initially
       });
 
       if (error) throw error;
