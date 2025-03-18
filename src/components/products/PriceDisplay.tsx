@@ -26,30 +26,28 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
   const unitPrice = product.price / quantity;
   
   // Calculate price with VAT using the product's vat_rate
-  const vatRate = product.vat_rate || 20;
+  const vatRate = product.vat_rate || 5.5;
   const priceTTC = calculatePriceTTC(product.price, vatRate);
 
   if (canSeePrice) {
     return (
-      <div className="text-center space-y-1">
+      <div className="space-y-4">
         {/* Quantity information */}
         {quantity > 1 && (
-          <div className="bg-blue-50 inline-block py-1 px-3 rounded-md text-blue-800 font-medium">
-            {quantity} par carton
+          <div className="text-left">
+            <div className="text-lg font-medium">
+              {quantity} par carton
+            </div>
+            <div className="text-gray-600">
+              {unitPrice.toFixed(2)} € HT / pièce
+            </div>
           </div>
         )}
         
-        {/* Unit price */}
-        {quantity > 1 && (
-          <div className="text-gray-600">
-            {unitPrice.toFixed(2)} € HT / pièce
-          </div>
-        )}
-        
-        {/* Total price HT and TTC */}
-        <div className="mt-2 flex justify-center items-baseline space-x-4">
-          <div className="text-right">
-            <div className="text-2xl font-bold text-blue-900">
+        {/* Price display - align to right */}
+        <div className="flex justify-end text-right">
+          <div>
+            <div className="text-2xl font-bold text-red-600">
               {product.price.toFixed(2)} € HT
             </div>
             <div className="text-gray-500">
@@ -74,7 +72,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
             <p className="text-gray-700 mb-2">
               Pour voir les prix : <button
                 onClick={() => setShowAccessDialog(true)}
-                className="text-blue-600 hover:text-blue-800 underline font-medium"
+                className="text-red-600 hover:text-red-800 underline font-medium"
               >
                 demander l'accès client
               </button>

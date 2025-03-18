@@ -62,7 +62,7 @@ const ProductPage = () => {
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Image Section */}
+            {/* Image Section - Left Side */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -84,18 +84,18 @@ const ProductPage = () => {
               )}
             </motion.div>
 
-            {/* Product Details Section */}
+            {/* Product Details Section - Right Side */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-6"
             >
-              <div className="text-center">
+              <div className="text-left">
                 <Badge variant="secondary" className="mb-2">
                   {product.categories.name}
                 </Badge>
-                <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
+                <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
               </div>
 
               {/* Price Display Component */}
@@ -109,7 +109,7 @@ const ProductPage = () => {
               <ProductAvailability product={product} />
 
               {product.description && (
-                <div className="prose max-w-none text-center">
+                <div className="prose max-w-none">
                   <h2 className="text-xl font-semibold mb-2">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
                 </div>
