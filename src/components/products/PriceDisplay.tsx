@@ -32,9 +32,22 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
   if (canSeePrice) {
     return (
       <div className="text-left space-y-6 mt-8">
-        {/* Quantity information at the top */}
+        {/* Prices side by side */}
+        <div className="flex justify-between items-baseline">
+          <div className="flex flex-col">
+            <div className="text-3xl font-bold text-primary">{product.price.toFixed(2)}€</div>
+            <div className="text-sm text-gray-500">HT</div>
+          </div>
+          
+          <div className="flex flex-col items-end">
+            <div className="text-xl text-gray-600">{priceTTC.toFixed(2)}€</div>
+            <div className="text-sm text-gray-500">TTC</div>
+          </div>
+        </div>
+        
+        {/* Quantity information below */}
         {quantity > 1 && (
-          <div className="flex flex-col space-y-1">
+          <div className="flex flex-col space-y-1 mt-4 border-t pt-4 border-gray-200">
             <div className="text-gray-700 font-medium">
               {quantity} par carton
             </div>
@@ -43,19 +56,6 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
             </div>
           </div>
         )}
-        
-        {/* Prices displayed as a flex row with labels and values */}
-        <div className="flex justify-between items-baseline">
-          <div className="flex flex-col">
-            <div className="text-primary text-sm font-medium">Prix HT</div>
-            <div className="text-2xl font-bold">{product.price.toFixed(2)}€</div>
-          </div>
-          
-          <div className="flex flex-col items-end">
-            <div className="text-gray-700 text-sm">Prix TTC</div>
-            <div className="text-lg text-gray-600">{priceTTC.toFixed(2)}€</div>
-          </div>
-        </div>
       </div>
     );
   } else {
