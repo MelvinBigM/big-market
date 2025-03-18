@@ -13,6 +13,16 @@ import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
 
+// Fonction pour extraire la quantité du nom du produit
+const extractQuantity = (productName: string): number => {
+  // Rechercher les motifs comme "x24", "x12", "x6", "x1" à la fin du nom
+  const match = productName.match(/x(\d+)$/);
+  if (match && match[1]) {
+    return parseInt(match[1], 10);
+  }
+  return 1; // Par défaut, si aucune quantité n'est trouvée
+};
+
 const ProductPage = () => {
   const { productId } = useParams();
   const { profile } = useAuth();
@@ -63,6 +73,10 @@ const ProductPage = () => {
 
   if (!product) return null;
 
+  // Extraire la quantité et calculer le prix unitaire
+  const quantity = extractQuantity(product.name);
+  const unitPrice = product.price / quantity;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
@@ -98,7 +112,7 @@ const ProductPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-6"
             >
-              <div className="text-center lg:text-left">
+              <div className="text-center">
                 <Badge variant="secondary" className="mb-2">
                   {product.categories.name}
                 </Badge>
@@ -106,16 +120,23 @@ const ProductPage = () => {
               </div>
 
               {canSeePrice ? (
-                <div className="text-center lg:text-left">
-                  <div className="inline-flex items-baseline justify-center lg:justify-start">
-                    <span className="text-3xl font-bold text-primary">
+                <div className="text-center">
+                  <div className="inline-flex items-baseline justify-center">
+                    <span className="text-2xl font-bold text-primary">
                       {product.price.toFixed(2)} €
                     </span>
                     <span className="text-sm text-gray-500 ml-1">HT</span>
                   </div>
+                  
+                  {quantity > 1 && (
+                    <div className="text-sm text-gray-600 mt-1">
+                      Prix unitaire: {unitPrice.toFixed(2)} € HT 
+                      <span className="text-xs ml-1">({quantity} unités)</span>
+                    </div>
+                  )}
                 </div>
               ) : (
-                <div className="text-sm text-center lg:text-left">
+                <div className="text-sm text-center">
                   {isNewUser ? (
                     hasPendingRequest ? (
                       <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">
@@ -167,7 +188,7 @@ const ProductPage = () => {
               </Card>
 
               {product.description && (
-                <div className="prose max-w-none text-center lg:text-left">
+                <div className="prose max-w-none text-center">
                   <h2 className="text-xl font-semibold mb-2">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
                 </div>
