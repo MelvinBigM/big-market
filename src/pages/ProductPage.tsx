@@ -98,7 +98,7 @@ const ProductPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-6"
             >
-              <div className="text-center lg:text-left">
+              <div>
                 <Badge variant="secondary" className="mb-2">
                   {product.categories.name}
                 </Badge>
@@ -106,8 +106,8 @@ const ProductPage = () => {
               </div>
 
               {canSeePrice ? (
-                <div className="text-center lg:text-left">
-                  <div className="inline-flex items-baseline justify-center lg:justify-start">
+                <div className="text-center sm:text-left">
+                  <div className="inline-flex items-baseline">
                     <span className="text-3xl font-bold text-primary">
                       {product.price.toFixed(2)} €
                     </span>
@@ -115,7 +115,7 @@ const ProductPage = () => {
                   </div>
                 </div>
               ) : (
-                <div className="text-sm text-center lg:text-left">
+                <div className="text-sm">
                   {isNewUser ? (
                     hasPendingRequest ? (
                       <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">
@@ -167,7 +167,7 @@ const ProductPage = () => {
               </Card>
 
               {product.description && (
-                <div className="prose max-w-none text-center lg:text-left">
+                <div className="prose max-w-none">
                   <h2 className="text-xl font-semibold mb-2">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
                 </div>
