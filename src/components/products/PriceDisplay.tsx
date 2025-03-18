@@ -31,33 +31,33 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
 
   if (canSeePrice) {
     return (
-      <div className="flex flex-col items-end">
-        {/* Main price display */}
-        <div className="text-right">
-          <div className="text-3xl font-bold text-red-600">
-            {product.price.toFixed(2)} € HT
-          </div>
-          <div className="text-gray-600">
-            {priceTTC.toFixed(2)} € TTC
-          </div>
-        </div>
-        
-        {/* Quantity information below pricing */}
-        <div className="mt-4">
-          <div className="inline-block bg-gray-100 py-1 px-3 rounded-md text-gray-700">
-            {quantity} par carton
-          </div>
-          {quantity > 1 && (
-            <div className="text-gray-600 mt-1 text-sm">
+      <div className="flex flex-col">
+        <div className="flex justify-between items-start mb-2">
+          {/* Unit price information */}
+          <div className="flex flex-col">
+            <div className="text-blue-600 font-medium">
+              {quantity} par carton
+            </div>
+            <div className="text-gray-600 text-sm">
               {unitPrice.toFixed(2)} € HT / pièce
             </div>
-          )}
+          </div>
+          
+          {/* Main price display */}
+          <div className="text-right">
+            <div className="text-2xl font-bold text-red-600">
+              {product.price.toFixed(2)} € HT
+            </div>
+            <div className="text-gray-600">
+              {priceTTC.toFixed(2)} € TTC
+            </div>
+          </div>
         </div>
       </div>
     );
   } else {
     return (
-      <div className="text-sm text-center">
+      <div className="text-sm">
         {isNewUser ? (
           hasPendingRequest ? (
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">

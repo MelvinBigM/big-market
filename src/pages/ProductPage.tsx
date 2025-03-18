@@ -7,7 +7,6 @@ import Footer from "@/components/Footer";
 import { Product } from "@/lib/types";
 import { useAuth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
 import PriceDisplay from "@/components/products/PriceDisplay";
 import ProductAvailability from "@/components/products/ProductAvailability";
 
@@ -56,73 +55,68 @@ const ProductPage = () => {
 
   if (!product) return null;
 
-  // Extract quantity for displaying in the title
-  const quantityMatch = product.name.match(/x(\d+)$/);
-  const quantityStr = quantityMatch ? quantityMatch[0] : "";
-  const nameWithoutQuantity = product.name.replace(/x\d+$/, "").trim();
-
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
-      <main className="pt-20 pb-12">
+      <main className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Category Breadcrumb */}
-          <div className="mb-2 mt-4">
+          {/* Category link at the top */}
+          <div className="mb-6">
             <Badge variant="outline" className="text-gray-600 bg-white border-gray-200">
               {product.categories.name}
             </Badge>
           </div>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white rounded-lg shadow-sm overflow-hidden">
-            {/* Image Section */}
-            <div className="p-6 flex items-center justify-center bg-white">
-              {product.image_url ? (
-                <div className="aspect-square w-full max-w-md overflow-hidden">
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="aspect-square w-full max-w-md bg-gray-100 flex items-center justify-center rounded-lg">
-                  <span className="text-gray-400">Pas d'image disponible</span>
-                </div>
-              )}
-            </div>
-
-            {/* Product Details Section */}
-            <div className="p-6 flex flex-col">
-              {/* Product Title */}
-              <h1 className="text-3xl font-bold text-gray-900 mb-6">
-                {nameWithoutQuantity}
-                <span className="block text-2xl">{quantityStr}</span>
-              </h1>
-              
-              {/* Quantity display under title */}
-              <div className="mb-8 text-blue-600">
-                <span className="font-medium">{product.name.match(/x(\d+)$/) ? product.name.match(/x(\d+)$/)[1] : ""} par carton</span>
-              </div>
-              
-              {/* Price Display */}
-              <PriceDisplay 
-                product={product} 
-                profile={profile} 
-                accessRequest={accessRequest} 
-              />
-              
-              {/* Stock Availability */}
-              <div className="mt-6">
-                <ProductAvailability product={product} />
+          <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
+              {/* Image Section - Left */}
+              <div className="p-8 flex items-center justify-center bg-white">
+                {product.image_url ? (
+                  <div className="aspect-square w-full max-w-md overflow-hidden">
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-square w-full max-w-md bg-gray-100 flex items-center justify-center rounded-lg">
+                    <span className="text-gray-400">Pas d'image disponible</span>
+                  </div>
+                )}
               </div>
 
-              {/* Description */}
-              {product.description && (
-                <div className="mt-8">
-                  <h2 className="text-lg font-medium mb-2">Description</h2>
-                  <p className="text-gray-600">{product.description}</p>
+              {/* Product Details Section - Right */}
+              <div className="p-8 flex flex-col">
+                {/* Category badge above title */}
+                <div className="mb-2">
+                  <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-100 border-none">
+                    {product.categories.name}
+                  </Badge>
                 </div>
-              )}
+                
+                {/* Product Title */}
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                  {product.name}
+                </h1>
+                
+                {/* Quantity per carton information */}
+                <div className="text-blue-600 mb-6">
+                  {product.name.match(/x(\d+)$/) ? product.name.match(/x(\d+)$/)[1] : ""} par carton
+                </div>
+                
+                {/* Price Display */}
+                <PriceDisplay 
+                  product={product} 
+                  profile={profile} 
+                  accessRequest={accessRequest} 
+                />
+                
+                {/* Stock Availability */}
+                <div className="mt-6">
+                  <ProductAvailability product={product} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
