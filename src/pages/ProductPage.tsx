@@ -97,6 +97,9 @@ const ProductPage = () => {
                 </Badge>
                 <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
               </div>
+              
+              {/* Significant space between product name and price */}
+              <div className="my-12"></div>
 
               {/* Price Display Component */}
               <PriceDisplay 
