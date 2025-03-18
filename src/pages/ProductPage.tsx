@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { Product } from "@/lib/types";
 import { useAuth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import PriceDisplay from "@/components/products/PriceDisplay";
 import ProductAvailability from "@/components/products/ProductAvailability";
 
@@ -58,66 +59,74 @@ const ProductPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
-      <main className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Category link at the top */}
-          <div className="mb-6">
-            <Badge variant="outline" className="text-gray-600 bg-white border-gray-200">
+      <main className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 text-center"
+          >
+            <Badge 
+              variant="secondary" 
+              className="mb-3 bg-red-100 text-red-700 hover:bg-red-200"
+            >
               {product.categories.name}
             </Badge>
-          </div>
-          
-          <div className="bg-white rounded-lg overflow-hidden shadow-sm">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-              {/* Image Section - Left */}
-              <div className="p-8 flex items-center justify-center bg-white">
-                {product.image_url ? (
-                  <div className="aspect-square w-full max-w-md overflow-hidden">
-                    <img
-                      src={product.image_url}
-                      alt={product.name}
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-                ) : (
-                  <div className="aspect-square w-full max-w-md bg-gray-100 flex items-center justify-center rounded-lg">
-                    <span className="text-gray-400">Pas d'image disponible</span>
-                  </div>
-                )}
-              </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{product.name}</h1>
+          </motion.div>
 
-              {/* Product Details Section - Right */}
-              <div className="p-8 flex flex-col">
-                {/* Category badge above title */}
-                <div className="mb-2">
-                  <Badge className="bg-gray-100 text-gray-700 hover:bg-gray-100 border-none">
-                    {product.categories.name}
-                  </Badge>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white rounded-xl shadow-sm overflow-hidden">
+            {/* Image Section */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="p-8 flex items-center justify-center bg-gray-50"
+            >
+              {product.image_url ? (
+                <div className="aspect-square w-full max-w-md overflow-hidden">
+                  <img
+                    src={product.image_url}
+                    alt={product.name}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
-                
-                {/* Product Title */}
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                  {product.name}
-                </h1>
-                
-                {/* Quantity per carton information */}
-                <div className="text-blue-600 mb-6">
-                  {product.name.match(/x(\d+)$/) ? product.name.match(/x(\d+)$/)[1] : ""} par carton
+              ) : (
+                <div className="aspect-square w-full max-w-md bg-gray-100 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-400">Pas d'image disponible</span>
                 </div>
-                
-                {/* Price Display */}
+              )}
+            </motion.div>
+
+            {/* Product Details Section */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="p-8 flex flex-col"
+            >
+              {/* Price Display Component */}
+              <div className="mb-6 border-b border-gray-100 pb-6">
                 <PriceDisplay 
                   product={product} 
                   profile={profile} 
                   accessRequest={accessRequest} 
                 />
-                
-                {/* Stock Availability */}
-                <div className="mt-6">
-                  <ProductAvailability product={product} />
-                </div>
               </div>
-            </div>
+
+              {/* Product Availability Component */}
+              <div className="mb-6">
+                <ProductAvailability product={product} />
+              </div>
+
+              {product.description && (
+                <div className="mt-auto pt-4">
+                  <h2 className="text-xl font-semibold mb-3 text-gray-800">Description</h2>
+                  <p className="text-gray-600">{product.description}</p>
+                </div>
+              )}
+            </motion.div>
           </div>
         </div>
       </main>
