@@ -1,4 +1,3 @@
-
 import { Product } from "@/lib/types";
 import { extractQuantity, calculatePriceTTC } from "@/lib/price-utils";
 import { AccessRequest } from "@/lib/types";
@@ -31,7 +30,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
 
   if (canSeePrice) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-1">
         {/* Price display with aligned quantity */}
         <div className="flex justify-between items-center">
           <div className="text-lg font-medium">
@@ -91,3 +90,4 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
 };
 
 export default PriceDisplay;
+
