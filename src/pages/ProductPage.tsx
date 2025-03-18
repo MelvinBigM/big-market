@@ -98,7 +98,7 @@ const ProductPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-6"
             >
-              <div>
+              <div className="text-center">
                 <Badge variant="secondary" className="mb-2">
                   {product.categories.name}
                 </Badge>
@@ -106,8 +106,8 @@ const ProductPage = () => {
               </div>
 
               {canSeePrice ? (
-                <div className="text-center sm:text-left">
-                  <div className="inline-flex items-baseline">
+                <div className="text-center">
+                  <div className="inline-flex items-baseline justify-center">
                     <span className="text-3xl font-bold text-primary">
                       {product.price.toFixed(2)} €
                     </span>
@@ -115,7 +115,7 @@ const ProductPage = () => {
                   </div>
                 </div>
               ) : (
-                <div className="text-sm">
+                <div className="text-sm text-center">
                   {isNewUser ? (
                     hasPendingRequest ? (
                       <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">
@@ -145,7 +145,7 @@ const ProductPage = () => {
               <Card>
                 <CardContent className="pt-6">
                   <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-center">
                       <Badge 
                         variant="default"
                         className={product.in_stock 
@@ -156,7 +156,7 @@ const ProductPage = () => {
                       </Badge>
                     </div>
 
-                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
                       <MapPin className="h-4 w-4" />
                       <span>
                         {product.in_stock ? "Disponible en magasin" : "Non disponible en magasin"}
@@ -167,7 +167,7 @@ const ProductPage = () => {
               </Card>
 
               {product.description && (
-                <div className="prose max-w-none">
+                <div className="prose max-w-none text-center">
                   <h2 className="text-xl font-semibold mb-2">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
                 </div>
