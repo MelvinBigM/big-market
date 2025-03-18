@@ -91,7 +91,7 @@ const ProductPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-6"
             >
-              <div className="text-left">
+              <div className="text-center">
                 <Badge variant="secondary" className="mb-2">
                   {product.categories.name}
                 </Badge>
