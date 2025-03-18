@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Product, Category } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface ProductDialogProps {
   open: boolean;
@@ -24,6 +25,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [vatRate, setVatRate] = useState<string>("20");
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -45,12 +47,14 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
       setImageUrl(product.image_url || "");
       setPrice(product.price.toString());
       setCategoryId(product.category_id);
+      setVatRate(product.vat_rate?.toString() || "20");
     } else {
       setName("");
       setDescription("");
       setImageUrl("");
       setPrice("");
       setCategoryId("");
+      setVatRate("20");
     }
   }, [product, open]);
 
@@ -68,6 +72,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
             image_url: imageUrl,
             price: parseFloat(price),
             category_id: categoryId,
+            vat_rate: parseFloat(vatRate),
           })
           .eq("id", product.id);
 
@@ -83,6 +88,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
               image_url: imageUrl,
               price: parseFloat(price),
               category_id: categoryId,
+              vat_rate: parseFloat(vatRate),
             },
           ]);
 
@@ -129,7 +135,7 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="price">Prix</Label>
+              <Label htmlFor="price">Prix HT</Label>
               <Input
                 id="price"
                 type="number"
@@ -140,6 +146,27 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
                 placeholder="Prix du produit"
                 required
               />
+            </div>
+            <div className="grid gap-2">
+              <Label>Taux de TVA</Label>
+              <RadioGroup 
+                value={vatRate} 
+                onValueChange={setVatRate}
+                className="flex space-x-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="5.5" id="tva-5.5" />
+                  <Label htmlFor="tva-5.5">5,5%</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="10" id="tva-10" />
+                  <Label htmlFor="tva-10">10%</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="20" id="tva-20" />
+                  <Label htmlFor="tva-20">20%</Label>
+                </div>
+              </RadioGroup>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="category">Catégorie</Label>

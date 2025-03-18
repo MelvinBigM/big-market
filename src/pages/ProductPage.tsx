@@ -23,6 +23,11 @@ const extractQuantity = (productName: string): number => {
   return 1; // Par défaut, si aucune quantité n'est trouvée
 };
 
+// Fonction pour calculer le prix TTC
+const calculatePriceTTC = (priceHT: number, vatRate: number = 20): number => {
+  return priceHT * (1 + vatRate / 100);
+};
+
 const ProductPage = () => {
   const { productId } = useParams();
   const { profile } = useAuth();
@@ -76,6 +81,10 @@ const ProductPage = () => {
   // Extraire la quantité et calculer le prix unitaire
   const quantity = extractQuantity(product.name);
   const unitPrice = product.price / quantity;
+  
+  // Calculer le prix TTC (par défaut 20% si non spécifié)
+  const vatRate = product.vat_rate || 20;
+  const priceTTC = calculatePriceTTC(product.price, vatRate);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -120,20 +129,32 @@ const ProductPage = () => {
               </div>
 
               {canSeePrice ? (
-                <div className="text-center">
-                  <div className="inline-flex items-baseline justify-center">
-                    <span className="text-2xl font-bold text-primary">
-                      {product.price.toFixed(2)} €
-                    </span>
-                    <span className="text-sm text-gray-500 ml-1">HT</span>
-                  </div>
-                  
+                <div className="text-center space-y-1">
+                  {/* Quantité et prix unitaire */}
                   {quantity > 1 && (
-                    <div className="text-sm text-gray-600 mt-1">
-                      Prix unitaire: {unitPrice.toFixed(2)} € HT 
-                      <span className="text-xs ml-1">({quantity} unités)</span>
+                    <div className="bg-blue-50 inline-block py-1 px-3 rounded-md text-blue-800 font-medium">
+                      {quantity} par carton
                     </div>
                   )}
+                  
+                  {/* Prix unitaire */}
+                  {quantity > 1 && (
+                    <div className="text-gray-600">
+                      {unitPrice.toFixed(2)} € HT / pièce
+                    </div>
+                  )}
+                  
+                  {/* Prix total HT et TTC */}
+                  <div className="mt-2 flex justify-center items-baseline space-x-4">
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-blue-900">
+                        {product.price.toFixed(2)} € HT
+                      </div>
+                      <div className="text-gray-500">
+                        {priceTTC.toFixed(2)} € TTC
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="text-sm text-center">
