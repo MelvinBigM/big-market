@@ -106,11 +106,13 @@ const ProductPage = () => {
               </div>
 
               {canSeePrice ? (
-                <div className="flex items-baseline space-x-2">
-                  <span className="text-3xl font-bold text-primary">
-                    {product.price.toFixed(2)} €
-                  </span>
-                  <span className="text-sm text-gray-500">HT</span>
+                <div className="flex flex-col items-center sm:items-start">
+                  <div className="flex items-baseline">
+                    <span className="text-3xl font-bold text-primary">
+                      {product.price.toFixed(2)} €
+                    </span>
+                    <span className="text-sm text-gray-500 ml-1">HT</span>
+                  </div>
                 </div>
               ) : (
                 <div className="text-sm">
