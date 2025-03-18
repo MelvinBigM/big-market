@@ -1,6 +1,7 @@
 
 import { Product } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
 
 interface ProductAvailabilityProps {
@@ -9,15 +10,20 @@ interface ProductAvailabilityProps {
 
 const ProductAvailability = ({ product }: ProductAvailabilityProps) => {
   return (
-    <Card className="border border-gray-100 shadow-sm overflow-hidden">
-      <CardContent className="p-4">
+    <Card>
+      <CardContent className="pt-6">
         <div className="space-y-4">
-          {/* Availability indicator similar to the image */}
-          <div className="py-2 px-4 bg-green-50 text-green-800 font-medium rounded-md inline-flex items-center">
-            {product.in_stock ? "En stock" : "Hors stock"}
+          <div className="flex items-center space-x-2">
+            <Badge 
+              variant="default"
+              className={product.in_stock 
+                ? "bg-[#F2FCE2] text-green-700 hover:bg-[#F2FCE2]" 
+                : "bg-red-100 text-red-700 hover:bg-red-100"}
+            >
+              {product.in_stock ? "En stock" : "Hors stock"}
+            </Badge>
           </div>
 
-          {/* Store availability with icon */}
           <div className="flex items-center space-x-2 text-sm text-gray-600">
             <MapPin className="h-4 w-4" />
             <span>

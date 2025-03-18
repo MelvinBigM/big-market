@@ -59,18 +59,10 @@ const ProductPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
-      <main className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Product Category Badge */}
-          <div className="mb-2">
-            <Badge variant="secondary" className="text-xs">
-              {product.categories.name}
-            </Badge>
-          </div>
-          
-          {/* Product Layout - 2 columns on desktop, 1 column on mobile */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Left Column - Product Image */}
+            {/* Image Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -92,35 +84,32 @@ const ProductPage = () => {
               )}
             </motion.div>
 
-            {/* Right Column - Product Details */}
+            {/* Product Details Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-6"
             >
-              {/* Product Title */}
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
-              </div>
-              
-              {/* Quantity and Unit Price Info */}
-              <div className="flex flex-col mb-2">
-                <PriceDisplay 
-                  product={product} 
-                  profile={profile} 
-                  accessRequest={accessRequest} 
-                />
+              <div className="text-center">
+                <Badge variant="secondary" className="mb-2">
+                  {product.categories.name}
+                </Badge>
+                <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
               </div>
 
-              {/* Product Availability Card */}
-              <div className="mt-6">
-                <ProductAvailability product={product} />
-              </div>
+              {/* Price Display Component */}
+              <PriceDisplay 
+                product={product} 
+                profile={profile} 
+                accessRequest={accessRequest} 
+              />
 
-              {/* Product Description */}
+              {/* Product Availability Component */}
+              <ProductAvailability product={product} />
+
               {product.description && (
-                <div className="prose max-w-none mt-8">
+                <div className="prose max-w-none text-center">
                   <h2 className="text-xl font-semibold mb-2">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
                 </div>
