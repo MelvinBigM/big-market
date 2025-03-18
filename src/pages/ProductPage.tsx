@@ -1,39 +1,21 @@
 
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-import { AccessRequest, Product } from "@/lib/types";
+import { Product } from "@/lib/types";
 import { useAuth } from "@/lib/auth";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
-import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
-
-// Fonction pour extraire la quantité du nom du produit
-const extractQuantity = (productName: string): number => {
-  // Rechercher les motifs comme "x24", "x12", "x6", "x1" à la fin du nom
-  const match = productName.match(/x(\d+)$/);
-  if (match && match[1]) {
-    return parseInt(match[1], 10);
-  }
-  return 1; // Par défaut, si aucune quantité n'est trouvée
-};
-
-// Fonction pour calculer le prix TTC
-const calculatePriceTTC = (priceHT: number, vatRate: number = 20): number => {
-  return priceHT * (1 + vatRate / 100);
-};
+import PriceDisplay from "@/components/products/PriceDisplay";
+import ProductAvailability from "@/components/products/ProductAvailability";
 
 const ProductPage = () => {
   const { productId } = useParams();
   const { profile } = useAuth();
-  const [showAccessDialog, setShowAccessDialog] = useState(false);
 
-  // Récupérer les informations du produit
+  // Fetch product information
   const { data: product } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
@@ -53,7 +35,7 @@ const ProductPage = () => {
     },
   });
 
-  // Vérifier si l'utilisateur a déjà une demande d'accès en attente
+  // Check if user already has pending access request
   const { data: accessRequest, isLoading: isLoadingAccessRequest } = useQuery({
     queryKey: ["accessRequest", profile?.id],
     queryFn: async () => {
@@ -67,24 +49,12 @@ const ProductPage = () => {
         .maybeSingle();
 
       if (error) throw error;
-      return data as AccessRequest | null;
+      return data;
     },
     enabled: !!profile?.id && profile.role === 'nouveau',
   });
 
-  const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
-  const isNewUser = profile?.role === 'nouveau';
-  const hasPendingRequest = !!accessRequest;
-
   if (!product) return null;
-
-  // Extraire la quantité et calculer le prix unitaire
-  const quantity = extractQuantity(product.name);
-  const unitPrice = product.price / quantity;
-  
-  // Calculer le prix TTC (par défaut 20% si non spécifié)
-  const vatRate = product.vat_rate || 20;
-  const priceTTC = calculatePriceTTC(product.price, vatRate);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -128,85 +98,15 @@ const ProductPage = () => {
                 <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
               </div>
 
-              {canSeePrice ? (
-                <div className="text-center space-y-1">
-                  {/* Quantité et prix unitaire */}
-                  {quantity > 1 && (
-                    <div className="bg-blue-50 inline-block py-1 px-3 rounded-md text-blue-800 font-medium">
-                      {quantity} par carton
-                    </div>
-                  )}
-                  
-                  {/* Prix unitaire */}
-                  {quantity > 1 && (
-                    <div className="text-gray-600">
-                      {unitPrice.toFixed(2)} € HT / pièce
-                    </div>
-                  )}
-                  
-                  {/* Prix total HT et TTC */}
-                  <div className="mt-2 flex justify-center items-baseline space-x-4">
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-900">
-                        {product.price.toFixed(2)} € HT
-                      </div>
-                      <div className="text-gray-500">
-                        {priceTTC.toFixed(2)} € TTC
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-sm text-center">
-                  {isNewUser ? (
-                    hasPendingRequest ? (
-                      <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">
-                        <p className="text-amber-800 font-medium">
-                          Votre demande d'accès est en cours d'examen. 
-                          Vous pourrez voir les prix une fois qu'un administrateur l'aura approuvée.
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="text-gray-700 mb-2">
-                        Pour voir les prix : <button
-                          onClick={() => setShowAccessDialog(true)}
-                          className="text-blue-600 hover:text-blue-800 underline font-medium"
-                        >
-                          demander l'accès client
-                        </button>
-                      </p>
-                    )
-                  ) : (
-                    <p className="text-gray-700 italic">
-                      Connectez-vous en tant que client pour voir le prix
-                    </p>
-                  )}
-                </div>
-              )}
+              {/* Price Display Component */}
+              <PriceDisplay 
+                product={product} 
+                profile={profile} 
+                accessRequest={accessRequest} 
+              />
 
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <Badge 
-                        variant="default"
-                        className={product.in_stock 
-                          ? "bg-[#F2FCE2] text-green-700 hover:bg-[#F2FCE2]" 
-                          : "bg-red-100 text-red-700 hover:bg-red-100"}
-                      >
-                        {product.in_stock ? "En stock" : "Hors stock"}
-                      </Badge>
-                    </div>
-
-                    <div className="flex items-center space-x-2 text-sm text-gray-600">
-                      <MapPin className="h-4 w-4" />
-                      <span>
-                        {product.in_stock ? "Disponible en magasin" : "Non disponible en magasin"}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              {/* Product Availability Component */}
+              <ProductAvailability product={product} />
 
               {product.description && (
                 <div className="prose max-w-none text-center">
@@ -219,10 +119,6 @@ const ProductPage = () => {
         </div>
       </main>
       <Footer />
-      <RequestClientAccessDialog 
-        open={showAccessDialog} 
-        onOpenChange={setShowAccessDialog}
-      />
     </div>
   );
 };
