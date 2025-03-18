@@ -98,9 +98,6 @@ const ProductPage = () => {
                 <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
               </div>
 
-              {/* Added much more significant spacing here - 24 units instead of 12 */}
-              <div className="mt-24"></div>
-
               {/* Price Display Component */}
               <PriceDisplay 
                 product={product} 
