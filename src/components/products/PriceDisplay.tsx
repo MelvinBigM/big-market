@@ -31,7 +31,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
 
   if (canSeePrice) {
     return (
-      <div className="space-y-6 pt-8">
+      <div className="pt-8">
         {/* Price display with unit price */}
         <div className="flex justify-between items-center">
           <div className="text-lg font-medium">
@@ -42,7 +42,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
           </div>
         </div>
         
-        {/* TTC price */}
+        {/* TTC price - removed spacing by eliminating space-y-6 class */}
         <div className="flex justify-between items-center">
           <div className="text-gray-600"></div>
           <div className="text-gray-500">
