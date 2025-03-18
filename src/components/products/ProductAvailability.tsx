@@ -10,18 +10,11 @@ interface ProductAvailabilityProps {
 
 const ProductAvailability = ({ product }: ProductAvailabilityProps) => {
   return (
-    <Card>
-      <CardContent className="pt-6">
+    <Card className="border-0 shadow-none">
+      <CardContent className="p-0">
         <div className="space-y-4">
-          <div className="flex items-center space-x-2">
-            <Badge 
-              variant="default"
-              className={product.in_stock 
-                ? "bg-[#F2FCE2] text-green-700 hover:bg-[#F2FCE2]" 
-                : "bg-red-100 text-red-700 hover:bg-red-100"}
-            >
-              {product.in_stock ? "En stock" : "Hors stock"}
-            </Badge>
+          <div className="py-3 px-4 bg-green-50 text-green-800 font-medium rounded-md inline-flex items-center">
+            {product.in_stock ? "En stock" : "Hors stock"}
           </div>
 
           <div className="flex items-center space-x-2 text-sm text-gray-600">

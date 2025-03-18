@@ -31,28 +31,31 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
 
   if (canSeePrice) {
     return (
-      <div className="text-center space-y-3">
-        {/* Main price (larger and in red) */}
-        <div className="text-3xl font-bold text-primary">
-          {product.price.toFixed(2)} € HT
-        </div>
-        
-        {/* TTC price (smaller below) */}
-        <div className="text-gray-500 text-sm">
-          {priceTTC.toFixed(2)} € TTC
-        </div>
-        
-        {/* Quantity information */}
+      <div className="text-left space-y-6 mt-8">
+        {/* Quantity information at the top */}
         {quantity > 1 && (
-          <div className="mt-2 flex flex-col items-center space-y-1">
-            <div className="bg-blue-50 inline-block py-1 px-3 rounded-md text-blue-800 font-medium">
+          <div className="flex flex-col space-y-1">
+            <div className="text-gray-700 font-medium">
               {quantity} par carton
             </div>
             <div className="text-gray-600 text-sm">
-              {unitPrice.toFixed(2)} € HT / pièce
+              {unitPrice.toFixed(2)}€ HT/pièce
             </div>
           </div>
         )}
+        
+        {/* Prices displayed as a flex row with labels and values */}
+        <div className="flex justify-between items-baseline">
+          <div className="flex flex-col">
+            <div className="text-primary text-sm font-medium">Prix HT</div>
+            <div className="text-2xl font-bold">{product.price.toFixed(2)}€</div>
+          </div>
+          
+          <div className="flex flex-col items-end">
+            <div className="text-gray-700 text-sm">Prix TTC</div>
+            <div className="text-lg text-gray-600">{priceTTC.toFixed(2)}€</div>
+          </div>
+        </div>
       </div>
     );
   } else {

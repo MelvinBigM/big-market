@@ -91,11 +91,13 @@ const ProductPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-6"
             >
-              <div className="text-center">
-                <Badge variant="secondary" className="mb-2">
-                  {product.categories.name}
-                </Badge>
-                <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
+              <div>
+                <div className="mb-2">
+                  <Badge variant="secondary" className="mb-2">
+                    {product.categories.name}
+                  </Badge>
+                </div>
+                <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
               </div>
 
               {/* Price Display Component */}
@@ -109,7 +111,7 @@ const ProductPage = () => {
               <ProductAvailability product={product} />
 
               {product.description && (
-                <div className="prose max-w-none text-center">
+                <div className="prose max-w-none">
                   <h2 className="text-xl font-semibold mb-2">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
                 </div>
