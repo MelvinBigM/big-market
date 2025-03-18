@@ -4,6 +4,7 @@ import { extractQuantity, calculatePriceTTC } from "@/lib/price-utils";
 import { AccessRequest } from "@/lib/types";
 import { useState } from "react";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
+import { Badge } from "@/components/ui/badge";
 
 interface PriceDisplayProps {
   product: Product & { categories: { name: string } };
@@ -26,42 +27,42 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
   const unitPrice = product.price / quantity;
   
   // Calculate price with VAT using the product's vat_rate
-  const vatRate = product.vat_rate || 20;
+  const vatRate = product.vat_rate || 5.5;
   const priceTTC = calculatePriceTTC(product.price, vatRate);
 
   if (canSeePrice) {
     return (
-      <div className="text-center space-y-1">
+      <div className="space-y-4 py-4">
         {/* Quantity information */}
         {quantity > 1 && (
-          <div className="bg-blue-50 inline-block py-1 px-3 rounded-md text-blue-800 font-medium">
-            {quantity} par carton
+          <div className="flex justify-center">
+            <Badge variant="secondary" className="py-1.5 px-4 text-sm font-medium bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-800">
+              {quantity} par carton
+            </Badge>
           </div>
         )}
         
         {/* Unit price */}
         {quantity > 1 && (
-          <div className="text-gray-600">
+          <div className="text-gray-600 text-center font-medium">
             {unitPrice.toFixed(2)} € HT / pièce
           </div>
         )}
         
         {/* Total price HT and TTC */}
-        <div className="mt-2 flex justify-center items-baseline space-x-4">
-          <div className="text-right">
-            <div className="text-2xl font-bold text-blue-900">
-              {product.price.toFixed(2)} € HT
-            </div>
-            <div className="text-gray-500">
-              {priceTTC.toFixed(2)} € TTC
-            </div>
+        <div className="flex flex-col items-center mt-4">
+          <div className="text-3xl font-bold text-red-600">
+            {product.price.toFixed(2)} € HT
+          </div>
+          <div className="text-gray-500 mt-1">
+            {priceTTC.toFixed(2)} € TTC
           </div>
         </div>
       </div>
     );
   } else {
     return (
-      <div className="text-sm text-center">
+      <div className="text-sm text-center p-4">
         {isNewUser ? (
           hasPendingRequest ? (
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">
@@ -74,7 +75,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
             <p className="text-gray-700 mb-2">
               Pour voir les prix : <button
                 onClick={() => setShowAccessDialog(true)}
-                className="text-blue-600 hover:text-blue-800 underline font-medium"
+                className="text-red-600 hover:text-red-800 underline font-medium"
               >
                 demander l'accès client
               </button>
