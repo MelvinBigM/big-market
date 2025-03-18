@@ -106,8 +106,8 @@ const ProductPage = () => {
               </div>
 
               {canSeePrice ? (
-                <div className="flex flex-col items-center sm:items-start">
-                  <div className="flex items-baseline">
+                <div className="text-center sm:text-left">
+                  <div className="inline-flex items-baseline">
                     <span className="text-3xl font-bold text-primary">
                       {product.price.toFixed(2)} €
                     </span>
