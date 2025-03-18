@@ -56,21 +56,28 @@ const ProductPage = () => {
 
   if (!product) return null;
 
+  // Extract quantity for displaying in the title
+  const quantityMatch = product.name.match(/x(\d+)$/);
+  const quantityStr = quantityMatch ? quantityMatch[0] : "";
+  const nameWithoutQuantity = product.name.replace(/x\d+$/, "").trim();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <NavBar />
-      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <main className="pt-20 pb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Category Breadcrumb */}
+          <div className="mb-2 mt-4">
+            <Badge variant="outline" className="text-gray-600 bg-white border-gray-200">
+              {product.categories.name}
+            </Badge>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white rounded-lg shadow-sm overflow-hidden">
             {/* Image Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bg-white rounded-lg shadow-sm p-6"
-            >
+            <div className="p-6 flex items-center justify-center bg-white">
               {product.image_url ? (
-                <div className="aspect-square overflow-hidden rounded-lg">
+                <div className="aspect-square w-full max-w-md overflow-hidden">
                   <img
                     src={product.image_url}
                     alt={product.name}
@@ -78,43 +85,45 @@ const ProductPage = () => {
                   />
                 </div>
               ) : (
-                <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="aspect-square w-full max-w-md bg-gray-100 flex items-center justify-center rounded-lg">
                   <span className="text-gray-400">Pas d'image disponible</span>
                 </div>
               )}
-            </motion.div>
+            </div>
 
             {/* Product Details Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-6"
-            >
-              <div className="text-center">
-                <Badge variant="secondary" className="mb-2">
-                  {product.categories.name}
-                </Badge>
-                <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
+            <div className="p-6 flex flex-col">
+              {/* Product Title */}
+              <h1 className="text-3xl font-bold text-gray-900 mb-6">
+                {nameWithoutQuantity}
+                <span className="block text-2xl">{quantityStr}</span>
+              </h1>
+              
+              {/* Quantity display under title */}
+              <div className="mb-8 text-blue-600">
+                <span className="font-medium">{product.name.match(/x(\d+)$/) ? product.name.match(/x(\d+)$/)[1] : ""} par carton</span>
               </div>
-
-              {/* Price Display Component */}
+              
+              {/* Price Display */}
               <PriceDisplay 
                 product={product} 
                 profile={profile} 
                 accessRequest={accessRequest} 
               />
+              
+              {/* Stock Availability */}
+              <div className="mt-6">
+                <ProductAvailability product={product} />
+              </div>
 
-              {/* Product Availability Component */}
-              <ProductAvailability product={product} />
-
+              {/* Description */}
               {product.description && (
-                <div className="prose max-w-none text-center">
-                  <h2 className="text-xl font-semibold mb-2">Description</h2>
+                <div className="mt-8">
+                  <h2 className="text-lg font-medium mb-2">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
                 </div>
               )}
-            </motion.div>
+            </div>
           </div>
         </div>
       </main>

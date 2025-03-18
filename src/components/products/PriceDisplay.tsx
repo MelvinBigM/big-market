@@ -26,36 +26,32 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
   const unitPrice = product.price / quantity;
   
   // Calculate price with VAT using the product's vat_rate
-  const vatRate = product.vat_rate || 20;
+  const vatRate = product.vat_rate || 5.5;
   const priceTTC = calculatePriceTTC(product.price, vatRate);
 
   if (canSeePrice) {
     return (
-      <div className="text-center space-y-1">
-        {/* Quantity information */}
-        {quantity > 1 && (
-          <div className="bg-blue-50 inline-block py-1 px-3 rounded-md text-blue-800 font-medium">
+      <div className="flex flex-col items-end">
+        {/* Main price display */}
+        <div className="text-right">
+          <div className="text-3xl font-bold text-red-600">
+            {product.price.toFixed(2)} € HT
+          </div>
+          <div className="text-gray-600">
+            {priceTTC.toFixed(2)} € TTC
+          </div>
+        </div>
+        
+        {/* Quantity information below pricing */}
+        <div className="mt-4">
+          <div className="inline-block bg-gray-100 py-1 px-3 rounded-md text-gray-700">
             {quantity} par carton
           </div>
-        )}
-        
-        {/* Unit price */}
-        {quantity > 1 && (
-          <div className="text-gray-600">
-            {unitPrice.toFixed(2)} € HT / pièce
-          </div>
-        )}
-        
-        {/* Total price HT and TTC */}
-        <div className="mt-2 flex justify-center items-baseline space-x-4">
-          <div className="text-right">
-            <div className="text-2xl font-bold text-blue-900">
-              {product.price.toFixed(2)} € HT
+          {quantity > 1 && (
+            <div className="text-gray-600 mt-1 text-sm">
+              {unitPrice.toFixed(2)} € HT / pièce
             </div>
-            <div className="text-gray-500">
-              {priceTTC.toFixed(2)} € TTC
-            </div>
-          </div>
+          )}
         </div>
       </div>
     );
