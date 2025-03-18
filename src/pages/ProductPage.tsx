@@ -69,19 +69,26 @@ const ProductPage = () => {
               transition={{ duration: 0.5 }}
               className="bg-white rounded-lg shadow-sm p-6"
             >
-              {product.image_url ? (
-                <div className="aspect-square overflow-hidden rounded-lg">
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-400">Pas d'image disponible</span>
-                </div>
-              )}
+              <div className="bg-white p-4 rounded-md">
+                <Badge variant="secondary" className="mb-2">
+                  {product.categories.name}
+                </Badge>
+                <h1 className="text-3xl font-bold text-gray-900 mb-6">{product.name}</h1>
+                
+                {product.image_url ? (
+                  <div className="aspect-square overflow-hidden rounded-lg border border-gray-200">
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+                    <span className="text-gray-400">Pas d'image disponible</span>
+                  </div>
+                )}
+              </div>
             </motion.div>
 
             {/* Product Details Section */}
@@ -91,13 +98,6 @@ const ProductPage = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="space-y-6"
             >
-              <div className="text-center">
-                <Badge variant="secondary" className="mb-2">
-                  {product.categories.name}
-                </Badge>
-                <h1 className="text-4xl font-bold text-gray-900">{product.name}</h1>
-              </div>
-
               {/* Price Display Component */}
               <PriceDisplay 
                 product={product} 
@@ -109,8 +109,8 @@ const ProductPage = () => {
               <ProductAvailability product={product} />
 
               {product.description && (
-                <div className="prose max-w-none text-center">
-                  <h2 className="text-xl font-semibold mb-2">Description</h2>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-semibold mb-2 text-primary">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
                 </div>
               )}
