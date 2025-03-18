@@ -1,4 +1,3 @@
-
 import { Product } from "@/lib/types";
 import { extractQuantity, calculatePriceTTC } from "@/lib/price-utils";
 import { AccessRequest } from "@/lib/types";
@@ -37,7 +36,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
           <div className="text-lg font-medium">
             {quantity > 1 && `${quantity} par carton`}
           </div>
-          <div className="text-2xl font-bold text-red-600">
+          <div className="text-xl font-bold text-red-600">
             {product.price.toFixed(2)} € HT
           </div>
         </div>
