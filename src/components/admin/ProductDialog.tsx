@@ -1,15 +1,11 @@
 
-import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { Product, Category } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { supabase } from "@/integrations/supabase/client";
+import { Product, Category } from "@/lib/types";
+import { useProductForm } from "./products/hooks/useProductForm";
+import ProductFormFields from "./products/ProductFormFields";
 
 interface ProductDialogProps {
   open: boolean;
@@ -19,14 +15,6 @@ interface ProductDialogProps {
 }
 
 const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialogProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [price, setPrice] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [vatRate, setVatRate] = useState<string>("20");
-
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
@@ -40,70 +28,22 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
     },
   });
 
-  useEffect(() => {
-    if (product) {
-      setName(product.name);
-      setDescription(product.description || "");
-      setImageUrl(product.image_url || "");
-      setPrice(product.price.toString());
-      setCategoryId(product.category_id);
-      setVatRate(product.vat_rate?.toString() || "20");
-    } else {
-      setName("");
-      setDescription("");
-      setImageUrl("");
-      setPrice("");
-      setCategoryId("");
-      setVatRate("20");
-    }
-  }, [product, open]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      if (product) {
-        const { error } = await supabase
-          .from("products")
-          .update({
-            name,
-            description,
-            image_url: imageUrl,
-            price: parseFloat(price),
-            category_id: categoryId,
-            vat_rate: parseFloat(vatRate),
-          })
-          .eq("id", product.id);
-
-        if (error) throw error;
-        toast.success("Produit mis à jour avec succès");
-      } else {
-        const { error } = await supabase
-          .from("products")
-          .insert([
-            {
-              name,
-              description,
-              image_url: imageUrl,
-              price: parseFloat(price),
-              category_id: categoryId,
-              vat_rate: parseFloat(vatRate),
-            },
-          ]);
-
-        if (error) throw error;
-        toast.success("Produit créé avec succès");
-      }
-
-      onSuccess();
-      onOpenChange(false);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    isLoading,
+    name,
+    setName,
+    description,
+    setDescription,
+    imageUrl,
+    setImageUrl,
+    price,
+    setPrice,
+    categoryId,
+    setCategoryId,
+    vatRate,
+    setVatRate,
+    handleSubmit,
+  } = useProductForm(product, onSuccess, onOpenChange);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -114,87 +54,23 @@ const ProductDialog = ({ open, onOpenChange, product, onSuccess }: ProductDialog
               {product ? "Modifier le produit" : "Ajouter un produit"}
             </DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="name">Nom</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Nom du produit"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Description du produit"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="price">Prix HT</Label>
-              <Input
-                id="price"
-                type="number"
-                step="0.01"
-                min="0"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Prix du produit"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label>Taux de TVA</Label>
-              <RadioGroup 
-                value={vatRate} 
-                onValueChange={setVatRate}
-                className="flex space-x-4"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="5.5" id="tva-5.5" />
-                  <Label htmlFor="tva-5.5">5,5%</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="10" id="tva-10" />
-                  <Label htmlFor="tva-10">10%</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="20" id="tva-20" />
-                  <Label htmlFor="tva-20">20%</Label>
-                </div>
-              </RadioGroup>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="category">Catégorie</Label>
-              <select
-                id="category"
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                required
-              >
-                <option value="">Sélectionnez une catégorie</option>
-                {categories?.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="imageUrl">URL de l'image</Label>
-              <Input
-                id="imageUrl"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="URL de l'image"
-              />
-            </div>
-          </div>
+          
+          <ProductFormFields
+            name={name}
+            setName={setName}
+            description={description}
+            setDescription={setDescription}
+            price={price}
+            setPrice={setPrice}
+            categoryId={categoryId}
+            setCategoryId={setCategoryId}
+            imageUrl={imageUrl}
+            setImageUrl={setImageUrl}
+            vatRate={vatRate}
+            setVatRate={setVatRate}
+            categories={categories}
+          />
+          
           <DialogFooter>
             <Button type="submit" disabled={isLoading}>
               {isLoading ? (
