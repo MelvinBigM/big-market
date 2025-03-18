@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -18,7 +17,6 @@ const ProductPage = () => {
   const { profile } = useAuth();
   const [showAccessDialog, setShowAccessDialog] = useState(false);
 
-  // Récupérer les informations du produit
   const { data: product } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
@@ -38,7 +36,6 @@ const ProductPage = () => {
     },
   });
 
-  // Vérifier si l'utilisateur a déjà une demande d'accès en attente
   const { data: accessRequest, isLoading: isLoadingAccessRequest } = useQuery({
     queryKey: ["accessRequest", profile?.id],
     queryFn: async () => {
@@ -69,7 +66,6 @@ const ProductPage = () => {
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Image Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -91,7 +87,6 @@ const ProductPage = () => {
               )}
             </motion.div>
 
-            {/* Product Details Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -106,11 +101,13 @@ const ProductPage = () => {
               </div>
 
               {canSeePrice ? (
-                <div className="flex items-end">
-                  <span className="text-3xl font-bold text-primary">
-                    {product.price.toFixed(2)} €
-                  </span>
-                  <span className="text-sm text-gray-500 ml-1 mb-1">HT</span>
+                <div className="flex flex-col items-center sm:items-start">
+                  <div className="flex items-baseline">
+                    <span className="text-3xl font-bold text-primary">
+                      {product.price.toFixed(2)} €
+                    </span>
+                    <span className="text-sm text-gray-500 ml-1">HT</span>
+                  </div>
                 </div>
               ) : (
                 <div className="text-sm">
