@@ -32,9 +32,19 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
   if (canSeePrice) {
     return (
       <div className="space-y-3 bg-white rounded-lg shadow-sm p-6">
-        {/* Quantity information */}
+        {/* Total price HT and TTC - Positioned first */}
+        <div className="flex flex-col items-center">
+          <div className="text-3xl font-bold text-primary mb-1">
+            {product.price.toFixed(2)} € HT
+          </div>
+          <div className="text-gray-600">
+            {priceTTC.toFixed(2)} € TTC
+          </div>
+        </div>
+        
+        {/* Quantity information - Positioned after price */}
         {quantity > 1 && (
-          <div className="flex flex-col gap-2 mb-2">
+          <div className="flex flex-col gap-2 mt-4 pt-3 border-t">
             <div className="inline-block py-1 px-3 rounded-md text-blue-800 font-medium bg-blue-50 self-center">
               {quantity} par carton
             </div>
@@ -43,16 +53,6 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
             </div>
           </div>
         )}
-        
-        {/* Total price HT and TTC */}
-        <div className="flex flex-col items-center border-t pt-3">
-          <div className="text-3xl font-bold text-primary mb-1">
-            {product.price.toFixed(2)} € HT
-          </div>
-          <div className="text-gray-600">
-            {priceTTC.toFixed(2)} € TTC
-          </div>
-        </div>
       </div>
     );
   } else {
