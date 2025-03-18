@@ -1,3 +1,4 @@
+
 import { Product } from "@/lib/types";
 import { extractQuantity, calculatePriceTTC } from "@/lib/price-utils";
 import { AccessRequest } from "@/lib/types";
@@ -30,7 +31,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
 
   if (canSeePrice) {
     return (
-      <div className="space-y-0">
+      <div className="space-y-0 mt-4">
         {/* Price display with unit price */}
         <div className="flex justify-between items-center">
           <div className="text-lg font-medium">
@@ -52,7 +53,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
     );
   } else {
     return (
-      <div className="text-sm text-center">
+      <div className="text-sm text-center mt-4">
         {isNewUser ? (
           hasPendingRequest ? (
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-md mb-4">
