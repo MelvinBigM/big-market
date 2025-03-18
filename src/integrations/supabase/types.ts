@@ -102,51 +102,6 @@ export type Database = {
         }
         Relationships: []
       }
-      chat_messages: {
-        Row: {
-          created_at: string
-          id: string
-          is_admin_message: boolean
-          message: string
-          read: boolean
-          receiver_id: string | null
-          sender_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          is_admin_message?: boolean
-          message: string
-          read?: boolean
-          receiver_id?: string | null
-          sender_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          is_admin_message?: boolean
-          message?: string
-          read?: boolean
-          receiver_id?: string | null
-          sender_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_messages_receiver_id_fkey"
-            columns: ["receiver_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "chat_messages_sender_id_fkey"
-            columns: ["sender_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       products: {
         Row: {
           category_id: string
