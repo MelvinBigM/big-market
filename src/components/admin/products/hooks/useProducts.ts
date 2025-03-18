@@ -1,11 +1,13 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Product } from "@/lib/types";
 import { toast } from "sonner";
 
 export const useProducts = () => {
-  const { data: products, refetch: refetchProducts } = useQuery({
+  const queryClient = useQueryClient();
+
+  const { data: products } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const { data: products, error: productsError } = await supabase
@@ -33,6 +35,9 @@ export const useProducts = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
+    // Update optimistically
+    queryClient.setQueryData(["products"], items);
+
     try {
       // Mise à jour des positions un par un
       for (let i = 0; i < items.length; i++) {
@@ -44,9 +49,10 @@ export const useProducts = () => {
         if (error) throw error;
       }
       
-      refetchProducts();
       toast.success("Ordre des produits mis à jour");
     } catch (error: any) {
+      // Revert optimistic update on error
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       toast.error("Erreur lors de la réorganisation des produits");
     }
   };
@@ -62,7 +68,7 @@ export const useProducts = () => {
         if (error) throw error;
         
         toast.success("Produit supprimé avec succès");
-        refetchProducts();
+        queryClient.invalidateQueries({ queryKey: ["products"] });
       } catch (error: any) {
         toast.error(error.message);
       }
@@ -79,7 +85,7 @@ export const useProducts = () => {
       if (error) throw error;
       
       toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'hors stock'}`);
-      refetchProducts();
+      queryClient.invalidateQueries({ queryKey: ["products"] });
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -87,7 +93,6 @@ export const useProducts = () => {
 
   return {
     products,
-    refetchProducts,
     handleDragEnd,
     handleDelete,
     toggleStock,
