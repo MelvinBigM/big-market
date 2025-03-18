@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Product } from "@/lib/types";
 import ProductDialog from "./ProductDialog";
@@ -15,7 +14,7 @@ const ProductsSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
 
-  const { products, refetchProducts, handleDelete, toggleStock, handleDragEnd } = useProducts();
+  const { products, handleDelete, toggleStock, handleDragEnd } = useProducts();
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -30,7 +29,6 @@ const ProductsSection = () => {
     },
   });
 
-  // Mettre à jour collapsedCategories quand les catégories sont chargées
   useEffect(() => {
     if (categories) {
       setCollapsedCategories(categories.map(cat => cat.id));
@@ -94,7 +92,7 @@ const ProductsSection = () => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         product={selectedProduct}
-        onSuccess={refetchProducts}
+        onSuccess={() => {}}
       />
     </div>
   );
