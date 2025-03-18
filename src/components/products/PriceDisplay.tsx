@@ -31,21 +31,19 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
   if (canSeePrice) {
     return (
       <div className="space-y-0">
-        {/* Price display with aligned quantity */}
+        {/* Price display with unit price */}
         <div className="flex justify-between items-center">
           <div className="text-lg font-medium">
-            {quantity > 1 && `${quantity} par carton`}
+            {unitPrice.toFixed(2)} € HT / pièce
           </div>
           <div className="text-xl font-bold text-red-600">
             {product.price.toFixed(2)} € HT
           </div>
         </div>
         
-        {/* Unit price with aligned TTC price */}
+        {/* TTC price */}
         <div className="flex justify-between items-center">
-          <div className="text-gray-600">
-            {quantity > 1 && `${unitPrice.toFixed(2)} € HT / pièce`}
-          </div>
+          <div className="text-gray-600"></div>
           <div className="text-gray-500">
             {priceTTC.toFixed(2)} € TTC
           </div>
