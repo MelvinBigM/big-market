@@ -32,27 +32,23 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
   if (canSeePrice) {
     return (
       <div className="space-y-4">
-        {/* Quantity information */}
-        {quantity > 1 && (
-          <div className="text-left">
-            <div className="text-lg font-medium">
-              {quantity} par carton
-            </div>
-            <div className="text-gray-600">
-              {unitPrice.toFixed(2)} € HT / pièce
-            </div>
+        {/* Price display with aligned quantity */}
+        <div className="flex justify-between items-center">
+          <div className="text-lg font-medium">
+            {quantity > 1 && `${quantity} par carton`}
           </div>
-        )}
+          <div className="text-2xl font-bold text-red-600">
+            {product.price.toFixed(2)} € HT
+          </div>
+        </div>
         
-        {/* Price display - align to right */}
-        <div className="flex justify-end text-right">
-          <div>
-            <div className="text-2xl font-bold text-red-600">
-              {product.price.toFixed(2)} € HT
-            </div>
-            <div className="text-gray-500">
-              {priceTTC.toFixed(2)} € TTC
-            </div>
+        {/* Unit price with aligned TTC price */}
+        <div className="flex justify-between items-center">
+          <div className="text-gray-600">
+            {quantity > 1 && `${unitPrice.toFixed(2)} € HT / pièce`}
+          </div>
+          <div className="text-gray-500">
+            {priceTTC.toFixed(2)} € TTC
           </div>
         </div>
       </div>
