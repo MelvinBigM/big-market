@@ -16,6 +16,6 @@ export const extractQuantity = (productName: string): number => {
 /**
  * Calculates the price with VAT included
  */
-export const calculatePriceTTC = (priceHT: number, vatRate: number = 20): number => {
+export const calculatePriceTTC = (priceHT: number, vatRate: number = 5.5): number => {
   return priceHT * (1 + vatRate / 100);
 };

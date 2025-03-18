@@ -17,7 +17,7 @@ export const useProductForm = (
   const [imageUrl, setImageUrl] = useState("");
   const [price, setPrice] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [vatRate, setVatRate] = useState<string>("20");
+  const [vatRate, setVatRate] = useState<string>("5.5");
 
   useEffect(() => {
     if (product) {
@@ -26,14 +26,14 @@ export const useProductForm = (
       setImageUrl(product.image_url || "");
       setPrice(product.price.toString());
       setCategoryId(product.category_id);
-      setVatRate(product.vat_rate?.toString() || "20");
+      setVatRate(product.vat_rate?.toString() || "5.5");
     } else {
       setName("");
       setDescription("");
       setImageUrl("");
       setPrice("");
       setCategoryId("");
-      setVatRate("20");
+      setVatRate("5.5");
     }
   }, [product]);
 
