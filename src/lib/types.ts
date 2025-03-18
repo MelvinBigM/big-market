@@ -34,7 +34,7 @@ export type Product = {
   position: number;
   created_at: string;
   updated_at: string;
-  vat_rate?: number; // Taux de TVA: 5.5, 10, or 20
+  vat_rate: number; // Taux de TVA: 5.5, 10, or 20
 };
 
 export type AccessRequest = {

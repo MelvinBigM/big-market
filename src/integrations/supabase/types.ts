@@ -114,6 +114,7 @@ export type Database = {
           position: number | null
           price: number
           updated_at: string
+          vat_rate: number | null
         }
         Insert: {
           category_id: string
@@ -126,6 +127,7 @@ export type Database = {
           position?: number | null
           price: number
           updated_at?: string
+          vat_rate?: number | null
         }
         Update: {
           category_id?: string
@@ -138,6 +140,7 @@ export type Database = {
           position?: number | null
           price?: number
           updated_at?: string
+          vat_rate?: number | null
         }
         Relationships: [
           {

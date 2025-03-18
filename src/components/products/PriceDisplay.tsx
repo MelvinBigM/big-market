@@ -25,7 +25,7 @@ const PriceDisplay = ({ product, profile, accessRequest }: PriceDisplayProps) =>
   const quantity = extractQuantity(product.name);
   const unitPrice = product.price / quantity;
   
-  // Calculate price with VAT (default 20% if not specified)
+  // Calculate price with VAT using the product's vat_rate
   const vatRate = product.vat_rate || 20;
   const priceTTC = calculatePriceTTC(product.price, vatRate);
 
