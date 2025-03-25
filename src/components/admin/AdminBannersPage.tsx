@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
@@ -58,14 +59,14 @@ const AdminBannersPage = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <Button onClick={() => openDialog()} className="ml-auto">
+          <h2 className="text-xl font-semibold text-center mb-6">Bannières actives</h2>
+          
+          <div className="flex justify-end mb-6">
+            <Button onClick={() => openDialog()}>
               <Plus className="h-5 w-5 mr-2" />
               Ajouter une bannière
             </Button>
           </div>
-          
-          <h2 className="text-xl font-semibold text-center mb-4">Bannières actives</h2>
           
           <p className="text-gray-600 mb-6">
             Gérez les bannières qui apparaissent sur la page d'accueil. Les bannières sont affichées dans l'ordre de leur position.
