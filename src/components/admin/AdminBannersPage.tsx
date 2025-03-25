@@ -60,8 +60,10 @@ const AdminBannersPage = () => {
 
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold">Bannières actives</h2>
-            <Button onClick={() => openDialog()}>
+            <div className="flex-1">
+              <h2 className="text-xl font-semibold text-center">Bannières actives</h2>
+            </div>
+            <Button onClick={() => openDialog()} className="absolute right-6">
               <Plus className="h-5 w-5 mr-2" />
               Ajouter une bannière
             </Button>
