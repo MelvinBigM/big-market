@@ -35,7 +35,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
             <address className="text-sm text-gray-600 not-italic">
-              <p>45 ALLÉE DES ORMES</p>
+              <p>36 Chemin des Rosiers</p>
               <p>06250 MOUGINS</p>
               <p>FRANCE</p>
               <p className="mt-2">contact@bigimex.fr</p>
