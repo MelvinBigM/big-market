@@ -28,16 +28,16 @@ const Footer = () => {
             </ul>
           </div>
           
-          {/* BIG IMEX in the center */}
+          {/* BIG Market in the center */}
           <div className="flex flex-col items-center text-center">
-            <h3 className="text-xl font-bold mb-4">BIG IMEX</h3>
+            <h3 className="text-xl font-bold mb-4">Big Market</h3>
             <p className="text-sm text-gray-600 max-w-xs">
               Votre destination pour des produits alimentaires et des boissons de qualité.
             </p>
             <div className="mt-6">
               <img 
                 src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png" 
-                alt="BIG IMEX Logo" 
+                alt="Big Market Logo" 
                 className="h-12 w-auto" 
               />
             </div>
@@ -57,7 +57,7 @@ const Footer = () => {
         </div>
         <div className="border-t mt-8 pt-8 text-center">
           <p className="text-sm text-gray-600">
-            © {new Date().getFullYear()} BIG IMEX. Tous droits réservés.
+            © {new Date().getFullYear()} Big Market. Tous droits réservés.
           </p>
         </div>
       </div>

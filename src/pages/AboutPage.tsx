@@ -11,7 +11,7 @@ const AboutPage = () => {
         {/* Hero section */}
         <div className="bg-gray-50 py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6">À propos de BIG IMEX</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-6">À propos de Big Market</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Votre partenaire de confiance pour l'importation et l'exportation de produits alimentaires et boissons de qualité depuis 2015.
             </p>
@@ -28,7 +28,7 @@ const AboutPage = () => {
             </div>
             <div className="prose prose-lg max-w-none text-gray-600">
               <p>
-                Fondée en 2015, BIG IMEX est née de la passion de proposer des produits alimentaires et des boissons de qualité supérieure. Basée à Mandelieu dans les Alpes-Maritimes, notre entreprise s'est progressivement imposée comme un acteur incontournable dans le secteur de l'import-export alimentaire.
+                Fondée en 2015, Big Market est née de la passion de proposer des produits alimentaires et des boissons de qualité supérieure. Basée à Mandelieu dans les Alpes-Maritimes, notre entreprise s'est progressivement imposée comme un acteur incontournable dans le secteur de l'import-export alimentaire.
               </p>
               <p>
                 Au fil des années, nous avons développé un réseau de fournisseurs et de partenaires fiables à travers le monde, nous permettant de proposer une gamme diversifiée de produits sélectionnés avec soin pour leur qualité exceptionnelle.
