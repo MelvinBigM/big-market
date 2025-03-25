@@ -36,17 +36,10 @@ const AdminPage = () => {
       <NavBar />
       <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
-              <img 
-                src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png" 
-                alt="Big Market Logo" 
-                className="h-12 w-12"
-              />
-              <h1 className="text-3xl font-bold text-gray-900">
-                Gestion des catégories
-              </h1>
-            </div>
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Gestion des catégories
+            </h1>
           </div>
           <CategoriesSection />
         </div>
