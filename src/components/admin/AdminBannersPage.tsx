@@ -61,17 +61,17 @@ const AdminBannersPage = () => {
         <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
           <h2 className="text-xl font-semibold text-center mb-6">Bannières actives</h2>
           
-          <div className="flex justify-end mb-6">
+          <p className="text-gray-600 mb-6">
+            Gérez les bannières qui apparaissent sur la page d'accueil. Les bannières sont affichées dans l'ordre de leur position.
+            Dimensions recommandées: 1920x500 pixels.
+          </p>
+          
+          <div className="flex justify-center mb-6">
             <Button onClick={() => openDialog()}>
               <Plus className="h-5 w-5 mr-2" />
               Ajouter une bannière
             </Button>
           </div>
-          
-          <p className="text-gray-600 mb-6">
-            Gérez les bannières qui apparaissent sur la page d'accueil. Les bannières sont affichées dans l'ordre de leur position.
-            Dimensions recommandées: 1920x500 pixels.
-          </p>
 
           <BannerList 
             banners={banners} 
