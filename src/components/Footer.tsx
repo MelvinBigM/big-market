@@ -1,6 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { MapPin, Phone, Mail } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -44,26 +43,15 @@ const Footer = () => {
             </div>
           </div>
           
-          {/* Contact on the right */}
+          {/* Contact on the right - restored to original format */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact</h3>
-            <address className="text-sm text-gray-600 not-italic space-y-2">
-              <div className="flex items-center">
-                <MapPin className="h-4 w-4 mr-2 text-primary" />
-                <div>
-                  <p>42 Chemin de l'escadrille</p>
-                  <p>06210 Mandelieu</p>
-                  <p>FRANCE</p>
-                </div>
-              </div>
-              <div className="flex items-center">
-                <Mail className="h-4 w-4 mr-2 text-primary" />
-                <p>contact@bigimex.fr</p>
-              </div>
-              <div className="flex items-center">
-                <Phone className="h-4 w-4 mr-2 text-primary" />
-                <p>04 93 90 90 92</p>
-              </div>
+            <address className="text-sm text-gray-600 not-italic">
+              <p>42 Chemin de l'escadrille</p>
+              <p>06210 Mandelieu</p>
+              <p>FRANCE</p>
+              <p className="mt-2">contact@bigimex.fr</p>
+              <p>04 93 90 90 92</p>
             </address>
           </div>
         </div>
