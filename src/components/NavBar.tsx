@@ -1,18 +1,22 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuIcon, User, X } from "lucide-react";
+import { MenuIcon, User, X, BellAlert } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { Category } from "@/lib/types";
+import { NotificationBadge } from "./ui/notification-badge";
+import { useAccessRequests } from "@/hooks/useAccessRequests";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { session, profile } = useAuth();
   const navigate = useNavigate();
+
+  const { pendingCount } = useAccessRequests();
+  const showNotification = profile?.role === 'admin' && pendingCount > 0;
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -71,9 +75,12 @@ const NavBar = () => {
 
           <div className="hidden md:flex items-center space-x-4">
             {profile?.role === 'admin' && (
-              <Link to="/admin">
+              <Link to="/admin" className="relative">
                 <Button variant="ghost" size="icon">
                   <User className="h-5 w-5" />
+                  {showNotification && (
+                    <NotificationBadge count={pendingCount} />
+                  )}
                 </Button>
               </Link>
             )}
@@ -123,10 +130,16 @@ const NavBar = () => {
               {session ? (
                 <>
                   {profile?.role === 'admin' && (
-                    <Link to="/admin">
+                    <Link to="/admin" className="relative">
                       <Button variant="outline" className="w-full justify-start">
                         <User className="h-5 w-5 mr-2" />
                         Administration
+                        {showNotification && (
+                          <NotificationBadge 
+                            count={pendingCount} 
+                            className="relative top-0 right-0 ml-2"
+                          />
+                        )}
                       </Button>
                     </Link>
                   )}

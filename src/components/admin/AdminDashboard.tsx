@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Users, Layers, Package, UserCheck, ImageIcon } from "lucide-react";
@@ -6,11 +7,14 @@ import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import NavBar from "../NavBar";
 import Footer from "../Footer";
+import { NotificationBadge } from "../ui/notification-badge";
+import { useAccessRequests } from "@/hooks/useAccessRequests";
 
 const AdminDashboard = () => {
   const { profile, isLoading } = useAuth();
   const navigate = useNavigate();
-
+  const { pendingCount } = useAccessRequests();
+  
   useEffect(() => {
     if (!isLoading && (!profile || profile.role !== 'admin')) {
       navigate('/');
@@ -40,6 +44,7 @@ const AdminDashboard = () => {
       icon: <Users className="h-8 w-8" />,
       link: "/admin/users",
       color: "bg-blue-500",
+      notificationCount: 0,
     },
     {
       title: "Gestion des catégories",
@@ -47,6 +52,7 @@ const AdminDashboard = () => {
       icon: <Layers className="h-8 w-8" />,
       link: "/admin/categories",
       color: "bg-green-500",
+      notificationCount: 0,
     },
     {
       title: "Gestion des produits",
@@ -54,6 +60,7 @@ const AdminDashboard = () => {
       icon: <Package className="h-8 w-8" />,
       link: "/admin/products",
       color: "bg-purple-500",
+      notificationCount: 0,
     },
     {
       title: "Demandes d'accès",
@@ -61,6 +68,7 @@ const AdminDashboard = () => {
       icon: <UserCheck className="h-8 w-8" />,
       link: "/admin/access-requests",
       color: "bg-yellow-500",
+      notificationCount: pendingCount,
     },
     {
       title: "Bannières",
@@ -68,6 +76,7 @@ const AdminDashboard = () => {
       icon: <ImageIcon className="h-8 w-8" />,
       link: "/admin/banners",
       color: "bg-pink-500",
+      notificationCount: 0,
     },
   ];
 
@@ -94,8 +103,16 @@ const AdminDashboard = () => {
                 className="block h-full"
               >
                 <div className="bg-white rounded-lg shadow-sm p-6 h-full hover:shadow-md transition-shadow">
-                  <div className={`inline-flex items-center justify-center p-3 rounded-lg ${card.color} text-white mb-4`}>
-                    {card.icon}
+                  <div className="relative">
+                    <div className={`inline-flex items-center justify-center p-3 rounded-lg ${card.color} text-white mb-4`}>
+                      {card.icon}
+                    </div>
+                    {card.notificationCount > 0 && (
+                      <NotificationBadge 
+                        count={card.notificationCount} 
+                        className="absolute -top-2 -right-2"
+                      />
+                    )}
                   </div>
                   <h2 className="text-xl font-semibold text-gray-900 mb-2">
                     {card.title}
