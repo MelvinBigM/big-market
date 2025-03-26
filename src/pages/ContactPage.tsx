@@ -1,4 +1,3 @@
-
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Mail, MapPin, Phone } from "lucide-react";
@@ -19,8 +18,8 @@ const ContactPage = () => {
                   </div>
                   <div className="w-full text-center pr-12">
                     <p className="font-medium mb-1">Adresse</p>
-                    <p className="text-gray-600">45 ALLÉE DES ORMES</p>
-                    <p className="text-gray-600">06250 MOUGINS</p>
+                    <p className="text-gray-600">42 Chemin de l'escadrille</p>
+                    <p className="text-gray-600">06210 Mandelieu</p>
                     <p className="text-gray-600">FRANCE</p>
                   </div>
                 </div>
