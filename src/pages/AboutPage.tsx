@@ -1,7 +1,7 @@
 
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-import { Building, Clock, GlobeIcon, HeartHandshake, ShieldCheck, Users } from "lucide-react";
+import { GlobeIcon, HeartHandshake, ShieldCheck, Users, Clock } from "lucide-react";
 
 const AboutPage = () => {
   return (
@@ -20,38 +20,6 @@ const AboutPage = () => {
         
         {/* Main content */}
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* Our story section */}
-          <section className="mb-16">
-            <div className="flex items-center mb-6">
-              <Building className="h-6 w-6 text-primary mr-3" />
-              <h2 className="text-2xl font-semibold text-gray-900">Notre Histoire</h2>
-            </div>
-            <div className="prose prose-lg max-w-none text-gray-600">
-              <p>
-                Fondée en 2015, Big Market est née de la passion de proposer des produits alimentaires et des boissons de qualité supérieure. Basée à Mandelieu dans les Alpes-Maritimes, notre entreprise s'est progressivement imposée comme un acteur incontournable dans le secteur de l'import-export alimentaire.
-              </p>
-              <p>
-                Au fil des années, nous avons développé un réseau de fournisseurs et de partenaires fiables à travers le monde, nous permettant de proposer une gamme diversifiée de produits sélectionnés avec soin pour leur qualité exceptionnelle.
-              </p>
-            </div>
-          </section>
-          
-          {/* Our mission section */}
-          <section className="mb-16">
-            <div className="flex items-center mb-6">
-              <GlobeIcon className="h-6 w-6 text-primary mr-3" />
-              <h2 className="text-2xl font-semibold text-gray-900">Notre Mission</h2>
-            </div>
-            <div className="prose prose-lg max-w-none text-gray-600">
-              <p>
-                Notre mission est simple : fournir à nos clients les meilleurs produits alimentaires et boissons du monde entier, tout en assurant un service irréprochable et personnalisé.
-              </p>
-              <p>
-                Nous nous efforçons de créer des relations durables avec nos clients et nos fournisseurs, basées sur la confiance, la qualité et l'excellence du service. Notre objectif est de rendre accessibles des produits de qualité supérieure tout en respectant les normes les plus strictes en matière de sécurité alimentaire.
-              </p>
-            </div>
-          </section>
-          
           {/* Our values section */}
           <section>
             <div className="flex items-center mb-6">
