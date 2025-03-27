@@ -127,7 +127,7 @@ const CategoriesSection = () => {
                             className="w-12 h-12 object-cover rounded"
                           />
                         )}
-                        <div>
+                        <div className="text-center">
                           <h3 className="font-medium">{category.name}</h3>
                           {category.description && (
                             <p className="text-sm text-gray-600">{category.description}</p>
