@@ -80,7 +80,10 @@ const NavBar = () => {
                 <Button variant="ghost" size="icon">
                   <User className="h-5 w-5" />
                   {showNotification && (
-                    <NotificationBadge count={pendingCount} />
+                    <NotificationBadge 
+                      count={pendingCount}
+                      className="scale-75" 
+                    />
                   )}
                 </Button>
               </Link>
@@ -138,7 +141,7 @@ const NavBar = () => {
                         {showNotification && (
                           <NotificationBadge 
                             count={pendingCount} 
-                            className="relative top-0 right-0 ml-2"
+                            className="relative top-0 right-0 ml-2 scale-75"
                           />
                         )}
                       </Button>
