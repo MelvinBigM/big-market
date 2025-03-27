@@ -113,25 +113,27 @@ const CategoriesSection = () => {
                       {...provided.draggableProps}
                       className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
                     >
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-4 flex-1">
                         <div
                           {...provided.dragHandleProps}
                           className="cursor-move text-gray-400 hover:text-gray-600"
                         >
                           <GripVertical className="h-5 w-5" />
                         </div>
-                        {category.image_url && (
-                          <img
-                            src={category.image_url}
-                            alt={category.name}
-                            className="w-12 h-12 object-cover rounded"
-                          />
-                        )}
-                        <div className="text-center">
-                          <h3 className="font-medium">{category.name}</h3>
-                          {category.description && (
-                            <p className="text-sm text-gray-600">{category.description}</p>
+                        <div className="flex flex-1 items-center justify-center">
+                          {category.image_url && (
+                            <img
+                              src={category.image_url}
+                              alt={category.name}
+                              className="w-12 h-12 object-cover rounded mr-4"
+                            />
                           )}
+                          <div className="text-center">
+                            <h3 className="font-medium">{category.name}</h3>
+                            {category.description && (
+                              <p className="text-sm text-gray-600">{category.description}</p>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className="flex space-x-2">
