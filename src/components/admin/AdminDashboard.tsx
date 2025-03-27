@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Users, Layers, Package, UserCheck, ImageIcon } from "lucide-react";
@@ -109,7 +110,7 @@ const AdminDashboard = () => {
                     {card.notificationCount > 0 && (
                       <NotificationBadge 
                         count={card.notificationCount} 
-                        className="absolute -top-2 -right-2 scale-75"
+                        className="absolute -top-2 -right-2"
                       />
                     )}
                   </div>
