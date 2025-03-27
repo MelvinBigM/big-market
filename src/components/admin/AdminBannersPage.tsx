@@ -63,7 +63,7 @@ const AdminBannersPage = () => {
           
           <p className="text-gray-600 mb-6">
             Gérez les bannières qui apparaissent sur la page d'accueil. Les bannières sont affichées dans l'ordre de leur position.
-            Dimensions recommandées: 1920x500 pixels.
+            Dimensions recommandées: 1920x200 pixels.
           </p>
           
           <div className="flex justify-center mb-6">
