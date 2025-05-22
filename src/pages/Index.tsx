@@ -1,3 +1,4 @@
+
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import HeroBanner from "@/components/home/HeroBanner";
@@ -5,11 +6,14 @@ import LatestProducts from "@/components/home/LatestProducts";
 import LocationMap from "@/components/home/LocationMap";
 import OpeningHours from "@/components/home/OpeningHours";
 import { Separator } from "@/components/ui/separator";
+
 const Index = () => {
   return <div className="min-h-screen bg-white">
       <NavBar />
-      {/* Ajout d'un div spacer pour créer l'espace nécessaire */}
-       
+      
+      {/* Spacer qui a la même hauteur que la navbar (h-16) */}
+      <div className="h-16 w-full"></div>
+      
       <main className="flex flex-col w-full">
         {/* Contenu principal commençant après le spacer */}
         <div className="w-full">
