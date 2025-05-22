@@ -11,10 +11,10 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <NavBar />
-      <main className="flex-1 pt-16">
+      <main className="flex-1">
         <HeroBanner />
         
-        <Separator className="max-w-7xl mx-auto my-6 border-t" />
+        <Separator className="max-w-7xl mx-auto border-t" />
         
         <LatestProducts />
         
