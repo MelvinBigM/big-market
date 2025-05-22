@@ -13,8 +13,8 @@ const Index = () => {
       <NavBar />
       <main className="flex flex-col">
         <HeroBanner />
-        <Separator className="max-w-7xl mx-auto w-[90%] mt-8" />
-        <div className="py-16">
+        <Separator className="max-w-7xl mx-auto w-[90%] mt-4" />
+        <div className="py-10">
           <LatestProducts />
           <Separator className="my-16 max-w-7xl mx-auto w-[90%]" />
           <LocationMap />
