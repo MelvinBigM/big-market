@@ -9,17 +9,17 @@ const LocationMap = () => {
   };
 
   return (
-    <section className="px-4 sm:px-6 lg:px-8 w-full">
+    <section className="px-4 sm:px-6 lg:px-8 py-8 w-full">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 md:mb-12">Retrouvez-nous</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">Retrouvez-nous</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-center">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-4 sm:space-y-6 w-full"
+            className="space-y-4 sm:space-y-6"
           >
-            <Card className="overflow-hidden shadow-md border-none w-full">
+            <Card className="overflow-hidden shadow-md border-none">
               <CardContent className="p-0">
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2891.5429189232896!2d6.937453375869258!3d43.55261895887715!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12ce8c1320fbf0a5%3A0xe901e493c9a1b4d8!2s42%20Chem.%20de%20l&#39;Escadrille%2C%2006210%20Mandelieu-la-Napoule!5e0!3m2!1sfr!2sfr!4v1718458531594!5m2!1sfr!2sfr" 
@@ -39,13 +39,13 @@ const LocationMap = () => {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-6 w-full"
+            className="space-y-6"
           >
             <h3 className="text-xl sm:text-2xl font-semibold">Nos coordonnées</h3>
-            <div className="space-y-4 sm:space-y-6 w-full">
+            <div className="space-y-4 sm:space-y-6">
               <motion.div 
                 whileHover={{ scale: 1.02 }}
-                className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 p-4 sm:p-5 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200 shadow-sm hover:shadow-md w-full"
+                className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 p-4 sm:p-5 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200 shadow-sm hover:shadow-md"
                 onClick={handleOpenGoogleMaps}
               >
                 <div className="h-12 w-12 flex items-center justify-center bg-primary/10 rounded-full">
@@ -63,7 +63,7 @@ const LocationMap = () => {
               
               <motion.div 
                 whileHover={{ scale: 1.02 }}
-                className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 p-4 sm:p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 w-full"
+                className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 p-4 sm:p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
               >
                 <div className="h-12 w-12 flex items-center justify-center bg-primary/10 rounded-full">
                   <Phone className="h-6 w-6 text-primary" />
@@ -76,7 +76,7 @@ const LocationMap = () => {
               
               <motion.div 
                 whileHover={{ scale: 1.02 }}
-                className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 p-4 sm:p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 w-full"
+                className="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 p-4 sm:p-5 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-all duration-200"
               >
                 <div className="h-12 w-12 flex items-center justify-center bg-primary/10 rounded-full">
                   <Mail className="h-6 w-6 text-primary" />
