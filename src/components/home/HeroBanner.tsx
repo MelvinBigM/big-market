@@ -50,7 +50,7 @@ const HeroBanner = () => {
   }, [banners.length]);
 
   if (isLoading) {
-    return <section className="w-full -mt-4 -mb-4">
+    return <section className="w-full mt-16">
         <div className="mx-auto">
           <div className="bg-gray-100 animate-pulse w-full" style={{
           height: "200px"
@@ -81,7 +81,7 @@ const HeroBanner = () => {
   return (
     <>
       <Toaster />
-      <section className="w-full -mt-4 -mb-4 overflow-hidden">
+      <section className="w-full mt-16">
         <div className="mx-auto">
           <AnimatePresence mode="wait">
             <motion.div 
