@@ -56,7 +56,7 @@ const HeroBanner = () => {
       <section className="pt-8 pb-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div 
-            className="bg-gray-100 animate-pulse rounded-xl"
+            className="bg-gray-100 animate-pulse"
             style={{ height: bannerHeight }}
           ></div>
         </div>
@@ -93,7 +93,7 @@ const HeroBanner = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="relative rounded-xl shadow-md overflow-hidden w-full"
+            className="relative w-full"
             style={{ height: bannerHeight }}
           >
             {/* Background: Either Image or Gradient */}
