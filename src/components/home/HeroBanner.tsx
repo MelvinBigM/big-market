@@ -93,7 +93,7 @@ const HeroBanner = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="relative rounded-xl shadow-md border border-gray-100 overflow-hidden w-full"
+            className="relative rounded-xl shadow-md overflow-hidden w-full"
             style={{ height: bannerHeight }}
           >
             {/* Background: Either Image or Gradient */}
