@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -84,7 +83,7 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="w-full px-4 sm:px-6 lg:px-8">
+    <section className="w-full">
       <div className="max-w-7xl mx-auto">
         <AnimatePresence mode="wait">
           <motion.div 
@@ -112,7 +111,7 @@ const HeroBanner = () => {
             )}
             
             {/* Content overlay with text */}
-            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-4 sm:p-8">
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-4">
               <motion.h1 
                 className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg`}
                 initial={{ opacity: 0 }}
