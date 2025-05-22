@@ -1,5 +1,4 @@
 
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,16 +34,9 @@ const LatestProducts = () => {
           </h2>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {latestProducts?.map((product, index) => (
+          {latestProducts?.map((product) => (
             <Link to={`/product/${product.id}`} key={product.id} className="block group">
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ 
-                  y: -5,
-                  transition: { duration: 0.2 }
-                }}
+              <div
                 className="bg-white rounded-lg shadow-md overflow-hidden relative group-hover:shadow-xl transition-all duration-300 h-full border border-gray-100"
               >
                 <div className="absolute top-2 right-2 z-10">
@@ -64,7 +56,7 @@ const LatestProducts = () => {
                   <h3 className="text-sm font-semibold mb-1 truncate group-hover:text-primary transition-colors">{product.name}</h3>
                   <div className="w-8 h-0.5 bg-primary mt-2 transition-all duration-300 group-hover:w-full opacity-70"></div>
                 </div>
-              </motion.div>
+              </div>
             </Link>
           ))}
         </div>
