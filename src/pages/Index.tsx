@@ -18,11 +18,11 @@ const Index = () => {
         
         <LatestProducts />
         
-        <Separator className="my-6 border-t" />
+        <Separator className="border-t" />
         
         <LocationMap />
         
-        <Separator className="my-6 border-t" />
+        <Separator className="border-t" />
         
         <OpeningHours />
       </main>
