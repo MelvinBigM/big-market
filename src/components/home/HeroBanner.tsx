@@ -12,8 +12,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
   
-  // Hauteur plus adaptive et proportionnelle selon les écrans
-  const bannerHeight = isMobile ? "120px" : "180px";
+  // Hauteur minimale pour optimiser l'espace
+  const bannerHeight = isMobile ? "100px" : "160px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -89,10 +89,10 @@ const HeroBanner = () => {
         <AnimatePresence mode="wait">
           <motion.div 
             key={currentBanner}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.4 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.3 }}
             className="relative w-full"
             style={{ height: bannerHeight }}
           >
@@ -112,9 +112,9 @@ const HeroBanner = () => {
             )}
             
             {/* Content overlay with text */}
-            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-[0.4rem] xs:p-[0.5rem] sm:p-[0.6rem] w-full">
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-[0.1rem] xs:p-[0.15rem] sm:p-[0.2rem] w-full">
               <motion.h1 
-                className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-[0.1rem] xs:mb-[0.2rem] sm:mb-[0.3rem] text-shadow-lg`}
+                className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-[0.03rem] xs:mb-[0.06rem] sm:mb-[0.1rem] text-shadow-lg`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
