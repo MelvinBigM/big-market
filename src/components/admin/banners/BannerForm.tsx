@@ -114,7 +114,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
           <DialogTitle>{selectedBanner?.id ? 'Modifier' : 'Ajouter'} une bannière</DialogTitle>
           <DialogDescription>
             Personnalisez votre bannière qui sera affichée sur la page d'accueil.
-            Dimensions recommandées: 1920x200 pixels.
+            Dimensions recommandées: 1920x400 pixels pour ordinateur de bureau. La bannière s'adaptera automatiquement à tous les types d'écrans.
           </DialogDescription>
         </DialogHeader>
 

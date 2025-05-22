@@ -4,13 +4,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
 import { banners as defaultBanners } from "@/data/bannerData";
-
-const BANNER_HEIGHT = "200px";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const HeroBanner = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [banners, setBanners] = useState<Banner[]>(defaultBanners as Banner[]);
   const [isLoading, setIsLoading] = useState(true);
+  const isMobile = useIsMobile();
+
+  // Bannière hauteur responsive selon la taille d'écran
+  const bannerHeight = isMobile ? "150px" : "400px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -54,7 +57,7 @@ const HeroBanner = () => {
         <div className="max-w-7xl mx-auto">
           <div 
             className="bg-gray-100 animate-pulse rounded-xl"
-            style={{ height: BANNER_HEIGHT }}
+            style={{ height: bannerHeight }}
           ></div>
         </div>
       </section>
@@ -91,7 +94,7 @@ const HeroBanner = () => {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
             className="relative rounded-xl shadow-md border border-gray-100 overflow-hidden w-full"
-            style={{ height: BANNER_HEIGHT }}
+            style={{ height: bannerHeight }}
           >
             {/* Background: Either Image or Gradient */}
             {banners[currentBanner].image_url ? (
@@ -99,7 +102,8 @@ const HeroBanner = () => {
                 className="absolute inset-0 w-full h-full bg-center bg-cover" 
                 style={{ 
                   backgroundImage: `url(${banners[currentBanner].image_url})`,
-                  backgroundSize: 'cover'
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center' // Centrer l'image pour qu'elle reste toujours bien cadrée
                 }}
               />
             ) : (
@@ -109,7 +113,7 @@ const HeroBanner = () => {
             {/* Content overlay with text directly on banner (no white box) */}
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-8">
               <motion.h1 
-                className={`text-3xl sm:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-4 text-shadow-lg`}
+                className={`text-2xl sm:text-3xl md:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-2 md:mb-4 text-shadow-lg`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -118,7 +122,7 @@ const HeroBanner = () => {
               </motion.h1>
               {banners[currentBanner].description && (
                 <motion.p 
-                  className={`text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
+                  className={`text-sm sm:text-base md:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
