@@ -11,8 +11,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
-      <main className="flex flex-col w-full pt-16">
-        {/* Bannière correctement positionnée sous la navbar */}
+      {/* Ajout d'un div spacer pour créer l'espace nécessaire */}
+      <div className="h-16"></div> 
+      <main className="flex flex-col w-full">
+        {/* Contenu principal commençant après le spacer */}
         <div className="w-full">
           <HeroBanner />
         </div>
