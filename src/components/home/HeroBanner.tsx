@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
 import { banners as defaultBanners } from "@/data/bannerData";
 import { useIsMobile } from "@/hooks/use-mobile";
+
 const HeroBanner = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [banners, setBanners] = useState<Banner[]>(defaultBanners as Banner[]);
@@ -12,6 +14,7 @@ const HeroBanner = () => {
 
   // Responsive height for different screen sizes
   const bannerHeight = isMobile ? "200px" : "250px";
+
   useEffect(() => {
     const fetchBanners = async () => {
       try {
@@ -36,6 +39,7 @@ const HeroBanner = () => {
     };
     fetchBanners();
   }, []);
+
   useEffect(() => {
     if (banners.length === 0) return;
     const timer = setInterval(() => {
@@ -43,15 +47,17 @@ const HeroBanner = () => {
     }, 10000);
     return () => clearInterval(timer);
   }, [banners.length]);
+
   if (isLoading) {
-    return <section className="w-full">
-        <div className="max-w-7xl mx-auto">
+    return <section className="w-full -mt-4 -mb-4">
+        <div className="mx-auto">
           <div className="bg-gray-100 animate-pulse w-full" style={{
           height: bannerHeight
         }}></div>
         </div>
       </section>;
   }
+
   if (banners.length === 0) {
     return null;
   }
@@ -70,8 +76,9 @@ const HeroBanner = () => {
   const getTextColor = (banner: Banner) => {
     return banner.text_color || (banner as any).text_color || 'text-gray-800';
   };
-  return <section className="w-full">
-      <div className="max-w-7xl mx-auto">
+
+  return <section className="w-full -mt-4 -mb-4">
+      <div className="mx-auto">
         <AnimatePresence mode="wait">
           <motion.div key={currentBanner} initial={{
           opacity: 0,
@@ -121,4 +128,5 @@ const HeroBanner = () => {
       </div>
     </section>;
 };
+
 export default HeroBanner;
