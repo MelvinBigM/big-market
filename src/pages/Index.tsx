@@ -16,8 +16,8 @@ const Index = () => {
         <div className="pt-2%">
           <HeroBanner />
         </div>
-        {/* Séparateur avec espace équilibré */}
-        <div className="w-full flex justify-center">
+        {/* Séparateur avec espace réduit en dessous de la bannière */}
+        <div className="w-full flex justify-center -mt-1%">
           <Separator className="max-w-7xl w-[90%]" />
         </div>
         {/* Contenu principal avec espacement amélioré */}
