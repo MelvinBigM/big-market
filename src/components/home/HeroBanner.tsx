@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,8 +12,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
   
-  // Hauteur responsive pour différentes tailles d'écran
-  const bannerHeight = isMobile ? "160px" : "220px";
+  // Hauteur responsive avec valeurs réduites, en particulier sur mobile
+  const bannerHeight = isMobile ? "140px" : "200px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -111,9 +112,9 @@ const HeroBanner = () => {
             )}
             
             {/* Content overlay with text */}
-            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-3 sm:p-4 w-full">
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-2 sm:p-3 w-full">
               <motion.h1 
-                className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 text-shadow-lg`}
+                className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-0.5 sm:mb-1 text-shadow-lg`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
