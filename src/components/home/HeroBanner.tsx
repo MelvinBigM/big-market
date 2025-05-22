@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +13,7 @@ const HeroBanner = () => {
   const isMobile = useIsMobile();
   
   // Hauteur responsive pour différentes tailles d'écran
-  const bannerHeight = isMobile ? "160px" : "220px";
+  const bannerHeight = isMobile ? "200px" : "250px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -83,7 +84,7 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="w-full">
+    <section className="w-full px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto w-full">
         <AnimatePresence mode="wait">
           <motion.div 
@@ -111,9 +112,9 @@ const HeroBanner = () => {
             )}
             
             {/* Content overlay with text */}
-            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-3 sm:p-4 w-full">
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-4 sm:p-8 w-full">
               <motion.h1 
-                className={`text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 text-shadow-lg`}
+                className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -122,7 +123,7 @@ const HeroBanner = () => {
               </motion.h1>
               {banners[currentBanner].description && (
                 <motion.p 
-                  className={`text-xs xs:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
+                  className={`text-xs sm:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}
