@@ -13,7 +13,7 @@ const HeroBanner = () => {
   const isMobile = useIsMobile();
   
   // Responsive height for different screen sizes
-  const bannerHeight = isMobile ? "200px" : "250px";
+  const bannerHeight = isMobile ? "300px" : "400px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -56,7 +56,7 @@ const HeroBanner = () => {
       <section className="w-full">
         <div className="w-full">
           <div 
-            className="bg-gray-100 animate-pulse w-full"
+            className="bg-gray-100 animate-pulse w-full rounded-lg"
             style={{ height: bannerHeight }}
           ></div>
         </div>
@@ -85,7 +85,7 @@ const HeroBanner = () => {
 
   return (
     <section className="w-full">
-      <div className="w-full">
+      <div className="w-full max-w-7xl mx-auto px-4">
         <AnimatePresence mode="wait">
           <motion.div 
             key={currentBanner}
@@ -93,7 +93,7 @@ const HeroBanner = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="relative w-full"
+            className="relative w-full rounded-xl overflow-hidden shadow-lg"
             style={{ height: bannerHeight }}
           >
             {/* Background: Either Image or Gradient */}
@@ -102,7 +102,7 @@ const HeroBanner = () => {
                 className="absolute inset-0 w-full h-full bg-center"
                 style={{ 
                   backgroundImage: `url(${banners[currentBanner].image_url})`,
-                  backgroundSize: 'contain',
+                  backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat'
                 }}
@@ -112,9 +112,9 @@ const HeroBanner = () => {
             )}
             
             {/* Content overlay with text */}
-            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-4 sm:p-8">
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-6 sm:p-8">
               <motion.h1 
-                className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg`}
+                className={`text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold ${getTextColor(banners[currentBanner])} mb-3 sm:mb-4 md:mb-6 text-shadow-lg`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -123,7 +123,7 @@ const HeroBanner = () => {
               </motion.h1>
               {banners[currentBanner].description && (
                 <motion.p 
-                  className={`text-xs sm:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
+                  className={`text-sm sm:text-base md:text-lg lg:text-xl ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4 }}

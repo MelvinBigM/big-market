@@ -12,19 +12,27 @@ const Index = () => {
     <div className="min-h-screen flex flex-col bg-white">
       <NavBar />
       <main className="flex-1">
-        <HeroBanner />
+        <div className="py-6">
+          <HeroBanner />
+        </div>
         
         <Separator className="border-t" />
         
-        <LatestProducts />
+        <div className="py-8">
+          <LatestProducts />
+        </div>
         
         <Separator className="border-t" />
         
-        <LocationMap />
+        <div className="py-8">
+          <LocationMap />
+        </div>
         
         <Separator className="border-t" />
         
-        <OpeningHours />
+        <div className="py-8">
+          <OpeningHours />
+        </div>
       </main>
       <Footer />
     </div>
