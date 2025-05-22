@@ -14,15 +14,15 @@ const Index = () => {
       <main className="flex-1">
         <HeroBanner />
         
-        <Separator className="max-w-7xl mx-auto border-t" />
+        <Separator className="border-t" />
         
         <LatestProducts />
         
-        <Separator className="max-w-7xl mx-auto my-6 border-t" />
+        <Separator className="my-6 border-t" />
         
         <LocationMap />
         
-        <Separator className="max-w-7xl mx-auto my-6 border-t" />
+        <Separator className="my-6 border-t" />
         
         <OpeningHours />
       </main>
