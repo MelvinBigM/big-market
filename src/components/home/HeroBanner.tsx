@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
 import { banners as defaultBanners } from "@/data/bannerData";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Toaster } from "@/components/ui/sonner";
 
 const HeroBanner = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -12,8 +13,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
 
-  // Responsive height for different screen sizes
-  const bannerHeight = isMobile ? "200px" : "250px";
+  // Responsive height for different screen sizes - adjusted to fit content better
+  const bannerHeight = isMobile ? "auto" : "auto";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -52,7 +53,7 @@ const HeroBanner = () => {
     return <section className="w-full -mt-4 -mb-4">
         <div className="mx-auto">
           <div className="bg-gray-100 animate-pulse w-full" style={{
-          height: bannerHeight
+          height: "200px"
         }}></div>
         </div>
       </section>;
@@ -77,56 +78,66 @@ const HeroBanner = () => {
     return banner.text_color || (banner as any).text_color || 'text-gray-800';
   };
 
-  return <section className="w-full -mt-4 -mb-4">
-      <div className="mx-auto">
-        <AnimatePresence mode="wait">
-          <motion.div key={currentBanner} initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} exit={{
-          opacity: 0,
-          y: -20
-        }} transition={{
-          duration: 0.5
-        }} className="relative w-full" style={{
-          height: bannerHeight
-        }}>
-            {/* Background: Either Image or Gradient */}
-            {banners[currentBanner].image_url ? <div className="absolute inset-0 w-full h-full bg-center" style={{
-            backgroundImage: `url(${banners[currentBanner].image_url})`,
-            backgroundSize: 'contain',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }} /> : <div className={`absolute inset-0 w-full h-full ${getBannerBackground(banners[currentBanner])}`} />}
-            
-            {/* Content overlay with text */}
-            <div className="">
-              <motion.h1 className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg`} initial={{
-              opacity: 0
-            }} animate={{
-              opacity: 1
-            }} transition={{
-              delay: 0.2
-            }}>
-                {banners[currentBanner].title}
-              </motion.h1>
-              {banners[currentBanner].description && <motion.p className={`text-xs sm:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`} initial={{
-              opacity: 0
-            }} animate={{
-              opacity: 1
-            }} transition={{
-              delay: 0.4
-            }}>
-                  {banners[currentBanner].description}
-                </motion.p>}
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </section>;
+  return (
+    <>
+      <Toaster />
+      <section className="w-full -mt-4 -mb-4 overflow-hidden">
+        <div className="mx-auto">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={currentBanner} 
+              initial={{ opacity: 0, y: 20 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -20 }} 
+              transition={{ duration: 0.5 }} 
+              className="relative w-full flex justify-center items-center"
+              style={{ 
+                maxHeight: banners[currentBanner].image_url ? "auto" : bannerHeight
+              }}
+            >
+              {/* Background: Either Image or Gradient */}
+              {banners[currentBanner].image_url ? (
+                <div 
+                  className="w-full h-auto flex justify-center" 
+                >
+                  <img 
+                    src={banners[currentBanner].image_url} 
+                    alt={banners[currentBanner].title} 
+                    className="object-contain max-w-full"
+                    style={{ maxHeight: isMobile ? "200px" : "250px" }}
+                  />
+                </div>
+              ) : (
+                <div className={`absolute inset-0 w-full h-full ${getBannerBackground(banners[currentBanner])}`} />
+              )}
+              
+              {/* Content overlay with text */}
+              <div className="absolute inset-0 flex flex-col justify-center items-center">
+                <motion.h1 
+                  className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg`} 
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }} 
+                  transition={{ delay: 0.2 }}
+                >
+                  {banners[currentBanner].title}
+                </motion.h1>
+                {banners[currentBanner].description && (
+                  <motion.p 
+                    className={`text-xs sm:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`} 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    transition={{ delay: 0.4 }}
+                  >
+                    {banners[currentBanner].description}
+                  </motion.p>
+                )}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </section>
+    </>
+  );
 };
 
 export default HeroBanner;
