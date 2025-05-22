@@ -5,6 +5,7 @@ import HeroBanner from "@/components/home/HeroBanner";
 import LatestProducts from "@/components/home/LatestProducts";
 import LocationMap from "@/components/home/LocationMap";
 import OpeningHours from "@/components/home/OpeningHours";
+import { Separator } from "@/components/ui/separator";
 
 const Index = () => {
   return (
@@ -12,8 +13,17 @@ const Index = () => {
       <NavBar />
       <main className="flex-1 pt-16">
         <HeroBanner />
+        
+        <Separator className="max-w-7xl mx-auto my-6 bg-gray-200 h-0.5" />
+        
         <LatestProducts />
+        
+        <Separator className="max-w-7xl mx-auto my-6 bg-gray-200 h-0.5" />
+        
         <LocationMap />
+        
+        <Separator className="max-w-7xl mx-auto my-6 bg-gray-200 h-0.5" />
+        
         <OpeningHours />
       </main>
       <Footer />
