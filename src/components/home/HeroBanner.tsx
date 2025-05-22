@@ -12,8 +12,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
 
-  // Bannière hauteur responsive selon la taille d'écran
-  const bannerHeight = isMobile ? "150px" : "400px";
+  // Hauteur responsive ajustée pour assurer la visibilité complète
+  const bannerHeight = isMobile ? "150px" : "300px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -53,7 +53,7 @@ const HeroBanner = () => {
 
   if (isLoading) {
     return (
-      <section className="pt-16 pb-16 px-4 sm:px-6 lg:px-8">
+      <section className="pt-8 pb-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div 
             className="bg-gray-100 animate-pulse rounded-xl"
@@ -84,7 +84,7 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="pt-16 pb-16 px-4 sm:px-6 lg:px-8">
+    <section className="pt-8 pb-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto w-full">
         <AnimatePresence mode="wait">
           <motion.div 
@@ -99,18 +99,19 @@ const HeroBanner = () => {
             {/* Background: Either Image or Gradient */}
             {banners[currentBanner].image_url ? (
               <div 
-                className="absolute inset-0 w-full h-full bg-center bg-cover" 
+                className="absolute inset-0 w-full h-full bg-center"
                 style={{ 
                   backgroundImage: `url(${banners[currentBanner].image_url})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center' // Centrer l'image pour qu'elle reste toujours bien cadrée
+                  backgroundSize: 'contain', // Changed to 'contain' to ensure the full image is visible
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat' // Prevent image from repeating
                 }}
               />
             ) : (
               <div className={`absolute inset-0 w-full h-full ${getBannerBackground(banners[currentBanner])}`} />
             )}
             
-            {/* Content overlay with text directly on banner (no white box) */}
+            {/* Content overlay with text */}
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-8">
               <motion.h1 
                 className={`text-2xl sm:text-3xl md:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-2 md:mb-4 text-shadow-lg`}
