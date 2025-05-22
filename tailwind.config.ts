@@ -19,9 +19,6 @@ export default {
       },
     },
     extend: {
-      screens: {
-        'xs': '475px',
-      },
       spacing: {
         '1%': '1%',
         '2%': '2%',
