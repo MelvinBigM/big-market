@@ -27,9 +27,9 @@ const LatestProducts = () => {
   });
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white">
+    <section className="py-8 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-10 text-center">
+        <div className="mb-6 text-center">
           <h2 className="text-3xl font-bold">
             Nos Nouveautés
           </h2>
