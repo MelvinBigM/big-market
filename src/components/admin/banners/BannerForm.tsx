@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Banner } from "@/lib/types";
-import { Image } from "lucide-react";
+import { Image, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface BannerFormProps {
   isOpen: boolean;
@@ -17,6 +18,9 @@ interface BannerFormProps {
   setSelectedBanner: (banner: Banner | null) => void;
   onSave: () => Promise<void>;
 }
+
+const REQUIRED_WIDTH = 1920;
+const REQUIRED_HEIGHT = 250;
 
 const BannerForm: React.FC<BannerFormProps> = ({
   isOpen,
@@ -27,12 +31,30 @@ const BannerForm: React.FC<BannerFormProps> = ({
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [imageError, setImageError] = useState<string | null>(null);
+
+  const validateImageDimensions = (file: File): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const valid = img.width === REQUIRED_WIDTH && img.height === REQUIRED_HEIGHT;
+        if (!valid) {
+          setImageError(`L'image doit être exactement de ${REQUIRED_WIDTH}x${REQUIRED_HEIGHT} pixels. Dimensions actuelles: ${img.width}x${img.height}`);
+        } else {
+          setImageError(null);
+        }
+        resolve(valid);
+      };
+      img.src = URL.createObjectURL(file);
+    });
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setIsUploading(true);
+    setImageError(null);
     
     try {
       // Validate file type
@@ -44,6 +66,12 @@ const BannerForm: React.FC<BannerFormProps> = ({
       // Max size: 2MB
       if (file.size > 2 * 1024 * 1024) {
         toast.error("L'image ne doit pas dépasser 2MB");
+        return;
+      }
+
+      // Validate dimensions
+      const validDimensions = await validateImageDimensions(file);
+      if (!validDimensions) {
         return;
       }
 
@@ -114,7 +142,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
           <DialogTitle>{selectedBanner?.id ? 'Modifier' : 'Ajouter'} une bannière</DialogTitle>
           <DialogDescription>
             Personnalisez votre bannière qui sera affichée sur la page d'accueil.
-            Dimensions recommandées: 1920x400 pixels pour ordinateur de bureau. La bannière s'adaptera automatiquement à tous les types d'écrans.
+            Dimensions requises: exactement 1920x250 pixels.
           </DialogDescription>
         </DialogHeader>
 
@@ -167,6 +195,14 @@ const BannerForm: React.FC<BannerFormProps> = ({
                 )}
               </div>
             </div>
+            
+            {imageError && (
+              <Alert variant="destructive" className="mt-2">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{imageError}</AlertDescription>
+              </Alert>
+            )}
+            
             <div className="mt-2">
               <Label htmlFor="image" className="cursor-pointer inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
                 <Image className="h-4 w-4 mr-2" />
@@ -180,6 +216,9 @@ const BannerForm: React.FC<BannerFormProps> = ({
                 onChange={handleFileUpload}
                 disabled={isUploading}
               />
+              <p className="text-xs text-gray-500 mt-1">
+                L'image doit être exactement de {REQUIRED_WIDTH}x{REQUIRED_HEIGHT} pixels
+              </p>
             </div>
           </div>
 
@@ -227,7 +266,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             Annuler
           </Button>
-          <Button onClick={handleSave} disabled={isSaving}>
+          <Button onClick={handleSave} disabled={isSaving || !!imageError}>
             {isSaving ? 'Enregistrement...' : 'Enregistrer'}
           </Button>
         </DialogFooter>

@@ -12,8 +12,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
 
-  // Hauteur responsive ajustée pour assurer la visibilité complète
-  const bannerHeight = isMobile ? "150px" : "200px";
+  // Hauteur fixe correspondant à la nouvelle taille demandée
+  const bannerHeight = "250px";
 
   useEffect(() => {
     const fetchBanners = async () => {
