@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,14 +53,12 @@ const HeroBanner = () => {
 
   if (isLoading) {
     return (
-      <section className="w-full">
-        <div className="max-w-7xl mx-auto">
-          <div 
-            className="bg-gray-100 animate-pulse w-full"
-            style={{ height: bannerHeight }}
-          ></div>
-        </div>
-      </section>
+      <div className="w-full">
+        <div 
+          className="bg-gray-100 animate-pulse w-full"
+          style={{ height: bannerHeight }}
+        ></div>
+      </div>
     );
   }
 
@@ -83,58 +82,56 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="w-full">
-      <div className="max-w-7xl mx-auto">
-        <AnimatePresence mode="wait">
-          <motion.div 
-            key={currentBanner}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-            className="relative w-full"
-            style={{ height: bannerHeight }}
-          >
-            {/* Background: Either Image or Gradient */}
-            {banners[currentBanner].image_url ? (
-              <div 
-                className="absolute inset-0 w-full h-full bg-center"
-                style={{ 
-                  backgroundImage: `url(${banners[currentBanner].image_url})`,
-                  backgroundSize: 'contain',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat'
-                }}
-              />
-            ) : (
-              <div className={`absolute inset-0 w-full h-full ${getBannerBackground(banners[currentBanner])}`} />
-            )}
-            
-            {/* Content overlay with text */}
-            <div className="relative z-10 flex flex-col justify-center items-center h-full text-center p-4">
-              <motion.h1 
-                className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg`}
+    <div className="w-full">
+      <AnimatePresence mode="wait">
+        <motion.div 
+          key={currentBanner}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.5 }}
+          className="relative w-full"
+          style={{ height: bannerHeight }}
+        >
+          {/* Background: Either Image or Gradient */}
+          {banners[currentBanner].image_url ? (
+            <div 
+              className="absolute inset-0 w-full h-full bg-center"
+              style={{ 
+                backgroundImage: `url(${banners[currentBanner].image_url})`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+              }}
+            />
+          ) : (
+            <div className={`absolute inset-0 w-full h-full ${getBannerBackground(banners[currentBanner])}`} />
+          )}
+          
+          {/* Content overlay with text */}
+          <div className="relative z-10 flex flex-col justify-center items-center h-full text-center">
+            <motion.h1 
+              className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} text-shadow-lg`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              {banners[currentBanner].title}
+            </motion.h1>
+            {banners[currentBanner].description && (
+              <motion.p 
+                className={`text-xs sm:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
+                transition={{ delay: 0.4 }}
               >
-                {banners[currentBanner].title}
-              </motion.h1>
-              {banners[currentBanner].description && (
-                <motion.p 
-                  className={`text-xs sm:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  {banners[currentBanner].description}
-                </motion.p>
-              )}
-            </div>
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </section>
+                {banners[currentBanner].description}
+              </motion.p>
+            )}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 };
 
