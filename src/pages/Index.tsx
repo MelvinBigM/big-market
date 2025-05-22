@@ -12,8 +12,8 @@ const Index = () => {
     <div className="min-h-screen bg-white">
       <NavBar />
       <main className="flex flex-col w-full">
-        {/* Bannière avec espacement optimisé et uniforme */}
-        <div className="pt-[60px] sm:pt-[72px] w-full">
+        {/* Bannière avec padding-top ajusté pour éviter le débordement sur la navbar */}
+        <div className="w-full pt-16">
           <HeroBanner />
         </div>
         
