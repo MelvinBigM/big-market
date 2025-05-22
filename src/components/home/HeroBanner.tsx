@@ -13,7 +13,7 @@ const HeroBanner = () => {
   const isMobile = useIsMobile();
 
   // Hauteur responsive ajustée pour assurer la visibilité complète
-  const bannerHeight = isMobile ? "150px" : "300px";
+  const bannerHeight = isMobile ? "150px" : "200px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -102,9 +102,9 @@ const HeroBanner = () => {
                 className="absolute inset-0 w-full h-full bg-center"
                 style={{ 
                   backgroundImage: `url(${banners[currentBanner].image_url})`,
-                  backgroundSize: 'contain', // Changed to 'contain' to ensure the full image is visible
+                  backgroundSize: 'contain',
                   backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat' // Prevent image from repeating
+                  backgroundRepeat: 'no-repeat'
                 }}
               />
             ) : (
