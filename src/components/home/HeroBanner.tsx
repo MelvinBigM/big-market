@@ -53,8 +53,8 @@ const HeroBanner = () => {
 
   if (isLoading) {
     return (
-      <section className="w-full">
-        <div className="w-full">
+      <section className="w-full mb-8">
+        <div className="max-w-7xl mx-auto">
           <div 
             className="bg-gray-100 animate-pulse w-full"
             style={{ height: bannerHeight }}
@@ -84,8 +84,8 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="w-full">
-      <div className="w-full">
+    <section className="w-full px-4 sm:px-6 lg:px-8 mb-8">
+      <div className="max-w-7xl mx-auto">
         <AnimatePresence mode="wait">
           <motion.div 
             key={currentBanner}
