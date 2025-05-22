@@ -41,7 +41,7 @@ export const useBannerEdit = (refreshBanners: () => Promise<void>) => {
         title: updatedBanner.title,
         description: updatedBanner.description,
         image_url: updatedBanner.image_url,
-        bgcolor: updatedBanner.bgColor, // Note: column name is bgcolor, not bgColor
+        bgcolor: updatedBanner.bgColor, // Map bgColor to bgcolor for database
         text_color: updatedBanner.text_color,
         position: updatedBanner.position,
         updated_at: updatedBanner.updated_at

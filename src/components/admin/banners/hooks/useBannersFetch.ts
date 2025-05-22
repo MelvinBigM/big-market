@@ -17,7 +17,21 @@ export const useBannersFetch = () => {
         .order('position', { ascending: true });
 
       if (error) throw error;
-      setBanners(data as Banner[] || []);
+      
+      // Map the database fields to our TypeScript interface
+      const formattedBanners = data?.map(banner => ({
+        id: banner.id,
+        title: banner.title,
+        description: banner.description,
+        image_url: banner.image_url,
+        bgColor: banner.bgcolor, // Map bgcolor to bgColor
+        text_color: banner.text_color,
+        position: banner.position,
+        created_at: banner.created_at,
+        updated_at: banner.updated_at
+      })) || [];
+      
+      setBanners(formattedBanners);
     } catch (error) {
       console.error("Erreur lors du chargement des bannières:", error);
       toast.error("Impossible de charger les bannières");
