@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -53,7 +52,7 @@ const HeroBanner = () => {
 
   if (isLoading) {
     return (
-      <section className="w-full">
+      <section className="w-full overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div 
             className="bg-gray-100 animate-pulse w-full"
