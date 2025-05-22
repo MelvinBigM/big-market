@@ -11,21 +11,21 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
-      <main className="flex flex-col">
-        {/* Bannière avec espacement optimisé */}
-        <div className="pt-2%">
+      <main className="flex flex-col w-full">
+        {/* Bannière avec espacement responsive */}
+        <div className="pt-[60px] sm:pt-[72px]">
           <HeroBanner />
         </div>
-        {/* Séparateur avec espace réduit en dessous de la bannière */}
-        <div className="w-full flex justify-center -mt-1%">
+        {/* Séparateur avec espace adaptatif */}
+        <div className="w-full flex justify-center">
           <Separator className="max-w-7xl w-[90%]" />
         </div>
-        {/* Contenu principal avec espacement amélioré */}
-        <div className="py-4% md:py-3%">
+        {/* Contenu principal avec espacement responsive */}
+        <div className="py-6 sm:py-8 md:py-10 w-full">
           <LatestProducts />
-          <Separator className="my-3% max-w-7xl mx-auto w-[90%]" />
+          <Separator className="my-6 sm:my-8 md:my-10 max-w-7xl mx-auto w-[90%]" />
           <LocationMap />
-          <Separator className="my-3% max-w-7xl mx-auto w-[90%]" />
+          <Separator className="my-6 sm:my-8 md:my-10 max-w-7xl mx-auto w-[90%]" />
           <OpeningHours />
         </div>
       </main>
