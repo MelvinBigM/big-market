@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { Banner } from "@/lib/types";
-import { Image, AlertCircle } from "lucide-react";
+import { Image as LucideImage, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -35,7 +35,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
 
   const validateImageDimensions = (file: File): Promise<boolean> => {
     return new Promise((resolve) => {
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => {
         const valid = img.width === REQUIRED_WIDTH && img.height === REQUIRED_HEIGHT;
         if (!valid) {
@@ -142,7 +142,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
           <DialogTitle>{selectedBanner?.id ? 'Modifier' : 'Ajouter'} une bannière</DialogTitle>
           <DialogDescription>
             Personnalisez votre bannière qui sera affichée sur la page d'accueil.
-            Dimensions requises: exactement 1920x250 pixels.
+            Dimensions requises: exactement {REQUIRED_WIDTH}x{REQUIRED_HEIGHT} pixels.
           </DialogDescription>
         </DialogHeader>
 
@@ -190,7 +190,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
                   />
                 ) : (
                   <div className={`h-full w-full flex justify-center items-center ${selectedBanner?.bgColor}`}>
-                    <Image className="h-12 w-12 text-gray-400" />
+                    <LucideImage className="h-12 w-12 text-gray-400" />
                   </div>
                 )}
               </div>
@@ -205,7 +205,7 @@ const BannerForm: React.FC<BannerFormProps> = ({
             
             <div className="mt-2">
               <Label htmlFor="image" className="cursor-pointer inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
-                <Image className="h-4 w-4 mr-2" />
+                <LucideImage className="h-4 w-4 mr-2" />
                 {isUploading ? 'Téléchargement...' : 'Choisir une image'}
               </Label>
               <Input
