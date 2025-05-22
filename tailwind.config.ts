@@ -19,6 +19,16 @@ export default {
       },
     },
     extend: {
+      spacing: {
+        '1%': '1%',
+        '2%': '2%',
+        '3%': '3%',
+        '4%': '4%',
+        '5%': '5%',
+        '6%': '6%',
+        '8%': '8%',
+        '10%': '10%',
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
