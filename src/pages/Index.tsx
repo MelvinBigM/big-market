@@ -11,13 +11,13 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <NavBar />
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1">
         <HeroBanner />
-        <Separator className="w-full border-t" />
+        <Separator className="max-w-7xl mx-auto border-t" />
         <LatestProducts />
-        <Separator className="w-full border-t" />
+        <Separator className="max-w-7xl mx-auto border-t" />
         <LocationMap />
-        <Separator className="w-full border-t" />
+        <Separator className="max-w-7xl mx-auto border-t" />
         <OpeningHours />
       </main>
       <Footer />
