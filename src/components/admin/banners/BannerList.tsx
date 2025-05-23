@@ -21,39 +21,51 @@ const BannerList: React.FC<BannerListProps> = ({ banners, onEdit, onDelete }) =>
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {banners.map((banner) => (
         <motion.div
           key={banner.id}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
-          className="flex items-center border rounded-lg p-4 hover:bg-gray-50"
+          className="border rounded-lg overflow-hidden shadow-sm"
         >
-          <div className="mr-4 h-16 w-28 bg-gray-200 rounded overflow-hidden">
+          {/* Full banner preview */}
+          <div className="w-full h-64 bg-gray-200 relative overflow-hidden">
             {banner.image_url ? (
               <img 
                 src={banner.image_url} 
                 alt={banner.title} 
-                className="h-full w-full object-cover"
+                className="w-full h-full object-cover"
               />
             ) : (
-              <div className={`h-full w-full ${banner.bgColor}`} />
+              <div className={`w-full h-full flex items-center justify-center ${banner.bgColor} ${banner.text_color}`}>
+                <div className="text-center px-4">
+                  <h3 className="text-2xl font-bold mb-2">{banner.title}</h3>
+                  {banner.description && (
+                    <p className="text-lg opacity-90">{banner.description}</p>
+                  )}
+                </div>
+              </div>
             )}
           </div>
-          <div className="flex-1">
-            <h3 className="font-medium">{banner.title}</h3>
-            <p className="text-sm text-gray-500 truncate">{banner.description}</p>
-          </div>
-          <div className="flex space-x-2">
-            <Button size="sm" variant="outline" className="text-xs" onClick={() => onEdit(banner)}>
-              <Edit className="h-4 w-4 mr-1" />
-              Modifier
-            </Button>
-            <Button size="sm" variant="outline" className="text-xs text-destructive" onClick={() => onDelete(banner.id)}>
-              <Trash2 className="h-4 w-4 mr-1" />
-              Supprimer
-            </Button>
+          
+          {/* Banner info and actions */}
+          <div className="p-4 bg-white flex items-center justify-between">
+            <div className="flex-1">
+              <h3 className="font-medium text-lg">{banner.title}</h3>
+              <p className="text-sm text-gray-500">{banner.description}</p>
+            </div>
+            <div className="flex space-x-2 ml-4">
+              <Button size="sm" variant="outline" onClick={() => onEdit(banner)}>
+                <Edit className="h-4 w-4 mr-1" />
+                Modifier
+              </Button>
+              <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => onDelete(banner.id)}>
+                <Trash2 className="h-4 w-4 mr-1" />
+                Supprimer
+              </Button>
+            </div>
           </div>
         </motion.div>
       ))}
