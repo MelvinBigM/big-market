@@ -3,13 +3,12 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Banner } from "@/lib/types";
-import { banners as defaultBanners } from "@/data/bannerData";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Toaster } from "@/components/ui/sonner";
 
 const HeroBanner = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
-  const [banners, setBanners] = useState<Banner[]>(defaultBanners as Banner[]);
+  const [banners, setBanners] = useState<Banner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
 
@@ -19,21 +18,33 @@ const HeroBanner = () => {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        // Use any to work around type issues temporarily
-        const {
-          data,
-          error
-        } = await (supabase as any).from('banners').select('*').where('active', true).order('position', {
-          ascending: true
-        });
+        const { data, error } = await supabase
+          .from('banners')
+          .select('*')
+          .eq('active', true)
+          .order('position', { ascending: true });
+
         if (error) throw error;
-        if (data && data.length > 0) {
-          console.log("Fetched banners:", data);
-          setBanners(data as Banner[]);
-        }
+        
+        // Map the database fields to our TypeScript interface
+        const formattedBanners = data?.map(banner => ({
+          id: banner.id,
+          title: banner.title,
+          description: banner.description,
+          image_url: banner.image_url,
+          bgColor: banner.bgcolor, // Map bgcolor to bgColor
+          text_color: banner.text_color,
+          position: banner.position,
+          active: banner.active,
+          created_at: banner.created_at,
+          updated_at: banner.updated_at
+        })) || [];
+        
+        console.log("Fetched active banners:", formattedBanners);
+        setBanners(formattedBanners);
       } catch (error) {
         console.error("Error fetching banners:", error);
-        // Fall back to default banners if there's an error
+        setBanners([]); // Ensure we don't fall back to default banners
       } finally {
         setIsLoading(false);
       }
