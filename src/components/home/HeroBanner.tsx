@@ -50,8 +50,8 @@ const HeroBanner = () => {
   }, [banners.length]);
 
   if (isLoading) {
-    return <section className={`w-full mt-16 ${isMobile ? "mx-[-1rem] sm:mx-0 max-w-none" : ""}`}>
-        <div className="mx-auto w-full">
+    return <section className={`w-full mt-16 ${isMobile ? "-mx-4 sm:mx-0" : ""}`}>
+        <div className="mx-auto">
           <div className="bg-gray-100 animate-pulse w-full" style={{
           height: "200px"
         }}></div>
@@ -81,8 +81,8 @@ const HeroBanner = () => {
   return (
     <>
       <Toaster />
-      <section className={`w-full mt-16 ${isMobile ? "mx-[-1rem] sm:mx-0 max-w-none" : ""}`}>
-        <div className="mx-auto w-full">
+      <section className={`w-full mt-16 ${isMobile ? "-mx-4 sm:mx-0 px-0" : ""}`}>
+        <div className="mx-auto">
           <AnimatePresence mode="wait">
             <motion.div 
               key={currentBanner} 
@@ -90,7 +90,7 @@ const HeroBanner = () => {
               animate={{ opacity: 1, y: 0 }} 
               exit={{ opacity: 0, y: -20 }} 
               transition={{ duration: 0.5 }} 
-              className="relative w-full flex justify-center"
+              className="relative w-full flex justify-center items-center"
               style={{ 
                 maxHeight: banners[currentBanner].image_url ? "auto" : bannerHeight
               }}
@@ -98,7 +98,7 @@ const HeroBanner = () => {
               {/* Background: Either Image or Gradient */}
               {banners[currentBanner].image_url ? (
                 <div 
-                  className="w-full h-auto flex justify-center"
+                  className={`w-full h-auto flex justify-center ${isMobile ? "px-0" : ""}`}
                 >
                   <img 
                     src={banners[currentBanner].image_url} 
