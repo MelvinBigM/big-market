@@ -6,14 +6,12 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { toast } from "sonner";
-import { Switch } from "./ui/switch";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [isCompany, setIsCompany] = useState(false);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -30,9 +28,9 @@ const RegisterPage = () => {
         password,
         options: {
           data: {
-            full_name: fullName,
+            full_name: companyName,
             phone_number: phoneNumber,
-            is_company: isCompany,
+            is_company: true,
             address,
             city,
             postal_code: postalCode,
@@ -66,33 +64,22 @@ const RegisterPage = () => {
             className="h-24 w-24 mb-4"
           />
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
-            Créer un compte Big Market
+            Créer un compte entreprise Big Market
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Rejoignez-nous pour accéder à nos produits
+            Inscription réservée aux entreprises
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleRegister}>
           <div className="rounded-md shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="isCompany">Êtes-vous une société ?</Label>
-              <Switch
-                id="isCompany"
-                checked={isCompany}
-                onCheckedChange={setIsCompany}
-              />
-            </div>
-
             <div>
-              <Label htmlFor="fullName">
-                {isCompany ? "Nom de la société" : "Nom complet"}
-              </Label>
+              <Label htmlFor="companyName">Nom de la société</Label>
               <Input
-                id="fullName"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                id="companyName"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
                 required
-                placeholder={isCompany ? "Nom de votre société" : "Votre nom complet"}
+                placeholder="Nom de votre société"
                 className="mt-1"
               />
             </div>
@@ -105,7 +92,7 @@ const RegisterPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="Votre email"
+                placeholder="Email de votre société"
                 className="mt-1"
               />
             </div>
@@ -132,7 +119,7 @@ const RegisterPage = () => {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 required
-                placeholder="Votre numéro de téléphone"
+                placeholder="Téléphone de votre société"
                 className="mt-1"
               />
             </div>
@@ -144,7 +131,7 @@ const RegisterPage = () => {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 required
-                placeholder="Votre adresse"
+                placeholder="Adresse de votre société"
                 className="mt-1"
               />
             </div>
