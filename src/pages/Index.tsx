@@ -14,10 +14,9 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <NavBar />
-      <main className={`flex-1 ${isMobile ? 'px-0' : ''}`}>
+      <main className="flex-1">
         <HeroBanner />
-        {/* Separator removed from here */}
-        <div className={isMobile ? 'px-4' : ''}>
+        <div className={isMobile ? 'px-4 mt-0' : ''}>
           <LatestProducts />
           <Separator className="max-w-7xl mx-auto border-t" />
           <LocationMap />
