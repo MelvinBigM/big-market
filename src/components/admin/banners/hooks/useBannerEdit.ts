@@ -17,8 +17,8 @@ export const useBannerEdit = (refreshBanners: () => Promise<void>) => {
         title: '',
         description: '',
         image_url: null,
-        bgColor: 'bg-gradient-to-r from-blue-50 to-indigo-50',
-        text_color: 'text-white',
+        bgColor: '',
+        text_color: '',
         position: 0, // This will be updated with the correct position
         active: true,
         created_at: new Date().toISOString(),
@@ -31,6 +31,11 @@ export const useBannerEdit = (refreshBanners: () => Promise<void>) => {
   const saveBanner = async () => {
     if (!selectedBanner) return;
 
+    if (!selectedBanner.image_url) {
+      toast.error("Une image est obligatoire pour créer une bannière");
+      return;
+    }
+
     try {
       const updatedBanner = {
         ...selectedBanner,
@@ -42,8 +47,8 @@ export const useBannerEdit = (refreshBanners: () => Promise<void>) => {
         title: updatedBanner.title,
         description: updatedBanner.description,
         image_url: updatedBanner.image_url,
-        bgcolor: updatedBanner.bgColor, // Map bgColor to bgcolor for database
-        text_color: updatedBanner.text_color,
+        bgcolor: '', // Empty since we don't use custom colors anymore
+        text_color: '', // Empty since we don't use custom colors anymore
         position: updatedBanner.position,
         active: updatedBanner.active,
         updated_at: updatedBanner.updated_at

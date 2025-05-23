@@ -17,7 +17,7 @@ const BannerList: React.FC<BannerListProps> = ({ banners, onEdit, onDelete, onTo
   if (banners.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        Aucune bannière disponible. Créez votre première bannière.
+        Aucune bannière photo disponible. Créez votre première bannière photo.
       </div>
     );
   }
@@ -34,21 +34,12 @@ const BannerList: React.FC<BannerListProps> = ({ banners, onEdit, onDelete, onTo
         >
           {/* Full banner preview */}
           <div className="w-full h-32 bg-gray-200 relative overflow-hidden">
-            {banner.image_url ? (
+            {banner.image_url && (
               <img 
                 src={banner.image_url} 
                 alt={banner.title} 
                 className="w-full h-full object-cover"
               />
-            ) : (
-              <div className={`w-full h-full flex items-center justify-center ${banner.bgColor} ${banner.text_color}`}>
-                <div className="text-center px-4">
-                  <h3 className="text-xl font-bold mb-1">{banner.title}</h3>
-                  {banner.description && (
-                    <p className="text-sm opacity-90">{banner.description}</p>
-                  )}
-                </div>
-              </div>
             )}
           </div>
           
