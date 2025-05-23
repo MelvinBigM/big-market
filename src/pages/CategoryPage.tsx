@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
+
 const CategoryPage = () => {
   const {
     categoryId
@@ -58,9 +59,9 @@ const CategoryPage = () => {
   };
   return <div className="min-h-screen bg-white">
       <NavBar />
-      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 py-[62px]">
+      <main className="pt-16 pb-12 px-4 sm:px-6 lg:px-8 py-[62px]">
         <div className="max-w-[1920px] mx-auto">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               {category?.name}
             </h1>
@@ -75,24 +76,29 @@ const CategoryPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {filteredProducts?.map(product => <TooltipProvider key={product.id}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <motion.div initial={{
-                  opacity: 0,
-                  y: 20
-                }} animate={{
-                  opacity: 1,
-                  y: 0
-                }} className="bg-white rounded-lg shadow-sm overflow-hidden h-[280px] flex flex-col relative group cursor-pointer" onClick={() => navigate(`/product/${product.id}`)}>
+                    <motion.div 
+                      initial={{
+                        opacity: 0,
+                        y: 20
+                      }} 
+                      animate={{
+                        opacity: 1,
+                        y: 0
+                      }} 
+                      className="bg-white rounded-lg shadow-md overflow-hidden h-[300px] flex flex-col relative group cursor-pointer hover:shadow-lg transition-all duration-200" 
+                      onClick={() => navigate(`/product/${product.id}`)}
+                    >
                       <div className="absolute top-2 right-2 z-10">
                         <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
                       </div>
-                      <div className="w-full h-[160px] bg-white flex items-center justify-center">
+                      <div className="w-full h-[180px] bg-white flex items-center justify-center">
                         {product.image_url && <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-4" />}
                       </div>
-                      <div className="p-4 flex flex-col justify-between flex-grow bg-white">
+                      <div className="p-4 flex flex-col justify-between flex-grow bg-white border-t border-gray-100">
                         <div className="flex-grow flex flex-col">
                           <h3 className="text-base font-semibold line-clamp-2 text-center mb-auto">
                             {product.name}

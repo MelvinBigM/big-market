@@ -18,7 +18,7 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
-      className="flex items-center border rounded-lg bg-white overflow-hidden hover:bg-gray-50 transition-colors"
+      className="flex items-center border rounded-lg bg-white overflow-hidden hover:bg-gray-50 transition-colors shadow-sm hover:shadow-md"
     >
       <div
         {...provided.dragHandleProps}
