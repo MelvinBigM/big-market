@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -103,25 +104,27 @@ const HeroBanner = () => {
               className="relative w-full overflow-hidden"
               style={{ height: bannerHeight }}
             >
-              {/* Background: Either Image or Color */}
-              {banners[currentBanner].image_url ? (
-                <div className="absolute inset-0 flex justify-center items-center">
-                  <img 
-                    src={banners[currentBanner].image_url} 
-                    alt={banners[currentBanner].title} 
-                    className="object-contain max-w-full max-h-full"
+              {/* Background: Either Image or Color - both use the same container structure */}
+              <div className="absolute inset-0">
+                {banners[currentBanner].image_url ? (
+                  <div className="w-full h-full flex justify-center items-center">
+                    <img 
+                      src={banners[currentBanner].image_url} 
+                      alt={banners[currentBanner].title} 
+                      className="object-contain max-w-full max-h-full"
+                    />
+                  </div>
+                ) : (
+                  <div 
+                    className={`w-full h-full ${getBannerBackground(banners[currentBanner])}`}
                   />
-                </div>
-              ) : (
-                <div 
-                  className={`absolute inset-0 ${getBannerBackground(banners[currentBanner])}`}
-                />
-              )}
+                )}
+              </div>
               
-              {/* Content overlay with text */}
-              <div className="absolute inset-0 flex flex-col justify-center items-center">
+              {/* Content overlay with text - same positioning for both types */}
+              <div className="absolute inset-0 flex flex-col justify-center items-center px-4">
                 <motion.h1 
-                  className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg`} 
+                  className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg text-center`} 
                   initial={{ opacity: 0 }} 
                   animate={{ opacity: 1 }} 
                   transition={{ delay: 0.2 }}
@@ -130,7 +133,7 @@ const HeroBanner = () => {
                 </motion.h1>
                 {banners[currentBanner].description && (
                   <motion.p 
-                    className={`text-xs sm:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow`} 
+                    className={`text-xs sm:text-sm md:text-base lg:text-lg ${getTextColor(banners[currentBanner])} max-w-2xl mx-auto text-shadow text-center`} 
                     initial={{ opacity: 0 }} 
                     animate={{ opacity: 1 }} 
                     transition={{ delay: 0.4 }}
