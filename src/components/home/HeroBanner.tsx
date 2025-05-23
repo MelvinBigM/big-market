@@ -19,12 +19,11 @@ const HeroBanner = () => {
           .from('banners')
           .select('*')
           .eq('active', true)
-          .not('image_url', 'is', null) // Only fetch banners with images
+          .not('image_url', 'is', null)
           .order('position', { ascending: true });
 
         if (error) throw error;
         
-        // Map the database fields to our TypeScript interface
         const formattedBanners = data?.map(banner => ({
           id: banner.id,
           title: banner.title,
@@ -80,9 +79,9 @@ const HeroBanner = () => {
           <AnimatePresence mode="wait">
             <motion.div 
               key={currentBanner} 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -20 }} 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
               transition={{ duration: 0.5 }} 
               className="relative w-full h-[250px] overflow-hidden"
             >
