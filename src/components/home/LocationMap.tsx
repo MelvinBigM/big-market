@@ -12,12 +12,13 @@ const LocationMap = () => {
     <section className="px-4 sm:px-6 lg:px-8 py-8 w-full">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8">Retrouvez-nous</h2>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          {/* Carte à gauche sur desktop */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-4 sm:space-y-6"
+            className="space-y-4 sm:space-y-6 lg:order-1 order-2"
           >
             <Card className="overflow-hidden shadow-md border-none">
               <CardContent className="p-0">
@@ -35,11 +36,13 @@ const LocationMap = () => {
               </CardContent>
             </Card>
           </motion.div>
+          
+          {/* Informations à droite sur desktop */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-6"
+            className="space-y-6 lg:order-2 order-1 flex flex-col justify-center"
           >
             <h3 className="text-xl sm:text-2xl font-semibold">Nos coordonnées</h3>
             <div className="space-y-4 sm:space-y-6">
