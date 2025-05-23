@@ -31,7 +31,7 @@ const BannerList: React.FC<BannerListProps> = ({ banners, onEdit, onDelete }) =>
           className="border rounded-lg overflow-hidden shadow-sm"
         >
           {/* Full banner preview */}
-          <div className="w-full h-64 bg-gray-200 relative overflow-hidden">
+          <div className="w-full h-32 bg-gray-200 relative overflow-hidden">
             {banner.image_url ? (
               <img 
                 src={banner.image_url} 
@@ -41,9 +41,9 @@ const BannerList: React.FC<BannerListProps> = ({ banners, onEdit, onDelete }) =>
             ) : (
               <div className={`w-full h-full flex items-center justify-center ${banner.bgColor} ${banner.text_color}`}>
                 <div className="text-center px-4">
-                  <h3 className="text-2xl font-bold mb-2">{banner.title}</h3>
+                  <h3 className="text-xl font-bold mb-1">{banner.title}</h3>
                   {banner.description && (
-                    <p className="text-lg opacity-90">{banner.description}</p>
+                    <p className="text-sm opacity-90">{banner.description}</p>
                   )}
                 </div>
               </div>
