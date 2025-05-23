@@ -107,7 +107,7 @@ const CategoryPage = () => {
                         
                         <div className="mt-0.5">
                           {canSeePrice ? <div className="flex items-baseline space-x-1 justify-center">
-                              <span>   </span>
+                              <span>&nbsp;&nbsp;&nbsp;</span>
                               <span className="text-sm sm:text-lg font-bold text-primary">
                                 {product.price.toFixed(2)} €
                               </span>
