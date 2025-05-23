@@ -100,7 +100,7 @@ const CategoryPage = () => {
                       </div>
                       <div className="p-2 sm:p-3 flex flex-col justify-between bg-white">
                         <div className="flex flex-col space-y-0">
-                          <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 text-center leading-tight">
+                          <h3 className="text-xs sm:text-sm font-semibold text-center leading-tight min-h-[2.5em]">
                             {product.name}
                           </h3>
                         
