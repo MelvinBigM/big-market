@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
@@ -40,7 +41,22 @@ const AdminUsersPage = () => {
         if (error) throw error;
         if (!data) return [];
 
-        return data as UserProfile[];
+        // Transformer les données pour qu'elles correspondent au type UserProfile
+        return data.map((item: any) => ({
+          id: item.id,
+          role: item.role,
+          company_name: item.company_name,
+          manager_first_name: item.manager_first_name,
+          manager_last_name: item.manager_last_name,
+          created_at: item.created_at,
+          updated_at: item.updated_at,
+          is_company: item.is_company,
+          phone_number: item.phone_number,
+          address: item.address,
+          city: item.city,
+          postal_code: item.postal_code,
+          email: item.email
+        })) as UserProfile[];
       } catch (error) {
         console.error("Erreur attrapée dans queryFn:", error);
         throw error;
