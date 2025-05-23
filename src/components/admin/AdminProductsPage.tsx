@@ -34,11 +34,13 @@ const AdminProductsPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
-      <div className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">
-            Gestion des produits
-          </h1>
+          <div className="mb-6 text-center">
+            <h1 className="text-3xl font-bold text-gray-900">
+              Gestion des produits
+            </h1>
+          </div>
           <ProductsSection />
         </div>
       </div>
