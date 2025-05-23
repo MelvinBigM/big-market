@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -71,7 +70,7 @@ const ProductPage = () => {
 
       if (error) throw error;
       
-      toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'hors stock'}`);
+      toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'en rupture'}`);
       refetch();
     } catch (error: any) {
       toast.error(error.message);
@@ -137,7 +136,7 @@ const ProductPage = () => {
                         className="flex items-center gap-2"
                       >
                         <Package className="h-4 w-4" />
-                        {product.in_stock ? "Marquer hors stock" : "Marquer en stock"}
+                        {product.in_stock ? "Marquer en rupture" : "Marquer en stock"}
                       </Button>
                     </>
                   )}

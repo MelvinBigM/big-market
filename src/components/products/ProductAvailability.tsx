@@ -20,7 +20,7 @@ const ProductAvailability = ({ product }: ProductAvailabilityProps) => {
                   : "bg-red-50 text-red-700"
               }`}
             >
-              {product.in_stock ? "En stock" : "Hors stock"}
+              {product.in_stock ? "En stock" : "En rupture"}
             </div>
           </div>
 
