@@ -18,14 +18,14 @@ const LocationMap = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-4 sm:space-y-6 lg:order-1 order-2 lg:self-end"
+            className="space-y-4 sm:space-y-6 lg:order-1 order-2 lg:self-end h-full flex items-end"
           >
-            <Card className="overflow-hidden shadow-md border-none">
+            <Card className="overflow-hidden shadow-md border-none w-full">
               <CardContent className="p-0">
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2891.5429189232896!2d6.937453375869258!3d43.55261895887715!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12ce8c1320fbf0a5%3A0xe901e493c9a1b4d8!2s42%20Chem.%20de%20l&#39;Escadrille%2C%2006210%20Mandelieu-la-Napoule!5e0!3m2!1sfr!2sfr!4v1718458531594!5m2!1sfr!2sfr" 
                   width="100%" 
-                  height="350"
+                  height="425"
                   style={{ border: 0 }} 
                   allowFullScreen={true} 
                   loading="lazy" 
