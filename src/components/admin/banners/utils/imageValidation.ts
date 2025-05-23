@@ -47,6 +47,6 @@ export const validateImageFile = async (
     return false;
   }
 
-  // Validate dimensions
+  // Validate dimensions - more flexible for mobile display
   return await validateImageDimensions(file, setImageError);
 };
