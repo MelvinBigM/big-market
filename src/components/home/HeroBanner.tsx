@@ -13,8 +13,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
 
-  // Responsive height for different screen sizes - adjusted to fit content better
-  const bannerHeight = isMobile ? "auto" : "auto";
+  // Responsive height for different screen sizes - increased for mobile
+  const bannerHeight = isMobile ? "300px" : "auto";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -81,8 +81,8 @@ const HeroBanner = () => {
   return (
     <>
       <Toaster />
-      <section className="w-full mt-16">
-        <div className="mx-auto">
+      <section className={`w-full ${isMobile ? 'mt-16 px-0' : 'mt-16'}`}>
+        <div className={`mx-auto ${isMobile ? '-mx-4 max-w-none' : ''}`}>
           <AnimatePresence mode="wait">
             <motion.div 
               key={currentBanner} 
@@ -92,19 +92,18 @@ const HeroBanner = () => {
               transition={{ duration: 0.5 }} 
               className="relative w-full flex justify-center items-center"
               style={{ 
-                maxHeight: banners[currentBanner].image_url ? "auto" : bannerHeight
+                minHeight: banners[currentBanner].image_url ? bannerHeight : bannerHeight
               }}
             >
               {/* Background: Either Image or Gradient */}
               {banners[currentBanner].image_url ? (
                 <div 
-                  className="w-full h-auto flex justify-center" 
+                  className="w-full flex justify-center" 
                 >
                   <img 
                     src={banners[currentBanner].image_url} 
                     alt={banners[currentBanner].title} 
-                    className="object-contain max-w-full"
-                    style={{ maxHeight: isMobile ? "200px" : "250px" }}
+                    className={`object-cover w-full ${isMobile ? 'max-h-none' : 'max-h-[250px]'}`}
                   />
                 </div>
               ) : (
