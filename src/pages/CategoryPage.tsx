@@ -99,7 +99,7 @@ const CategoryPage = () => {
                         {product.image_url && <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-2 sm:p-3" />}
                       </div>
                       <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow bg-white">
-                        <div className="flex-grow flex flex-col">
+                        <div className="flex flex-col">
                           <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 text-center leading-tight">
                             {product.name}
                           </h3>
