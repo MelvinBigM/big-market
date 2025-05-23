@@ -13,7 +13,7 @@ const Index = () => {
       <NavBar />
       <main className="flex-1">
         <HeroBanner />
-        <Separator className="max-w-7xl mx-auto border-t" />
+        {/* Separator removed from here */}
         <LatestProducts />
         <Separator className="max-w-7xl mx-auto border-t" />
         <LocationMap />
