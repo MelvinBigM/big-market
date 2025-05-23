@@ -105,7 +105,7 @@ const CategoryPage = () => {
                           </h3>
                         </div>
                         
-                        <div className="mt-0.5 sm:mt-1">
+                        <div className="mt-1 sm:mt-2">
                           {canSeePrice ? <div className="flex items-baseline space-x-1 justify-center">
                               <span className="text-sm sm:text-lg font-bold text-primary">
                                 {product.price.toFixed(2)} €
@@ -142,5 +142,4 @@ const CategoryPage = () => {
       <RequestClientAccessDialog open={showAccessDialog} onOpenChange={setShowAccessDialog} />
     </div>;
 };
-
 export default CategoryPage;
