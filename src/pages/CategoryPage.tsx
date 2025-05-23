@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
+
 const CategoryPage = () => {
   const {
     categoryId
@@ -56,6 +57,7 @@ const CategoryPage = () => {
   const handleAccessRequest = () => {
     setShowAccessDialog(true);
   };
+
   return <div className="min-h-screen bg-white">
       <NavBar />
       <main className="pt-16 pb-12 px-4 sm:px-6 lg:px-8 py-[62px]">
@@ -94,7 +96,7 @@ const CategoryPage = () => {
                       </div>
                       <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow bg-white px-0">
                         <div className="flex-grow flex flex-col">
-                          <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 text-center leading-tight">
+                          <h3 className="text-xs sm:text-sm font-semibold line-clamp-1 text-center leading-tight">
                             {product.name}
                           </h3>
                         </div>
@@ -137,4 +139,5 @@ const CategoryPage = () => {
       <RequestClientAccessDialog open={showAccessDialog} onOpenChange={setShowAccessDialog} />
     </div>;
 };
+
 export default CategoryPage;
