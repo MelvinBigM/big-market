@@ -105,7 +105,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900">
             Administration
