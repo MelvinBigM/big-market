@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Users, Layers, Package, UserCheck, ImageIcon } from "lucide-react";
@@ -37,7 +36,7 @@ const AdminDashboard = () => {
     return null;
   }
 
-  // Regrouper les cartes par catégorie logique
+  // Grouper les cartes par catégorie logique
   const cards = [
     // Gestion des utilisateurs
     {
@@ -104,7 +103,7 @@ const AdminDashboard = () => {
   const categoryOrder = ["Utilisateurs", "Catalogue", "Mise en page"];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       <NavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         <div className="mb-8 text-center">

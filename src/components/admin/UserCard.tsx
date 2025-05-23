@@ -28,7 +28,7 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
   const displayName = userProfile.company_name;
 
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+    <div className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-lg shadow-sm">
       <div className="flex items-center space-x-4">
         <div className="space-y-1">
           <button

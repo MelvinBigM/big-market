@@ -211,9 +211,16 @@ export type Database = {
         Returns: {
           id: string
           role: Database["public"]["Enums"]["user_role"]
-          full_name: string
+          company_name: string
+          manager_first_name: string
+          manager_last_name: string
           created_at: string
           updated_at: string
+          is_company: boolean
+          phone_number: string
+          address: string
+          city: string
+          postal_code: string
           email: string
         }[]
       }
