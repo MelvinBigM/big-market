@@ -12,8 +12,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
 
-  // Responsive height for different screen sizes - adjusted to fit content better
-  const bannerHeight = isMobile ? "auto" : "auto";
+  // Define consistent height for banners regardless of whether they have images or not
+  const bannerHeight = isMobile ? "200px" : "250px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -64,7 +64,7 @@ const HeroBanner = () => {
     return <section className="w-full mt-16">
         <div className="mx-auto">
           <div className="bg-gray-100 animate-pulse w-full" style={{
-          height: "200px"
+          height: bannerHeight
         }}></div>
         </div>
       </section>;
@@ -102,24 +102,22 @@ const HeroBanner = () => {
               exit={{ opacity: 0, y: -20 }} 
               transition={{ duration: 0.5 }} 
               className="relative w-full flex justify-center items-center"
-              style={{ 
-                maxHeight: banners[currentBanner].image_url ? "auto" : bannerHeight
-              }}
+              style={{ height: bannerHeight }}
             >
               {/* Background: Either Image or Gradient */}
               {banners[currentBanner].image_url ? (
-                <div 
-                  className="w-full h-auto flex justify-center" 
-                >
+                <div className="w-full h-full flex justify-center items-center">
                   <img 
                     src={banners[currentBanner].image_url} 
                     alt={banners[currentBanner].title} 
-                    className="object-contain max-w-full"
-                    style={{ maxHeight: isMobile ? "200px" : "250px" }}
+                    className="object-contain max-w-full max-h-full"
                   />
                 </div>
               ) : (
-                <div className={`absolute inset-0 w-full h-full ${getBannerBackground(banners[currentBanner])}`} />
+                <div 
+                  className={`w-full h-full ${getBannerBackground(banners[currentBanner])} flex justify-center items-center`}
+                  style={{ minHeight: bannerHeight }}
+                />
               )}
               
               {/* Content overlay with text */}
