@@ -52,8 +52,27 @@ const BannerFormFields: React.FC<BannerFormFieldsProps> = ({
 
       <BannerImageUploader 
         imageUrl={banner.image_url}
+        bgColor={banner.bgColor}
         onImageUploaded={(url) => onUpdateBanner({ image_url: url })}
       />
+
+      {!banner.image_url && (
+        <div className="space-y-2">
+          <Label htmlFor="bgColor">Couleur de fond (si pas d'image)</Label>
+          <select
+            id="bgColor"
+            value={banner.bgColor || ''}
+            onChange={(e) => onUpdateBanner({ bgColor: e.target.value })}
+            className="w-full rounded-md border border-gray-300 px-4 py-2"
+          >
+            <option value="bg-gradient-to-r from-blue-50 to-indigo-50">Bleu</option>
+            <option value="bg-gradient-to-r from-amber-50 to-yellow-50">Jaune</option>
+            <option value="bg-gradient-to-r from-green-50 to-emerald-50">Vert</option>
+            <option value="bg-gradient-to-r from-red-50 to-rose-50">Rouge</option>
+            <option value="bg-gradient-to-r from-purple-50 to-pink-50">Violet</option>
+          </select>
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label htmlFor="text_color">Couleur du texte</Label>
