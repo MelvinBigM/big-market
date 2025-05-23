@@ -61,7 +61,7 @@ const HeroBanner = () => {
     return (
       <section className="w-full mt-16">
         <div className="mx-auto">
-          <div className={`bg-gray-100 animate-pulse w-full ${isMobile ? 'h-[80px]' : 'h-[150px]'}`}></div>
+          <div className="bg-gray-100 animate-pulse w-full h-[150px]"></div>
         </div>
       </section>
     );
@@ -83,7 +83,7 @@ const HeroBanner = () => {
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
               transition={{ duration: 0.5 }} 
-              className={`relative w-full overflow-hidden ${isMobile ? 'h-[80px]' : 'h-[150px]'}`}
+              className="relative w-full h-[150px] overflow-hidden"
             >
               <img 
                 src={banners[currentBanner].image_url!} 
