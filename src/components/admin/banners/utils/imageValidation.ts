@@ -2,7 +2,7 @@
 import { toast } from "sonner";
 
 export const REQUIRED_WIDTH = 1920;
-export const REQUIRED_HEIGHT = 250;
+export const REQUIRED_HEIGHT = 150;
 
 /**
  * Validates image dimensions to ensure they match requirements
