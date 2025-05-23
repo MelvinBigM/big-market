@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +12,7 @@ const HeroBanner = () => {
   const isMobile = useIsMobile();
 
   // Define consistent height for banners regardless of whether they have images or not
-  const bannerHeight = isMobile ? "200px" : "250px";
+  const bannerHeight = "200px";
 
   useEffect(() => {
     const fetchBanners = async () => {
