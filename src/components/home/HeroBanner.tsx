@@ -101,12 +101,12 @@ const HeroBanner = () => {
               animate={{ opacity: 1, y: 0 }} 
               exit={{ opacity: 0, y: -20 }} 
               transition={{ duration: 0.5 }} 
-              className="relative w-full flex justify-center items-center"
+              className="relative w-full overflow-hidden"
               style={{ height: bannerHeight }}
             >
-              {/* Background: Either Image or Gradient */}
+              {/* Background: Either Image or Color */}
               {banners[currentBanner].image_url ? (
-                <div className="w-full h-full flex justify-center items-center">
+                <div className="absolute inset-0 flex justify-center items-center">
                   <img 
                     src={banners[currentBanner].image_url} 
                     alt={banners[currentBanner].title} 
@@ -115,8 +115,7 @@ const HeroBanner = () => {
                 </div>
               ) : (
                 <div 
-                  className={`w-full h-full ${getBannerBackground(banners[currentBanner])} flex justify-center items-center`}
-                  style={{ minHeight: bannerHeight }}
+                  className={`absolute inset-0 ${getBannerBackground(banners[currentBanner])}`}
                 />
               )}
               
