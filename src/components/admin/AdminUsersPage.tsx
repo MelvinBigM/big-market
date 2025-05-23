@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
@@ -94,7 +93,7 @@ const AdminUsersPage = () => {
 
   const filteredProfiles = profiles?.filter(profile =>
     (profile.email?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
-    (profile.full_name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+    (profile.company_name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
     profile.role.toLowerCase().includes(searchQuery.toLowerCase())
   );
 

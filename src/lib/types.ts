@@ -1,12 +1,12 @@
-
 export type Profile = {
   id: string;
   role: 'admin' | 'client' | 'nouveau';
-  full_name: string | null;
+  company_name: string | null;
+  manager_first_name: string | null;
+  manager_last_name: string | null;
   created_at: string;
   updated_at: string;
   is_company: boolean | null;
-  company_name: string | null;
   phone_number: string | null;
   address: string | null;
   city: string | null;

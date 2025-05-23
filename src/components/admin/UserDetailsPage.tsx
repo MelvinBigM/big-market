@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import NavBar from "../NavBar";
 import Footer from "../Footer";
-import { Building2, User } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "../ui/card";
 import AdminProtectedRoute from "./AdminProtectedRoute";
 
@@ -20,7 +20,7 @@ const UserDetailsPage = () => {
         .eq("id", userId)
         .single();
 
-      console.log("User details from DB:", data); // Pour le débogage
+      console.log("User details from DB:", data);
       if (error) throw error;
       return data;
     },
@@ -33,7 +33,7 @@ const UserDetailsPage = () => {
 
       if (error) throw error;
       const userWithEmail = data.find((user: any) => user.id === userId);
-      console.log("User email data:", userWithEmail); // Pour le débogage
+      console.log("User email data:", userWithEmail);
       return userWithEmail?.email;
     },
   });
@@ -49,8 +49,8 @@ const UserDetailsPage = () => {
     );
   }
 
-  console.log("Final userDetails:", userDetails); // Pour le débogage
-  console.log("Final userEmail:", userEmail); // Pour le débogage
+  console.log("Final userDetails:", userDetails);
+  console.log("Final userEmail:", userEmail);
 
   return (
     <AdminProtectedRoute>
@@ -60,13 +60,9 @@ const UserDetailsPage = () => {
           <div className="max-w-3xl mx-auto">
             <div className="mb-6">
               <div className="flex items-center gap-2">
-                {userDetails.is_company ? (
-                  <Building2 className="h-6 w-6" />
-                ) : (
-                  <User className="h-6 w-6" />
-                )}
+                <Building2 className="h-6 w-6" />
                 <h1 className="text-3xl font-bold text-gray-900">
-                  {userDetails.full_name}
+                  {userDetails.company_name || "Nom de société non défini"}
                 </h1>
               </div>
             </div>
@@ -79,8 +75,8 @@ const UserDetailsPage = () => {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Nom complet</p>
-                      <p className="mt-1">{userDetails.full_name || "Non défini"}</p>
+                      <p className="text-sm font-medium text-gray-500">Nom de la société</p>
+                      <p className="mt-1">{userDetails.company_name || "Non défini"}</p>
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-500">Email</p>
@@ -95,6 +91,24 @@ const UserDetailsPage = () => {
                       <p className="mt-1">
                         {new Date(userDetails.created_at).toLocaleDateString()}
                       </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Responsable de l'entreprise</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Prénom</p>
+                      <p className="mt-1">{userDetails.manager_first_name || "Non défini"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">Nom</p>
+                      <p className="mt-1">{userDetails.manager_last_name || "Non défini"}</p>
                     </div>
                   </div>
                 </CardContent>

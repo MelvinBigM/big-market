@@ -25,9 +25,7 @@ interface UserCardProps {
 const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
   const navigate = useNavigate();
 
-  const displayName = userProfile.is_company 
-    ? userProfile.company_name 
-    : userProfile.full_name;
+  const displayName = userProfile.company_name;
 
   return (
     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -38,8 +36,8 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
             className="font-medium hover:text-primary flex items-center gap-2"
           >
             <div className="flex items-center gap-2">
-              {userProfile.is_company && <Building2 className="h-4 w-4" />}
-              {displayName || 'Nom non défini'}
+              <Building2 className="h-4 w-4" />
+              {displayName || 'Nom de société non défini'}
             </div>
             <ArrowRight className="h-4 w-4" />
           </button>
