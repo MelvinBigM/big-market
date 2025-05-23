@@ -83,12 +83,12 @@ const HeroBanner = () => {
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
               transition={{ duration: 0.5 }} 
-              className={`relative w-full overflow-hidden ${isMobile ? 'h-[60px]' : 'h-[150px]'}`}
+              className="relative w-full overflow-hidden"
             >
               <img 
                 src={banners[currentBanner].image_url!} 
                 alt={banners[currentBanner].title} 
-                className="w-full h-full object-cover object-center"
+                className="w-full h-auto object-contain"
               />
             </motion.div>
           </AnimatePresence>
