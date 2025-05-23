@@ -6,15 +6,12 @@ import LatestProducts from "@/components/home/LatestProducts";
 import LocationMap from "@/components/home/LocationMap";
 import OpeningHours from "@/components/home/OpeningHours";
 import { Separator } from "@/components/ui/separator";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
-  const isMobile = useIsMobile();
-  
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <NavBar />
-      <main className={`flex-1 ${isMobile ? "px-4" : ""}`}>
+      <main className="flex-1">
         <HeroBanner />
         <Separator className="max-w-7xl mx-auto border-t" />
         <LatestProducts />
