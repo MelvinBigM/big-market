@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -117,30 +118,6 @@ const ProductPage = () => {
               className="space-y-6"
             >
               <div className="text-center">
-                <div className="flex items-center justify-center gap-4 mb-2">
-                  {isAdmin && (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setEditDialogOpen(true)}
-                        className="flex items-center gap-2"
-                      >
-                        <Pencil className="h-4 w-4" />
-                        Modifier
-                      </Button>
-                      <Button
-                        variant={product.in_stock ? "secondary" : "destructive"}
-                        size="sm"
-                        onClick={toggleStock}
-                        className="flex items-center gap-2"
-                      >
-                        <Package className="h-4 w-4" />
-                        {product.in_stock ? "Marquer en rupture" : "Marquer en stock"}
-                      </Button>
-                    </>
-                  )}
-                </div>
                 <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
               </div>
               
@@ -161,6 +138,30 @@ const ProductPage = () => {
                 <div className="prose max-w-none">
                   <h2 className="text-xl font-semibold mb-2">Description</h2>
                   <p className="text-gray-600">{product.description}</p>
+                </div>
+              )}
+
+              {/* Admin Buttons Section - Moved below description */}
+              {isAdmin && (
+                <div className="flex items-center justify-center gap-4 pt-6 border-t border-gray-200">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditDialogOpen(true)}
+                    className="flex items-center gap-2"
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Modifier
+                  </Button>
+                  <Button
+                    variant={product.in_stock ? "secondary" : "destructive"}
+                    size="sm"
+                    onClick={toggleStock}
+                    className="flex items-center gap-2"
+                  >
+                    <Package className="h-4 w-4" />
+                    {product.in_stock ? "Marquer en rupture" : "Marquer en stock"}
+                  </Button>
                 </div>
               )}
             </motion.div>
