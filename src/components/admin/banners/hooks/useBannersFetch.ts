@@ -41,6 +41,10 @@ export const useBannersFetch = () => {
     }
   };
 
+  useEffect(() => {
+    fetchBanners();
+  }, []);
+
   return {
     banners,
     isLoading,
