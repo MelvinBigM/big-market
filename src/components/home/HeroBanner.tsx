@@ -12,8 +12,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
 
-  // Define consistent height for banners regardless of whether they have images or not
-  const bannerHeight = "200px";
+  // Fixed height for image banners
+  const bannerHeight = "250px";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -22,6 +22,7 @@ const HeroBanner = () => {
           .from('banners')
           .select('*')
           .eq('active', true)
+          .not('image_url', 'is', null) // Only get banners with images
           .order('position', { ascending: true });
 
         if (error) throw error;
@@ -32,7 +33,7 @@ const HeroBanner = () => {
           title: banner.title,
           description: banner.description,
           image_url: banner.image_url,
-          bgColor: banner.bgcolor, // Map bgcolor to bgColor
+          bgColor: banner.bgcolor,
           text_color: banner.text_color,
           position: banner.position,
           active: banner.active,
@@ -40,11 +41,11 @@ const HeroBanner = () => {
           updated_at: banner.updated_at
         })) || [];
         
-        console.log("Fetched active banners:", formattedBanners);
+        console.log("Fetched active banners with images:", formattedBanners);
         setBanners(formattedBanners);
       } catch (error) {
         console.error("Error fetching banners:", error);
-        setBanners([]); // Ensure we don't fall back to default banners
+        setBanners([]);
       } finally {
         setIsLoading(false);
       }
@@ -74,19 +75,9 @@ const HeroBanner = () => {
     return null;
   }
 
-  // Make sure we're using the correct field name (bgcolor from database vs bgColor in our code)
-  const getBannerBackground = (banner: Banner) => {
-    // Si la bannière a déjà une couleur définie, on la garde
-    const storedColor = banner.bgColor || (banner as any).bgcolor;
-    if (storedColor) return storedColor;
-
-    // Sinon on utilise une couleur de notre palette uniformisée
-    return 'bg-gradient-to-r from-blue-50 to-indigo-100';
-  };
-
   // Get the text color from the banner or use a default
   const getTextColor = (banner: Banner) => {
-    return banner.text_color || (banner as any).text_color || 'text-gray-800';
+    return banner.text_color || 'text-white';
   };
 
   return (
@@ -104,25 +95,17 @@ const HeroBanner = () => {
               className="relative w-full overflow-hidden"
               style={{ height: bannerHeight }}
             >
-              {/* Background: Either Image or Color - both use the same container structure */}
+              {/* Image banner */}
               <div className="absolute inset-0">
-                {banners[currentBanner].image_url ? (
-                  <div className="w-full h-full flex justify-center items-center">
-                    <img 
-                      src={banners[currentBanner].image_url} 
-                      alt={banners[currentBanner].title} 
-                      className="object-contain max-w-full max-h-full"
-                    />
-                  </div>
-                ) : (
-                  <div 
-                    className={`w-full h-full ${getBannerBackground(banners[currentBanner])}`}
-                  />
-                )}
+                <img 
+                  src={banners[currentBanner].image_url!} 
+                  alt={banners[currentBanner].title} 
+                  className="w-full h-full object-cover"
+                />
               </div>
               
-              {/* Content overlay with text - same positioning for both types */}
-              <div className="absolute inset-0 flex flex-col justify-center items-center px-4">
+              {/* Content overlay with text */}
+              <div className="absolute inset-0 flex flex-col justify-center items-center px-4 bg-black bg-opacity-20">
                 <motion.h1 
                   className={`text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold ${getTextColor(banners[currentBanner])} mb-1 sm:mb-2 md:mb-4 text-shadow-lg text-center`} 
                   initial={{ opacity: 0 }} 

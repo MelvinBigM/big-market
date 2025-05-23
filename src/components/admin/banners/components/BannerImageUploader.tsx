@@ -10,13 +10,11 @@ import { validateImageFile, REQUIRED_WIDTH, REQUIRED_HEIGHT } from "../utils/ima
 
 interface BannerImageUploaderProps {
   imageUrl: string | null;
-  bgColor: string;
   onImageUploaded: (url: string) => void;
 }
 
 const BannerImageUploader: React.FC<BannerImageUploaderProps> = ({
   imageUrl,
-  bgColor,
   onImageUploaded,
 }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -65,7 +63,7 @@ const BannerImageUploader: React.FC<BannerImageUploaderProps> = ({
 
   return (
     <div className="space-y-2">
-      <Label>Image de fond</Label>
+      <Label>Image de fond (obligatoire)</Label>
       <div className="mt-1 flex items-center">
         <div className="h-36 w-full bg-gray-200 rounded overflow-hidden">
           {imageUrl ? (
@@ -75,7 +73,7 @@ const BannerImageUploader: React.FC<BannerImageUploaderProps> = ({
               className="h-full w-full object-cover"
             />
           ) : (
-            <div className={`h-full w-full flex justify-center items-center ${bgColor}`}>
+            <div className="h-full w-full flex justify-center items-center bg-gray-100">
               <LucideImage className="h-12 w-12 text-gray-400" />
             </div>
           )}
