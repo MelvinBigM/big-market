@@ -18,7 +18,7 @@ const LocationMap = () => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-4 sm:space-y-6 lg:order-1 order-2"
+            className="space-y-4 sm:space-y-6 lg:order-1 order-2 lg:self-end"
           >
             <Card className="overflow-hidden shadow-md border-none">
               <CardContent className="p-0">
@@ -42,7 +42,7 @@ const LocationMap = () => {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="space-y-6 lg:order-2 order-1 flex flex-col justify-center"
+            className="space-y-6 lg:order-2 order-1"
           >
             <h3 className="text-xl sm:text-2xl font-semibold">Nos coordonnées</h3>
             <div className="space-y-4 sm:space-y-6">
