@@ -14,14 +14,16 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <NavBar />
-      <main className={`flex-1 ${isMobile ? "px-4" : ""}`}>
+      <main className={`flex-1 ${isMobile ? "px-0" : ""}`}>
         <HeroBanner />
-        <Separator className="max-w-7xl mx-auto border-t" />
-        <LatestProducts />
-        <Separator className="max-w-7xl mx-auto border-t" />
-        <LocationMap />
-        <Separator className="max-w-7xl mx-auto border-t" />
-        <OpeningHours />
+        <div className={`${isMobile ? "px-4" : ""}`}>
+          <Separator className="max-w-7xl mx-auto border-t" />
+          <LatestProducts />
+          <Separator className="max-w-7xl mx-auto border-t" />
+          <LocationMap />
+          <Separator className="max-w-7xl mx-auto border-t" />
+          <OpeningHours />
+        </div>
       </main>
       <Footer />
     </div>
