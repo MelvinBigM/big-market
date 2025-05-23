@@ -61,7 +61,7 @@ const HeroBanner = () => {
     return (
       <section className="w-full mt-16">
         <div className="mx-auto">
-          <div className={`bg-gray-100 animate-pulse w-full ${isMobile ? 'h-[60px]' : 'h-[150px]'}`}></div>
+          <div className={`bg-gray-100 animate-pulse w-full ${isMobile ? 'h-[100px]' : 'h-[250px]'}`}></div>
         </div>
       </section>
     );
@@ -83,12 +83,12 @@ const HeroBanner = () => {
               animate={{ opacity: 1 }} 
               exit={{ opacity: 0 }} 
               transition={{ duration: 0.5 }} 
-              className="relative w-full overflow-hidden"
+              className={`relative w-full overflow-hidden ${isMobile ? 'h-[100px]' : 'h-[250px]'}`}
             >
               <img 
                 src={banners[currentBanner].image_url!} 
                 alt={banners[currentBanner].title} 
-                className="w-full h-auto object-contain"
+                className="w-full h-full object-cover object-center"
               />
             </motion.div>
           </AnimatePresence>
