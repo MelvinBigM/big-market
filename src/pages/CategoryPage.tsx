@@ -11,7 +11,6 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
-
 const CategoryPage = () => {
   const {
     categoryId
@@ -80,25 +79,20 @@ const CategoryPage = () => {
             {filteredProducts?.map(product => <TooltipProvider key={product.id}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <motion.div 
-                      initial={{
-                        opacity: 0,
-                        y: 20
-                      }} 
-                      animate={{
-                        opacity: 1,
-                        y: 0
-                      }} 
-                      className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden h-[220px] sm:h-[240px] flex flex-col relative group cursor-pointer hover:border-gray-300 hover:shadow-lg transition-all duration-200" 
-                      onClick={() => navigate(`/product/${product.id}`)}
-                    >
+                    <motion.div initial={{
+                  opacity: 0,
+                  y: 20
+                }} animate={{
+                  opacity: 1,
+                  y: 0
+                }} className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden h-[220px] sm:h-[240px] flex flex-col relative group cursor-pointer hover:border-gray-300 hover:shadow-lg transition-all duration-200" onClick={() => navigate(`/product/${product.id}`)}>
                       <div className="absolute top-2 right-2 z-10">
                         <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
                       </div>
                       <div className="w-full h-[110px] sm:h-[125px] bg-white flex items-center justify-center">
                         {product.image_url && <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-2 sm:p-3" />}
                       </div>
-                      <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow bg-white">
+                      <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow bg-white px-0">
                         <div className="flex-grow flex flex-col">
                           <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 text-center leading-tight">
                             {product.name}
