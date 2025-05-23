@@ -66,7 +66,7 @@ const HeroBanner = () => {
 
   if (isLoading) {
     return (
-      <section className={`w-full ${isMobile ? 'mt-12 mb-2' : 'mt-16 mb-4'}`}>
+      <section className={`w-full ${isMobile ? 'mt-12' : 'mt-16'}`}>
         <div className={isMobile ? 'mx-0' : 'mx-auto'}>
           <div className={`bg-gray-100 animate-pulse w-full ${isMobile ? 'h-[60px]' : 'h-[150px]'}`}></div>
         </div>
@@ -81,7 +81,7 @@ const HeroBanner = () => {
   return (
     <>
       <Toaster />
-      <section className={`w-full ${isMobile ? 'mt-12 mb-2' : 'mt-16 mb-4'}`}>
+      <section className={`w-full ${isMobile ? 'mt-12' : 'mt-16'}`}>
         <div className={isMobile ? 'mx-0' : 'mx-auto'}>
           <AnimatePresence mode="wait">
             <motion.div 
