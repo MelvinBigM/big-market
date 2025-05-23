@@ -7,13 +7,13 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Product } from "@/lib/types";
 import { useAuth } from "@/lib/auth";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Pencil } from "lucide-react";
+import { Pencil, Package } from "lucide-react";
 import PriceDisplay from "@/components/products/PriceDisplay";
 import ProductAvailability from "@/components/products/ProductAvailability";
 import ProductDialog from "@/components/admin/ProductDialog";
+import { toast } from "sonner";
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -59,6 +59,25 @@ const ProductPage = () => {
     enabled: !!profile?.id && profile.role === 'nouveau',
   });
 
+  // Toggle product stock status
+  const toggleStock = async () => {
+    if (!product) return;
+    
+    try {
+      const { error } = await supabase
+        .from("products")
+        .update({ in_stock: !product.in_stock })
+        .eq("id", product.id);
+
+      if (error) throw error;
+      
+      toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'hors stock'}`);
+      refetch();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  };
+
   if (!product) return null;
 
   const isAdmin = profile?.role === 'admin';
@@ -100,19 +119,27 @@ const ProductPage = () => {
             >
               <div className="text-center">
                 <div className="flex items-center justify-center gap-4 mb-2">
-                  <Badge variant="secondary">
-                    {product.categories.name}
-                  </Badge>
                   {isAdmin && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEditDialogOpen(true)}
-                      className="flex items-center gap-2"
-                    >
-                      <Pencil className="h-4 w-4" />
-                      Modifier
-                    </Button>
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditDialogOpen(true)}
+                        className="flex items-center gap-2"
+                      >
+                        <Pencil className="h-4 w-4" />
+                        Modifier
+                      </Button>
+                      <Button
+                        variant={product.in_stock ? "secondary" : "destructive"}
+                        size="sm"
+                        onClick={toggleStock}
+                        className="flex items-center gap-2"
+                      >
+                        <Package className="h-4 w-4" />
+                        {product.in_stock ? "Marquer hors stock" : "Marquer en stock"}
+                      </Button>
+                    </>
                   )}
                 </div>
                 <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
