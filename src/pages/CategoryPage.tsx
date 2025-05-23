@@ -89,23 +89,23 @@ const CategoryPage = () => {
                         opacity: 1,
                         y: 0
                       }} 
-                      className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden h-[220px] sm:h-[240px] flex flex-col relative group cursor-pointer hover:border-gray-300 hover:shadow-lg transition-all duration-200" 
+                      className="bg-white rounded-lg border-2 border-gray-200 overflow-hidden h-[250px] sm:h-[280px] flex flex-col relative group cursor-pointer hover:border-gray-300 hover:shadow-lg transition-all duration-200" 
                       onClick={() => navigate(`/product/${product.id}`)}
                     >
                       <div className="absolute top-2 right-2 z-10">
                         <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
                       </div>
-                      <div className="w-full h-[110px] sm:h-[125px] bg-white flex items-center justify-center">
+                      <div className="w-full h-[140px] sm:h-[160px] bg-white flex items-center justify-center">
                         {product.image_url && <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-2 sm:p-3" />}
                       </div>
                       <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow bg-white">
                         <div className="flex-grow flex flex-col">
-                          <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 text-center leading-tight">
+                          <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 text-center mb-auto leading-tight">
                             {product.name}
                           </h3>
                         </div>
                         
-                        <div className="mt-0.5">
+                        <div className="mt-1 sm:mt-2">
                           {canSeePrice ? <div className="flex items-baseline space-x-1 justify-center">
                               <span className="text-sm sm:text-lg font-bold text-primary">
                                 {product.price.toFixed(2)} €
