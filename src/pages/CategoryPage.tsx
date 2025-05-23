@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -106,11 +107,11 @@ const CategoryPage = () => {
                         </div>
                         
                         <div className="mt-1 sm:mt-2">
-                          {canSeePrice ? <div className="text-center">
-                              <div className="text-sm sm:text-lg font-bold text-primary">
+                          {canSeePrice ? <div className="flex items-center justify-center">
+                              <span className="text-sm sm:text-lg font-bold text-primary">
                                 {product.price.toFixed(2)} €
-                              </div>
-                              <div className="text-xs text-gray-500">HT</div>
+                              </span>
+                              <span className="text-xs text-gray-500 ml-1">HT</span>
                             </div> : <p className="text-xs text-gray-700 text-center leading-tight">
                               {isNewUser ? "Prix visibles uniquement pour les clients validés" : "Connexion client requise pour afficher les prix"}
                             </p>}
