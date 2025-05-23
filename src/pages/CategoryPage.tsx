@@ -105,7 +105,7 @@ const CategoryPage = () => {
                           </h3>
                         </div>
                         
-                        <div className="mt-0.5">
+                        <div>
                           {canSeePrice ? <div className="flex items-baseline space-x-1 justify-center">
                               <span>&nbsp;&nbsp;&nbsp;</span>
                               <span className="text-sm sm:text-lg font-bold text-primary">
