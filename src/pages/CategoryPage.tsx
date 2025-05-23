@@ -98,13 +98,15 @@ const CategoryPage = () => {
                       <div className="w-full h-[110px] sm:h-[125px] bg-white flex items-center justify-center">
                         {product.image_url && <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-2 sm:p-3" />}
                       </div>
-                      <div className="p-2 sm:p-3 flex flex-col justify-between bg-white">
-                        <div className="flex flex-col space-y-0">
-                          <h3 className="text-xs sm:text-sm font-semibold text-center leading-tight min-h-[2.5em]">
+                      <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow bg-white">
+                        <div className="flex-grow flex flex-col">
+                          <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 text-center leading-tight">
                             {product.name}
                           </h3>
+                        </div>
                         
-                          {canSeePrice ? <div className="flex items-baseline space-x-1 justify-center mt-1">
+                        <div className="mt-0.5">
+                          {canSeePrice ? <div className="flex items-baseline space-x-1 justify-center">
                               <span>&nbsp;&nbsp;&nbsp;</span>
                               <span className="text-sm sm:text-lg font-bold text-primary">
                                 {product.price.toFixed(2)} €
