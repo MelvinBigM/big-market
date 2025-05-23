@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,8 +13,8 @@ const HeroBanner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
 
-  // Increased mobile height further and set fixed height to remove whitespace
-  const bannerHeight = isMobile ? "400px" : "350px";
+  // Responsive height for different screen sizes - adjusted to fit content better
+  const bannerHeight = isMobile ? "auto" : "auto";
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -80,8 +81,8 @@ const HeroBanner = () => {
   return (
     <>
       <Toaster />
-      <section className={`w-full ${isMobile ? 'mt-16' : 'mt-16'}`}>
-        <div className={`mx-auto ${isMobile ? '-mx-4 max-w-none w-screen' : ''}`}>
+      <section className="w-full mt-16">
+        <div className="mx-auto">
           <AnimatePresence mode="wait">
             <motion.div 
               key={currentBanner} 
@@ -91,18 +92,19 @@ const HeroBanner = () => {
               transition={{ duration: 0.5 }} 
               className="relative w-full flex justify-center items-center"
               style={{ 
-                height: bannerHeight
+                maxHeight: banners[currentBanner].image_url ? "auto" : bannerHeight
               }}
             >
               {/* Background: Either Image or Gradient */}
               {banners[currentBanner].image_url ? (
                 <div 
-                  className="w-full h-full"
+                  className="w-full h-auto flex justify-center" 
                 >
                   <img 
                     src={banners[currentBanner].image_url} 
                     alt={banners[currentBanner].title} 
-                    className="object-cover w-full h-full"
+                    className="object-contain max-w-full"
+                    style={{ maxHeight: isMobile ? "200px" : "250px" }}
                   />
                 </div>
               ) : (
