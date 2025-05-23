@@ -30,7 +30,7 @@ const RegisterPage = () => {
         password,
         options: {
           data: {
-            full_name: companyName,
+            company_name: companyName,
             manager_first_name: managerFirstName,
             manager_last_name: managerLastName,
             phone_number: phoneNumber,

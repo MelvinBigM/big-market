@@ -156,10 +156,13 @@ export type Database = {
         Row: {
           address: string | null
           city: string | null
+          company_name: string | null
           created_at: string
           full_name: string | null
           id: string
           is_company: boolean | null
+          manager_first_name: string | null
+          manager_last_name: string | null
           phone_number: string | null
           postal_code: string | null
           role: Database["public"]["Enums"]["user_role"]
@@ -168,10 +171,13 @@ export type Database = {
         Insert: {
           address?: string | null
           city?: string | null
+          company_name?: string | null
           created_at?: string
           full_name?: string | null
           id: string
           is_company?: boolean | null
+          manager_first_name?: string | null
+          manager_last_name?: string | null
           phone_number?: string | null
           postal_code?: string | null
           role?: Database["public"]["Enums"]["user_role"]
@@ -180,10 +186,13 @@ export type Database = {
         Update: {
           address?: string | null
           city?: string | null
+          company_name?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
           is_company?: boolean | null
+          manager_first_name?: string | null
+          manager_last_name?: string | null
           phone_number?: string | null
           postal_code?: string | null
           role?: Database["public"]["Enums"]["user_role"]
