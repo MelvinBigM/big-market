@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,16 +8,20 @@ import Footer from "@/components/Footer";
 import { Product } from "@/lib/types";
 import { useAuth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { Pencil } from "lucide-react";
 import PriceDisplay from "@/components/products/PriceDisplay";
 import ProductAvailability from "@/components/products/ProductAvailability";
+import ProductDialog from "@/components/admin/ProductDialog";
 
 const ProductPage = () => {
   const { productId } = useParams();
   const { profile } = useAuth();
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   // Fetch product information
-  const { data: product } = useQuery({
+  const { data: product, refetch } = useQuery({
     queryKey: ["product", productId],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -56,6 +61,8 @@ const ProductPage = () => {
 
   if (!product) return null;
 
+  const isAdmin = profile?.role === 'admin';
+
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
@@ -70,7 +77,7 @@ const ProductPage = () => {
               className="bg-white rounded-lg shadow-sm p-6"
             >
               {product.image_url ? (
-                <div className="aspect-square overflow-hidden rounded-lg">
+                <div className="aspect-square overflow-hidden rounded-lg max-w-md mx-auto">
                   <img
                     src={product.image_url}
                     alt={product.name}
@@ -78,7 +85,7 @@ const ProductPage = () => {
                   />
                 </div>
               ) : (
-                <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center max-w-md mx-auto">
                   <span className="text-gray-400">Pas d'image disponible</span>
                 </div>
               )}
@@ -92,9 +99,22 @@ const ProductPage = () => {
               className="space-y-6"
             >
               <div className="text-center">
-                <Badge variant="secondary" className="mb-2">
-                  {product.categories.name}
-                </Badge>
+                <div className="flex items-center justify-center gap-4 mb-2">
+                  <Badge variant="secondary">
+                    {product.categories.name}
+                  </Badge>
+                  {isAdmin && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditDialogOpen(true)}
+                      className="flex items-center gap-2"
+                    >
+                      <Pencil className="h-4 w-4" />
+                      Modifier
+                    </Button>
+                  )}
+                </div>
                 <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
               </div>
               
@@ -122,6 +142,18 @@ const ProductPage = () => {
         </div>
       </main>
       <Footer />
+
+      {/* Admin Product Edit Dialog */}
+      {isAdmin && product && (
+        <ProductDialog
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          product={product}
+          onSuccess={() => {
+            refetch();
+          }}
+        />
+      )}
     </div>
   );
 };
