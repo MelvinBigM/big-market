@@ -1,3 +1,4 @@
+
 export type Profile = {
   id: string;
   role: 'admin' | 'client' | 'nouveau';
@@ -54,6 +55,7 @@ export type Banner = {
   bgColor: string;
   text_color: string;
   position: number;
+  active: boolean;
   created_at: string;
   updated_at: string;
 };

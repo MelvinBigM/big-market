@@ -20,6 +20,7 @@ export const useBannerEdit = (refreshBanners: () => Promise<void>) => {
         bgColor: 'bg-gradient-to-r from-blue-50 to-indigo-50',
         text_color: 'text-white',
         position: 0, // This will be updated with the correct position
+        active: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       });
@@ -44,6 +45,7 @@ export const useBannerEdit = (refreshBanners: () => Promise<void>) => {
         bgcolor: updatedBanner.bgColor, // Map bgColor to bgcolor for database
         text_color: updatedBanner.text_color,
         position: updatedBanner.position,
+        active: updatedBanner.active,
         updated_at: updatedBanner.updated_at
       };
 

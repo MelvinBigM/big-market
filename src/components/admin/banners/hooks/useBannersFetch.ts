@@ -27,6 +27,7 @@ export const useBannersFetch = () => {
         bgColor: banner.bgcolor, // Map bgcolor to bgColor
         text_color: banner.text_color,
         position: banner.position,
+        active: banner.active,
         created_at: banner.created_at,
         updated_at: banner.updated_at
       })) || [];
@@ -39,10 +40,6 @@ export const useBannersFetch = () => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchBanners();
-  }, []);
 
   return {
     banners,

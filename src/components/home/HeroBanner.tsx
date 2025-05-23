@@ -23,7 +23,7 @@ const HeroBanner = () => {
         const {
           data,
           error
-        } = await (supabase as any).from('banners').select('*').order('position', {
+        } = await (supabase as any).from('banners').select('*').where('active', true).order('position', {
           ascending: true
         });
         if (error) throw error;

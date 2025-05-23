@@ -38,6 +38,7 @@ export type Database = {
       }
       banners: {
         Row: {
+          active: boolean
           bgcolor: string
           created_at: string
           description: string | null
@@ -49,6 +50,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          active?: boolean
           bgcolor?: string
           created_at?: string
           description?: string | null
@@ -60,6 +62,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          active?: boolean
           bgcolor?: string
           created_at?: string
           description?: string | null

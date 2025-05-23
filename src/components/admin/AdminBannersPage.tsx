@@ -23,7 +23,8 @@ const AdminBannersPage = () => {
     setIsDialogOpen,
     saveBanner,
     deleteBanner,
-    openDialog
+    openDialog,
+    toggleBannerActive
   } = useBanners();
 
   useEffect(() => {
@@ -76,7 +77,8 @@ const AdminBannersPage = () => {
           <BannerList 
             banners={banners} 
             onEdit={openDialog} 
-            onDelete={deleteBanner} 
+            onDelete={deleteBanner}
+            onToggleActive={toggleBannerActive}
           />
         </div>
       </div>
