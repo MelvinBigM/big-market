@@ -95,7 +95,7 @@ const CategoryPage = () => {
                       <div className="absolute top-2 right-2 z-10">
                         <span className={`inline-flex h-3 w-3 rounded-full ${product.in_stock ? 'bg-green-500' : 'bg-red-500'}`} />
                       </div>
-                      <div className="w-full h-[140px] sm:h-[160px] bg-white flex items-center justify-center">
+                      <div className="w-full h-[100px] sm:h-[120px] bg-white flex items-center justify-center">
                         {product.image_url && <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-2 sm:p-3" />}
                       </div>
                       <div className="p-2 sm:p-3 flex flex-col justify-between flex-grow bg-white">
@@ -106,11 +106,11 @@ const CategoryPage = () => {
                         </div>
                         
                         <div className="mt-1 sm:mt-2">
-                          {canSeePrice ? <div className="flex items-baseline space-x-1 justify-center">
-                              <span className="text-sm sm:text-lg font-bold text-primary">
+                          {canSeePrice ? <div className="text-center">
+                              <div className="text-sm sm:text-lg font-bold text-primary">
                                 {product.price.toFixed(2)} €
-                              </span>
-                              <span className="text-xs text-gray-500">HT</span>
+                              </div>
+                              <div className="text-xs text-gray-500">HT</div>
                             </div> : <p className="text-xs text-gray-700 text-center leading-tight">
                               {isNewUser ? "Prix visibles uniquement pour les clients validés" : "Connexion client requise pour afficher les prix"}
                             </p>}
