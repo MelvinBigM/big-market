@@ -75,12 +75,19 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
             signUpError.message.includes("already exists") ||
             signUpError.message.includes("already been taken")) {
           toast.error("Un compte existe déjà avec cette adresse email. Veuillez vous connecter ou utiliser une autre adresse email.");
+        } else if (signUpError.message.includes("AuthWeakPasswordError") || 
+                   signUpError.message.includes("Password should contain at least one character")) {
+          toast.error("Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule et un chiffre.");
         } else if (signUpError.message.includes("Password") || signUpError.message.includes("password")) {
-          toast.error("Le mot de passe doit contenir au moins 6 caractères.");
+          toast.error("Le mot de passe doit contenir au moins 6 caractères avec une lettre minuscule, une majuscule et un chiffre.");
         } else if (signUpError.message.includes("Email") || signUpError.message.includes("email")) {
           toast.error("Veuillez saisir une adresse email valide.");
         } else if (signUpError.message.includes("rate limit")) {
           toast.error("Trop de tentatives d'inscription. Veuillez patienter quelques minutes avant de réessayer.");
+        } else if (signUpError.message.includes("invalid phone")) {
+          toast.error("Le numéro de téléphone saisi n'est pas valide.");
+        } else if (signUpError.message.includes("signup_disabled")) {
+          toast.error("Les inscriptions sont temporairement désactivées. Veuillez réessayer plus tard.");
         } else {
           toast.error(`Erreur lors de l'inscription : ${signUpError.message}`);
         }
