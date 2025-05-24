@@ -1,4 +1,3 @@
-
 import { Profile } from "@/lib/types";
 import { Button } from "../ui/button";
 import { Mail, Trash2, ArrowRight, Building2 } from "lucide-react";
@@ -45,6 +44,21 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
     setIsDeleteDialogOpen(false);
   };
 
+  const handleSendEmail = () => {
+    if (!userProfile.email) {
+      toast.error("Aucune adresse email disponible pour cet utilisateur");
+      return;
+    }
+
+    const subject = `Contact depuis l'administration - ${displayName || 'Votre compte'}`;
+    const body = `Bonjour,\n\nNous vous contactons concernant votre compte.\n\nCordialement,\nL'équipe d'administration`;
+    
+    const mailtoUrl = `mailto:${userProfile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    window.location.href = mailtoUrl;
+    toast.success(`Email ouvert pour ${userProfile.email}`);
+  };
+
   return (
     <div className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-lg shadow-sm">
       <div className="flex items-center space-x-4">
@@ -87,9 +101,9 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => {
-              toast.info("Fonctionnalité à venir");
-            }}
+            onClick={handleSendEmail}
+            disabled={!userProfile.email}
+            title={userProfile.email ? `Envoyer un email à ${userProfile.email}` : "Aucune adresse email disponible"}
           >
             <Mail className="h-4 w-4" />
           </Button>
