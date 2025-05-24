@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import VatRateSelector from "./VatRateSelector";
+import ProductImageManager from "./ProductImageManager";
 import { Category } from "@/lib/types";
 
 interface ProductFormFieldsProps {
@@ -19,6 +20,7 @@ interface ProductFormFieldsProps {
   vatRate: string;
   setVatRate: (value: string) => void;
   categories?: Category[];
+  productId?: string;
 }
 
 const ProductFormFields = ({
@@ -35,6 +37,7 @@ const ProductFormFields = ({
   vatRate,
   setVatRate,
   categories,
+  productId,
 }: ProductFormFieldsProps) => {
   return (
     <div className="grid gap-4 py-4">
@@ -91,14 +94,17 @@ const ProductFormFields = ({
         </select>
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="imageUrl">URL de l'image</Label>
+        <Label htmlFor="imageUrl">Image principale (URL)</Label>
         <Input
           id="imageUrl"
           value={imageUrl}
           onChange={(e) => setImageUrl(e.target.value)}
-          placeholder="URL de l'image"
+          placeholder="URL de l'image principale"
         />
       </div>
+
+      {/* Product Image Manager for additional images */}
+      <ProductImageManager productId={productId} />
     </div>
   );
 };

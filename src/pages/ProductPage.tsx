@@ -13,6 +13,7 @@ import { Pencil, Package } from "lucide-react";
 import PriceDisplay from "@/components/products/PriceDisplay";
 import ProductAvailability from "@/components/products/ProductAvailability";
 import ProductDialog from "@/components/admin/ProductDialog";
+import ProductImageCarousel from "@/components/products/ProductImageCarousel";
 import { toast } from "sonner";
 
 const ProductPage = () => {
@@ -95,19 +96,11 @@ const ProductPage = () => {
               transition={{ duration: 0.5 }}
               className="bg-white rounded-lg border shadow-sm p-8"
             >
-              {product.image_url ? (
-                <div className="aspect-square overflow-hidden rounded-lg max-w-sm mx-auto">
-                  <img
-                    src={product.image_url}
-                    alt={product.name}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center max-w-sm mx-auto">
-                  <span className="text-gray-400">Pas d'image disponible</span>
-                </div>
-              )}
+              <ProductImageCarousel 
+                productId={product.id}
+                fallbackImageUrl={product.image_url || undefined}
+                productName={product.name}
+              />
             </motion.div>
 
             {/* Product Details Section - Right Side */}
