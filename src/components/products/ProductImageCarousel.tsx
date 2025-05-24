@@ -73,29 +73,31 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
 
       {/* Thumbnail Carousel - Only show if more than one image */}
       {images.length > 1 && (
-        <div className="max-w-sm mx-auto">
-          <Carousel className="w-full">
-            <CarouselContent className="ml-2">
-              {images.map((image, index) => (
-                <CarouselItem key={image.id} className="basis-1/4 pl-2">
-                  <button
-                    onClick={() => setSelectedImageIndex(index)}
-                    className={`aspect-square overflow-hidden rounded-md border-2 transition-all ${
-                      validIndex === index 
-                        ? 'border-primary ring-2 ring-primary/20' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <img
-                      src={image.image_url}
-                      alt={`${productName} - Miniature ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-          </Carousel>
+        <div className="flex justify-center">
+          <div className="max-w-xs">
+            <Carousel className="w-full">
+              <CarouselContent className="ml-1">
+                {images.map((image, index) => (
+                  <CarouselItem key={image.id} className="basis-1/5 pl-1">
+                    <button
+                      onClick={() => setSelectedImageIndex(index)}
+                      className={`w-12 h-12 overflow-hidden rounded-md border-2 transition-all ${
+                        validIndex === index 
+                          ? 'border-primary ring-2 ring-primary/20' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <img
+                        src={image.image_url}
+                        alt={`${productName} - Miniature ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          </div>
         </div>
       )}
     </div>
