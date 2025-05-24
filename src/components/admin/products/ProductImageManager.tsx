@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -91,6 +92,12 @@ const ProductImageManager = ({ productId, onImagesChange }: ProductImageManagerP
     }
   };
 
+  // Function to truncate URL for display
+  const truncateUrl = (url: string, maxLength: number = 40) => {
+    if (url.length <= maxLength) return url;
+    return url.substring(0, maxLength) + "...";
+  };
+
   return (
     <div className="space-y-4">
       <Label>Images du produit</Label>
@@ -100,22 +107,23 @@ const ProductImageManager = ({ productId, onImagesChange }: ProductImageManagerP
         <div className="space-y-2">
           {productImages.map((image, index) => (
             <div key={image.id} className="flex items-center gap-2 p-2 border rounded">
-              <GripVertical className="h-4 w-4 text-gray-400" />
-              <div className="w-12 h-12 overflow-hidden rounded border">
+              <GripVertical className="h-4 w-4 text-gray-400 flex-shrink-0" />
+              <div className="w-12 h-12 overflow-hidden rounded border flex-shrink-0">
                 <img 
                   src={image.image_url} 
                   alt={`Image ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="flex-1 text-sm text-gray-600 truncate">
-                {image.image_url}
+              <div className="flex-1 text-sm text-gray-600 truncate min-w-0" title={image.image_url}>
+                {truncateUrl(image.image_url)}
               </div>
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
                 onClick={() => removeImage(image.id)}
+                className="flex-shrink-0"
               >
                 <X className="h-4 w-4" />
               </Button>
