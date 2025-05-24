@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, X, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 interface ProductImage {
   id: string;
@@ -92,6 +93,35 @@ const ProductImageManager = ({ productId, onImagesChange }: ProductImageManagerP
     }
   };
 
+  const handleDragEnd = async (result: any) => {
+    if (!result.destination || !productImages) return;
+
+    const items = Array.from(productImages);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Update optimistically
+    queryClient.setQueryData(["productImages", productId], items);
+
+    try {
+      // Update positions in the database
+      for (let i = 0; i < items.length; i++) {
+        const { error } = await supabase
+          .from("product_images")
+          .update({ position: i })
+          .eq("id", items[i].id);
+
+        if (error) throw error;
+      }
+      
+      toast.success("Ordre des images mis à jour");
+    } catch (error: any) {
+      // Revert optimistic update on error
+      queryClient.invalidateQueries({ queryKey: ["productImages", productId] });
+      toast.error("Erreur lors de la réorganisation des images");
+    }
+  };
+
   // Function to truncate URL for display
   const truncateUrl = (url: string, maxLength: number = 40) => {
     if (url.length <= maxLength) return url;
@@ -104,32 +134,58 @@ const ProductImageManager = ({ productId, onImagesChange }: ProductImageManagerP
       
       {/* Existing Images */}
       {productImages.length > 0 && (
-        <div className="space-y-2">
-          {productImages.map((image, index) => (
-            <div key={image.id} className="flex items-center gap-2 p-2 border rounded">
-              <GripVertical className="h-4 w-4 text-gray-400 flex-shrink-0" />
-              <div className="w-12 h-12 overflow-hidden rounded border flex-shrink-0">
-                <img 
-                  src={image.image_url} 
-                  alt={`Image ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex-1 text-sm text-gray-600 truncate min-w-0" title={image.image_url}>
-                {truncateUrl(image.image_url)}
-              </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => removeImage(image.id)}
-                className="flex-shrink-0"
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="images">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="space-y-2"
               >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
-        </div>
+                {productImages.map((image, index) => (
+                  <Draggable key={image.id} draggableId={image.id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        className={`flex items-center gap-2 p-2 border rounded ${
+                          snapshot.isDragging ? 'bg-gray-50 shadow-lg' : ''
+                        }`}
+                      >
+                        <div
+                          {...provided.dragHandleProps}
+                          className="flex-shrink-0 cursor-grab active:cursor-grabbing"
+                        >
+                          <GripVertical className="h-4 w-4 text-gray-400" />
+                        </div>
+                        <div className="w-12 h-12 overflow-hidden rounded border flex-shrink-0">
+                          <img 
+                            src={image.image_url} 
+                            alt={`Image ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 text-sm text-gray-600 truncate min-w-0" title={image.image_url}>
+                          {truncateUrl(image.image_url)}
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeImage(image.id)}
+                          className="flex-shrink-0"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       )}
 
       {/* Add New Image */}
