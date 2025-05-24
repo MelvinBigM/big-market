@@ -47,7 +47,9 @@ const AdminAccessRequestsPage = () => {
       return accessRequests.map(request => ({
         ...request,
         profiles: profiles?.find(profile => profile.id === request.user_id) || {
-          full_name: 'Utilisateur inconnu',
+          company_name: null,
+          manager_first_name: null,
+          manager_last_name: null,
           is_company: false,
           phone_number: '',
           address: '',
@@ -56,7 +58,9 @@ const AdminAccessRequestsPage = () => {
         }
       })) as (AccessRequest & {
         profiles: {
-          full_name: string | null;
+          company_name: string | null;
+          manager_first_name: string | null;
+          manager_last_name: string | null;
           is_company: boolean | null;
           phone_number: string | null;
           address: string | null;
@@ -66,6 +70,18 @@ const AdminAccessRequestsPage = () => {
       })[];
     }
   });
+
+  const getDisplayName = (profile: any) => {
+    if (profile.company_name) {
+      return profile.company_name;
+    }
+    
+    if (profile.manager_first_name || profile.manager_last_name) {
+      return `${profile.manager_first_name || ''} ${profile.manager_last_name || ''}`.trim();
+    }
+    
+    return 'Utilisateur sans nom';
+  };
 
   const handleRequestAction = async (requestId: string, userId: string, approve: boolean) => {
     try {
@@ -130,7 +146,7 @@ const AdminAccessRequestsPage = () => {
                 >
                   <CardHeader className="cursor-pointer" onClick={() => navigate(`/admin/users/${request.user_id}`)}>
                     <CardTitle className="text-lg">
-                      {request.profiles.full_name || 'Utilisateur sans nom'}
+                      {getDisplayName(request.profiles)}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
