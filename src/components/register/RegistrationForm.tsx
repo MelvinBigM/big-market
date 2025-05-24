@@ -30,23 +30,24 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
     setIsLoading(true);
 
     try {
-      // Vérifier d'abord si l'email ou le téléphone existe déjà
+      // Vérifier d'abord si le téléphone existe déjà
       const { data: existingProfiles, error: checkError } = await supabase
         .from('profiles')
         .select('phone_number')
-        .or(`phone_number.eq.${phoneNumber}`);
+        .eq('phone_number', phoneNumber);
 
       if (checkError) {
         console.error('Erreur lors de la vérification des données existantes:', checkError);
+        toast.error("Erreur lors de la vérification des données. Veuillez réessayer.");
+        setIsLoading(false);
+        return;
       }
 
       // Vérifier si le numéro de téléphone existe déjà
       if (existingProfiles && existingProfiles.length > 0) {
-        const existingPhone = existingProfiles.find(profile => profile.phone_number === phoneNumber);
-        if (existingPhone) {
-          toast.error("Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un autre numéro ou vous connecter si c'est votre compte.");
-          return;
-        }
+        toast.error("Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un autre numéro ou vous connecter si c'est votre compte.");
+        setIsLoading(false);
+        return;
       }
 
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -67,10 +68,14 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
       });
 
       if (signUpError) {
+        console.error('Erreur d\'inscription:', signUpError);
+        
         // Gestion des erreurs spécifiques
-        if (signUpError.message.includes("User already registered") || signUpError.message.includes("already exists")) {
+        if (signUpError.message.includes("User already registered") || 
+            signUpError.message.includes("already exists") ||
+            signUpError.message.includes("already been taken")) {
           toast.error("Un compte existe déjà avec cette adresse email. Veuillez vous connecter ou utiliser une autre adresse email.");
-        } else if (signUpError.message.includes("Password")) {
+        } else if (signUpError.message.includes("Password") || signUpError.message.includes("password")) {
           toast.error("Le mot de passe doit contenir au moins 6 caractères.");
         } else if (signUpError.message.includes("Email") || signUpError.message.includes("email")) {
           toast.error("Veuillez saisir une adresse email valide.");
@@ -79,7 +84,8 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
         } else {
           toast.error(`Erreur lors de l'inscription : ${signUpError.message}`);
         }
-        throw signUpError;
+        setIsLoading(false);
+        return;
       }
 
       // Inscription réussie
@@ -91,8 +97,7 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
 
     } catch (error: any) {
       console.error('Erreur complète d\'inscription:', error);
-      // Les erreurs spécifiques sont déjà gérées ci-dessus
-    } finally {
+      toast.error("Une erreur inattendue s'est produite. Veuillez réessayer.");
       setIsLoading(false);
     }
   };
