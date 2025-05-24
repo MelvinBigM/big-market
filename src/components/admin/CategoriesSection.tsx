@@ -81,7 +81,7 @@ const CategoriesSection = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+    <div className="bg-white rounded-lg shadow p-6">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-900">Catégories</h2>
         <Button onClick={() => {
@@ -107,18 +107,16 @@ const CategoriesSection = () => {
                   draggableId={category.id}
                   index={index}
                 >
-                  {(provided, snapshot) => (
+                  {(provided) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
-                      className={`flex items-center justify-between p-4 bg-white rounded-lg border border-gray-300 shadow-sm hover:shadow-md transition-all duration-200 ${
-                        snapshot.isDragging ? 'shadow-lg border-primary/30 bg-gray-50' : ''
-                      }`}
+                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
                     >
                       <div className="flex items-center space-x-4 flex-1">
                         <div
                           {...provided.dragHandleProps}
-                          className="cursor-move text-gray-400 hover:text-gray-600 transition-colors"
+                          className="cursor-move text-gray-400 hover:text-gray-600"
                         >
                           <GripVertical className="h-5 w-5" />
                         </div>
@@ -127,11 +125,11 @@ const CategoriesSection = () => {
                             <img
                               src={category.image_url}
                               alt={category.name}
-                              className="w-12 h-12 object-cover rounded border border-gray-200 mr-4"
+                              className="w-12 h-12 object-cover rounded mr-4"
                             />
                           )}
                           <div className="text-center">
-                            <h3 className="font-medium text-gray-900">{category.name}</h3>
+                            <h3 className="font-medium">{category.name}</h3>
                             {category.description && (
                               <p className="text-sm text-gray-600">{category.description}</p>
                             )}
@@ -143,7 +141,6 @@ const CategoriesSection = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleEdit(category)}
-                          className="hover:bg-gray-100"
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -151,7 +148,6 @@ const CategoriesSection = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDelete(category)}
-                          className="hover:bg-red-50 hover:text-red-600"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
