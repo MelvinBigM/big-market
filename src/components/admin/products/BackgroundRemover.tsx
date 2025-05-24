@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -61,7 +62,7 @@ const BackgroundRemover = ({ onImageProcessed }: BackgroundRemoverProps) => {
       if (!ctx) throw new Error('Could not get canvas context');
       
       // Resize image if needed and draw it to canvas
-      const wasResized = this.resizeImageIfNeeded(canvas, ctx, imageElement);
+      const wasResized = resizeImageIfNeeded(canvas, ctx, imageElement);
       console.log(`Image ${wasResized ? 'was' : 'was not'} resized. Final dimensions: ${canvas.width}x${canvas.height}`);
       
       // Get image data as base64
