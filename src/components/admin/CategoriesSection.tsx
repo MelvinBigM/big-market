@@ -107,16 +107,22 @@ const CategoriesSection = () => {
                   draggableId={category.id}
                   index={index}
                 >
-                  {(provided) => (
+                  {(provided, snapshot) => (
                     <div
                       ref={provided.innerRef}
                       {...provided.draggableProps}
-                      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                      className={`
+                        flex items-center justify-between p-4 rounded-lg border-2 transition-all duration-200
+                        ${snapshot.isDragging 
+                          ? 'border-primary bg-primary/5 shadow-lg' 
+                          : 'border-gray-300 bg-gray-50 hover:border-gray-400 hover:shadow-md'
+                        }
+                      `}
                     >
                       <div className="flex items-center space-x-4 flex-1">
                         <div
                           {...provided.dragHandleProps}
-                          className="cursor-move text-gray-400 hover:text-gray-600"
+                          className="cursor-move text-gray-400 hover:text-gray-600 p-1 rounded transition-colors"
                         >
                           <GripVertical className="h-5 w-5" />
                         </div>
@@ -125,11 +131,11 @@ const CategoriesSection = () => {
                             <img
                               src={category.image_url}
                               alt={category.name}
-                              className="w-12 h-12 object-cover rounded mr-4"
+                              className="w-12 h-12 object-cover rounded-lg border border-gray-200 mr-4"
                             />
                           )}
                           <div className="text-center">
-                            <h3 className="font-medium">{category.name}</h3>
+                            <h3 className="font-medium text-gray-900">{category.name}</h3>
                             {category.description && (
                               <p className="text-sm text-gray-600">{category.description}</p>
                             )}
@@ -141,6 +147,7 @@ const CategoriesSection = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleEdit(category)}
+                          className="hover:bg-blue-100 hover:text-blue-600"
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -148,6 +155,7 @@ const CategoriesSection = () => {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDelete(category)}
+                          className="hover:bg-red-100 hover:text-red-600"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
