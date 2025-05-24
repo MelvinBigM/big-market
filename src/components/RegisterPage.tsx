@@ -30,6 +30,25 @@ const RegisterPage = () => {
     setShowSuccessMessage(false);
 
     try {
+      // Vérifier d'abord si l'email ou le téléphone existe déjà
+      const { data: existingProfiles, error: checkError } = await supabase
+        .from('profiles')
+        .select('phone_number')
+        .or(`phone_number.eq.${phoneNumber}`);
+
+      if (checkError) {
+        console.error('Erreur lors de la vérification des données existantes:', checkError);
+      }
+
+      // Vérifier si le numéro de téléphone existe déjà
+      if (existingProfiles && existingProfiles.length > 0) {
+        const existingPhone = existingProfiles.find(profile => profile.phone_number === phoneNumber);
+        if (existingPhone) {
+          toast.error("Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un autre numéro ou vous connecter si c'est votre compte.");
+          return;
+        }
+      }
+
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -49,12 +68,14 @@ const RegisterPage = () => {
 
       if (signUpError) {
         // Gestion des erreurs spécifiques
-        if (signUpError.message.includes("User already registered")) {
+        if (signUpError.message.includes("User already registered") || signUpError.message.includes("already exists")) {
           toast.error("Un compte existe déjà avec cette adresse email. Veuillez vous connecter ou utiliser une autre adresse email.");
         } else if (signUpError.message.includes("Password")) {
           toast.error("Le mot de passe doit contenir au moins 6 caractères.");
-        } else if (signUpError.message.includes("Email")) {
+        } else if (signUpError.message.includes("Email") || signUpError.message.includes("email")) {
           toast.error("Veuillez saisir une adresse email valide.");
+        } else if (signUpError.message.includes("rate limit")) {
+          toast.error("Trop de tentatives d'inscription. Veuillez patienter quelques minutes avant de réessayer.");
         } else {
           toast.error(`Erreur lors de l'inscription : ${signUpError.message}`);
         }
