@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -101,7 +102,7 @@ const RegisterPage = () => {
               <br /><br />
               Veuillez vérifier votre boîte de réception (et vos spams) et cliquer sur le lien de confirmation pour activer votre compte.
               <br /><br />
-              Une fois votre email confirmé, vous pourrez vous connecter et votre demande d'accès sera examinée par notre équipe.
+              Une fois votre email confirmé, vous pourrez vous connecter et faire votre demande d'accès client depuis votre tableau de bord.
             </AlertDescription>
           </Alert>
 
