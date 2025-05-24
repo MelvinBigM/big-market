@@ -41,7 +41,7 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
 
   if (images.length === 0) {
     return (
-      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center max-w-sm mx-auto">
+      <div className="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center mx-auto">
         <span className="text-gray-400">Pas d'image disponible</span>
       </div>
     );
@@ -54,16 +54,16 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
   // Additional safety check
   if (!selectedImage) {
     return (
-      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center max-w-sm mx-auto">
+      <div className="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center mx-auto">
         <span className="text-gray-400">Pas d'image disponible</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col items-center space-y-4">
       {/* Main Image Display */}
-      <div className="aspect-square overflow-hidden rounded-lg max-w-sm mx-auto">
+      <div className="w-64 h-64 overflow-hidden rounded-lg">
         <img
           src={selectedImage.image_url}
           alt={`${productName} - Image ${validIndex + 1}`}
@@ -73,14 +73,14 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
 
       {/* Thumbnail Carousel - Only show if more than one image */}
       {images.length > 1 && (
-        <div className="max-w-sm mx-auto">
+        <div className="w-64">
           <Carousel className="w-full">
             <CarouselContent className="ml-2">
               {images.map((image, index) => (
                 <CarouselItem key={image.id} className="basis-1/4 pl-2">
                   <button
                     onClick={() => setSelectedImageIndex(index)}
-                    className={`aspect-square overflow-hidden rounded-md border-2 transition-all ${
+                    className={`w-12 h-12 overflow-hidden rounded-md border-2 transition-all ${
                       validIndex === index 
                         ? 'border-primary ring-2 ring-primary/20' 
                         : 'border-gray-200 hover:border-gray-300'
