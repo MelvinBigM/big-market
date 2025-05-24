@@ -88,6 +88,8 @@ export const useRegistration = () => {
           errorMessage = "Le numéro de téléphone saisi n'est pas valide.";
         } else if (signUpError.message.includes("signup_disabled")) {
           errorMessage = "Les inscriptions sont temporairement désactivées. Veuillez réessayer plus tard.";
+        } else if (signUpError.message.includes("For security purposes")) {
+          errorMessage = signUpError.message;
         } else {
           errorMessage = `Erreur lors de l'inscription : ${signUpError.message}`;
         }
@@ -98,23 +100,28 @@ export const useRegistration = () => {
         return;
       }
 
-      // Vérifier si l'utilisateur existe déjà (cas de repeated signup)
-      if (authData && !authData.user?.email_confirmed_at && authData.user?.id) {
-        // L'utilisateur existe déjà mais n'a pas confirmé son email
-        const errorMsg = "Cette adresse email est déjà utilisée. Si c'est votre compte, veuillez vérifier votre email pour le confirmer ou vous connecter.";
+      // Vérifier si l'inscription a réussi
+      if (authData && authData.user) {
+        // Si l'utilisateur existe et n'a pas confirmé son email, c'est une nouvelle inscription réussie
+        if (!authData.user.email_confirmed_at) {
+          console.log('Inscription réussie pour:', email);
+          console.log('Données utilisateur:', authData);
+          
+          onSuccess(email);
+          const successMsg = "Inscription réussie ! Veuillez vérifier votre email pour confirmer votre compte.";
+          toast.success(successMsg);
+        } else {
+          // Si l'email est déjà confirmé, c'est que le compte existe déjà
+          const errorMsg = "Cette adresse email est déjà utilisée par un compte confirmé. Veuillez vous connecter.";
+          setError(errorMsg);
+          toast.error(errorMsg);
+        }
+      } else {
+        // Cas où aucune donnée utilisateur n'est retournée
+        const errorMsg = "Une erreur inattendue s'est produite lors de l'inscription.";
         setError(errorMsg);
         toast.error(errorMsg);
-        setIsLoading(false);
-        return;
       }
-
-      // Inscription réussie
-      console.log('Inscription réussie pour:', email);
-      console.log('Données utilisateur:', authData);
-      
-      onSuccess(email);
-      const successMsg = "Inscription réussie ! Veuillez vérifier votre email pour confirmer votre compte.";
-      toast.success(successMsg);
 
     } catch (error: any) {
       console.error('Erreur complète d\'inscription:', error);
