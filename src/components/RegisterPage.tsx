@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,6 +5,8 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Mail } from "lucide-react";
 
 const RegisterPage = () => {
   const [email, setEmail] = useState("");
@@ -18,11 +19,14 @@ const RegisterPage = () => {
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setShowSuccessMessage(false);
 
     try {
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -42,21 +46,96 @@ const RegisterPage = () => {
         },
       });
 
-      if (signUpError) throw signUpError;
+      if (signUpError) {
+        // Gestion des erreurs spécifiques
+        if (signUpError.message.includes("User already registered")) {
+          toast.error("Un compte existe déjà avec cette adresse email. Veuillez vous connecter ou utiliser une autre adresse email.");
+        } else if (signUpError.message.includes("Password")) {
+          toast.error("Le mot de passe doit contenir au moins 6 caractères.");
+        } else if (signUpError.message.includes("Email")) {
+          toast.error("Veuillez saisir une adresse email valide.");
+        } else {
+          toast.error(`Erreur lors de l'inscription : ${signUpError.message}`);
+        }
+        throw signUpError;
+      }
 
-      toast.success("Inscription réussie ! Vous pouvez maintenant vous connecter.");
-      navigate("/login");
+      // Inscription réussie
+      setRegisteredEmail(email);
+      setShowSuccessMessage(true);
+      toast.success("Inscription réussie ! Veuillez vérifier votre email pour confirmer votre compte.");
+      
+      console.log('Inscription réussie pour:', email);
+      console.log('Données utilisateur:', authData);
+
     } catch (error: any) {
-      toast.error(
-        error.message === "User already registered"
-          ? "Un compte existe déjà avec cet email"
-          : "Erreur lors de l'inscription"
-      );
-      console.error('Erreur complète:', error);
+      console.error('Erreur complète d\'inscription:', error);
+      // Les erreurs spécifiques sont déjà gérées ci-dessus
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Si l'inscription a réussi, afficher le message de confirmation
+  if (showSuccessMessage) {
+    return (
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="flex flex-col items-center">
+            <img
+              src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png"
+              alt="Big Market Logo"
+              className="h-24 w-24 mb-4"
+            />
+            <h2 className="text-center text-3xl font-extrabold text-gray-900">
+              Inscription réussie !
+            </h2>
+          </div>
+
+          <Alert className="border-green-200 bg-green-50">
+            <Mail className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-800">
+              <strong>Votre inscription a été prise en compte avec succès !</strong>
+              <br /><br />
+              Un email de confirmation a été envoyé à <strong>{registeredEmail}</strong>.
+              <br /><br />
+              Veuillez vérifier votre boîte de réception (et vos spams) et cliquer sur le lien de confirmation pour activer votre compte.
+              <br /><br />
+              Une fois votre email confirmé, vous pourrez vous connecter et votre demande d'accès sera examinée par notre équipe.
+            </AlertDescription>
+          </Alert>
+
+          <div className="flex flex-col space-y-4">
+            <Button
+              onClick={() => navigate("/login")}
+              className="w-full bg-primary hover:bg-primary/90"
+            >
+              Aller à la page de connexion
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowSuccessMessage(false);
+                // Réinitialiser le formulaire
+                setEmail("");
+                setPassword("");
+                setCompanyName("");
+                setManagerFirstName("");
+                setManagerLastName("");
+                setPhoneNumber("");
+                setAddress("");
+                setCity("");
+                setPostalCode("");
+              }}
+              className="w-full"
+            >
+              Inscrire une autre société
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
