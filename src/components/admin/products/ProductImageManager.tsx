@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import { Plus, X, GripVertical } from "lucide-react";
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import BackgroundRemover from "./BackgroundRemover";
 
 interface ProductImage {
   id: string;
@@ -23,7 +23,6 @@ interface ProductImageManagerProps {
 const ProductImageManager = ({ productId, onImagesChange }: ProductImageManagerProps) => {
   const [newImageUrl, setNewImageUrl] = useState("");
   const [isAdding, setIsAdding] = useState(false);
-  const [showBackgroundRemover, setShowBackgroundRemover] = useState(false);
   const queryClient = useQueryClient();
 
   // Fetch existing images for this product
@@ -123,11 +122,6 @@ const ProductImageManager = ({ productId, onImagesChange }: ProductImageManagerP
     }
   };
 
-  const handleProcessedImage = (imageUrl: string) => {
-    setNewImageUrl(imageUrl);
-    setShowBackgroundRemover(false);
-  };
-
   // Function to truncate URL for display
   const truncateUrl = (url: string, maxLength: number = 40) => {
     if (url.length <= maxLength) return url;
@@ -193,23 +187,6 @@ const ProductImageManager = ({ productId, onImagesChange }: ProductImageManagerP
           </Droppable>
         </DragDropContext>
       )}
-
-      {/* Background Remover Section */}
-      <div className="space-y-2">
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => setShowBackgroundRemover(!showBackgroundRemover)}
-          className="w-full"
-        >
-          {showBackgroundRemover ? 'Masquer' : 'Supprimer l\'arrière-plan avec IA'}
-        </Button>
-        
-        {showBackgroundRemover && (
-          <BackgroundRemover onImageProcessed={handleProcessedImage} />
-        )}
-      </div>
 
       {/* Add New Image */}
       <div className="flex gap-2">
