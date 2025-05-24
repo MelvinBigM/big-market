@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import type { AccessRequest } from "@/lib/types";
 
 interface RequestClientAccessDialogProps {
@@ -18,6 +19,7 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
   const [reason, setReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { profile } = useAuth();
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +38,11 @@ const RequestClientAccessDialog = ({ open, onOpenChange }: RequestClientAccessDi
       if (error) throw error;
 
       toast.success("Votre demande d'accès a été envoyée avec succès");
+      
+      // Invalider les queries pour actualiser l'affichage
+      queryClient.invalidateQueries({ queryKey: ["accessRequest", profile.id] });
+      queryClient.invalidateQueries({ queryKey: ["pending-access-requests-count"] });
+      
       onOpenChange(false);
       setReason("");
     } catch (error) {
