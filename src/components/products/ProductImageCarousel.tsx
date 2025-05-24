@@ -47,7 +47,18 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
     );
   }
 
-  const selectedImage = images[selectedImageIndex];
+  // Ensure selectedImageIndex is valid
+  const validIndex = selectedImageIndex < images.length ? selectedImageIndex : 0;
+  const selectedImage = images[validIndex];
+
+  // Additional safety check
+  if (!selectedImage) {
+    return (
+      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center max-w-sm mx-auto">
+        <span className="text-gray-400">Pas d'image disponible</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -55,7 +66,7 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
       <div className="aspect-square overflow-hidden rounded-lg max-w-sm mx-auto">
         <img
           src={selectedImage.image_url}
-          alt={`${productName} - Image ${selectedImageIndex + 1}`}
+          alt={`${productName} - Image ${validIndex + 1}`}
           className="w-full h-full object-contain"
         />
       </div>
@@ -70,7 +81,7 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
                   <button
                     onClick={() => setSelectedImageIndex(index)}
                     className={`aspect-square overflow-hidden rounded-md border-2 transition-all ${
-                      selectedImageIndex === index 
+                      validIndex === index 
                         ? 'border-primary ring-2 ring-primary/20' 
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
