@@ -41,7 +41,7 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
 
   if (images.length === 0) {
     return (
-      <div className="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center mx-auto">
+      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center w-64 h-64 mx-auto">
         <span className="text-gray-400">Pas d'image disponible</span>
       </div>
     );
@@ -54,7 +54,7 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
   // Additional safety check
   if (!selectedImage) {
     return (
-      <div className="w-64 h-64 bg-gray-100 rounded-lg flex items-center justify-center mx-auto">
+      <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center w-64 h-64 mx-auto">
         <span className="text-gray-400">Pas d'image disponible</span>
       </div>
     );
@@ -63,7 +63,7 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
   return (
     <div className="flex flex-col items-center space-y-4">
       {/* Main Image Display */}
-      <div className="w-64 h-64 overflow-hidden rounded-lg">
+      <div className="w-64 h-64 overflow-hidden rounded-lg mx-auto">
         <img
           src={selectedImage.image_url}
           alt={`${productName} - Image ${validIndex + 1}`}
@@ -73,7 +73,7 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
 
       {/* Thumbnail Carousel - Only show if more than one image */}
       {images.length > 1 && (
-        <div className="w-64">
+        <div className="w-64 mx-auto">
           <Carousel className="w-full">
             <CarouselContent className="ml-2">
               {images.map((image, index) => (
