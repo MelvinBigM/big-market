@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Users, Layers, Package, UserCheck, ImageIcon } from "lucide-react";
@@ -8,6 +9,7 @@ import NavBar from "../NavBar";
 import Footer from "../Footer";
 import { NotificationBadge } from "../ui/notification-badge";
 import { useAccessRequests } from "@/hooks/useAccessRequests";
+
 const AdminDashboard = () => {
   const {
     profile,
@@ -17,12 +19,14 @@ const AdminDashboard = () => {
   const {
     pendingCount
   } = useAccessRequests();
+
   useEffect(() => {
     if (!isLoading && (!profile || profile.role !== 'admin')) {
       navigate('/');
       toast.error("Accès non autorisé");
     }
   }, [profile, isLoading, navigate]);
+
   if (isLoading) {
     return <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
@@ -31,6 +35,7 @@ const AdminDashboard = () => {
         </div>
       </div>;
   }
+
   if (!profile || profile.role !== 'admin') {
     return null;
   }
@@ -95,6 +100,7 @@ const AdminDashboard = () => {
 
   // Ordre des sections
   const categoryOrder = ["Utilisateurs", "Catalogue", "Mise en page"];
+
   return <div className="min-h-screen bg-white">
       <NavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
@@ -119,7 +125,7 @@ const AdminDashboard = () => {
             delay: index * 0.1
           }}>
                   <Link to={card.link} className="block h-full">
-                    <div className="bg-white rounded-lg shadow-sm p-6 h-full hover:shadow-md transition-shadow">
+                    <div className="bg-white border-2 border-gray-200 rounded-lg shadow-md p-6 h-full hover:shadow-lg hover:border-gray-300 transition-all duration-200">
                       <div className="relative">
                         <div className={`inline-flex items-center justify-center p-3 rounded-lg ${card.color} text-white mb-4`}>
                           {card.icon}
@@ -141,4 +147,5 @@ const AdminDashboard = () => {
       <Footer />
     </div>;
 };
+
 export default AdminDashboard;
