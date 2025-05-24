@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { Mail, Trash2, ArrowRight, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -11,6 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface UserProfile extends Profile {
   email: string | null;
@@ -24,8 +36,14 @@ interface UserCardProps {
 
 const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
   const navigate = useNavigate();
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const displayName = userProfile.company_name;
+
+  const handleDelete = () => {
+    onDelete(userProfile.id);
+    setIsDeleteDialogOpen(false);
+  };
 
   return (
     <div className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-lg shadow-sm">
@@ -75,13 +93,35 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
           >
             <Mail className="h-4 w-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onDelete(userProfile.id)}
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          
+          <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Êtes-vous sûr de vouloir supprimer l'utilisateur "{displayName || 'Utilisateur sans nom'}" ? 
+                  Cette action est irréversible et supprimera définitivement le compte utilisateur.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={handleDelete}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  Supprimer
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>
