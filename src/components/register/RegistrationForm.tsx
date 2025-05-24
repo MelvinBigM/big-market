@@ -23,11 +23,15 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
+
+    console.log("Début de l'inscription pour:", email);
 
     try {
       // Vérifier d'abord si le téléphone existe déjà
@@ -38,14 +42,18 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
 
       if (checkError) {
         console.error('Erreur lors de la vérification des données existantes:', checkError);
-        toast.error("Erreur lors de la vérification des données. Veuillez réessayer.");
+        const errorMsg = "Erreur lors de la vérification des données. Veuillez réessayer.";
+        setError(errorMsg);
+        toast.error(errorMsg);
         setIsLoading(false);
         return;
       }
 
       // Vérifier si le numéro de téléphone existe déjà
       if (existingProfiles && existingProfiles.length > 0) {
-        toast.error("Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un autre numéro ou vous connecter si c'est votre compte.");
+        const errorMsg = "Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un autre numéro ou vous connecter si c'est votre compte.";
+        setError(errorMsg);
+        toast.error(errorMsg);
         setIsLoading(false);
         return;
       }
@@ -70,41 +78,50 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
       if (signUpError) {
         console.error('Erreur d\'inscription:', signUpError);
         
+        let errorMessage = "";
+        
         // Gestion des erreurs spécifiques
         if (signUpError.message.includes("User already registered") || 
             signUpError.message.includes("already exists") ||
             signUpError.message.includes("already been taken")) {
-          toast.error("Un compte existe déjà avec cette adresse email. Veuillez vous connecter ou utiliser une autre adresse email.");
-        } else if (signUpError.message.includes("AuthWeakPasswordError") || 
+          errorMessage = "Un compte existe déjà avec cette adresse email. Veuillez vous connecter ou utiliser une autre adresse email.";
+        } else if (signUpError.name === "AuthWeakPasswordError" || 
                    signUpError.message.includes("Password should contain at least one character")) {
-          toast.error("Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule et un chiffre.");
+          errorMessage = "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule et un chiffre.";
         } else if (signUpError.message.includes("Password") || signUpError.message.includes("password")) {
-          toast.error("Le mot de passe doit contenir au moins 6 caractères avec une lettre minuscule, une majuscule et un chiffre.");
+          errorMessage = "Le mot de passe doit contenir au moins 6 caractères avec une lettre minuscule, une majuscule et un chiffre.";
         } else if (signUpError.message.includes("Email") || signUpError.message.includes("email")) {
-          toast.error("Veuillez saisir une adresse email valide.");
+          errorMessage = "Veuillez saisir une adresse email valide.";
         } else if (signUpError.message.includes("rate limit")) {
-          toast.error("Trop de tentatives d'inscription. Veuillez patienter quelques minutes avant de réessayer.");
+          errorMessage = "Trop de tentatives d'inscription. Veuillez patienter quelques minutes avant de réessayer.";
         } else if (signUpError.message.includes("invalid phone")) {
-          toast.error("Le numéro de téléphone saisi n'est pas valide.");
+          errorMessage = "Le numéro de téléphone saisi n'est pas valide.";
         } else if (signUpError.message.includes("signup_disabled")) {
-          toast.error("Les inscriptions sont temporairement désactivées. Veuillez réessayer plus tard.");
+          errorMessage = "Les inscriptions sont temporairement désactivées. Veuillez réessayer plus tard.";
         } else {
-          toast.error(`Erreur lors de l'inscription : ${signUpError.message}`);
+          errorMessage = `Erreur lors de l'inscription : ${signUpError.message}`;
         }
+
+        setError(errorMessage);
+        toast.error(errorMessage);
         setIsLoading(false);
         return;
       }
 
       // Inscription réussie
-      onRegistrationSuccess(email);
-      toast.success("Inscription réussie ! Veuillez vérifier votre email pour confirmer votre compte.");
-      
       console.log('Inscription réussie pour:', email);
       console.log('Données utilisateur:', authData);
+      
+      onRegistrationSuccess(email);
+      const successMsg = "Inscription réussie ! Veuillez vérifier votre email pour confirmer votre compte.";
+      toast.success(successMsg);
 
     } catch (error: any) {
       console.error('Erreur complète d\'inscription:', error);
-      toast.error("Une erreur inattendue s'est produite. Veuillez réessayer.");
+      const errorMsg = "Une erreur inattendue s'est produite. Veuillez réessayer.";
+      setError(errorMsg);
+      toast.error(errorMsg);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -125,6 +142,13 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
             Inscription réservée aux entreprises
           </p>
         </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+
         <form className="mt-8 space-y-6" onSubmit={handleRegister}>
           <div className="rounded-md shadow-sm space-y-4">
             <CompanyInfoFields
