@@ -45,7 +45,7 @@ export const useBannerEdit = (refreshBanners: () => Promise<void>) => {
       // Prepare banner object for database
       const bannerToSave = {
         title: updatedBanner.title,
-        description: updatedBanner.description,
+        description: '', // Toujours vide maintenant
         image_url: updatedBanner.image_url,
         bgcolor: '', // Empty since we don't use custom colors anymore
         text_color: '', // Empty since we don't use custom colors anymore

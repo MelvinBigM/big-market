@@ -24,7 +24,8 @@ const AdminBannersPage = () => {
     saveBanner,
     deleteBanner,
     openDialog,
-    toggleBannerActive
+    toggleBannerActive,
+    reorderBanners
   } = useBanners();
 
   useEffect(() => {
@@ -33,6 +34,10 @@ const AdminBannersPage = () => {
       toast.error("Accès non autorisé");
     }
   }, [profile, authLoading, navigate]);
+
+  const handleReorder = (result: any) => {
+    reorderBanners(result, banners);
+  };
 
   if (authLoading || isLoading) {
     return (
@@ -63,7 +68,7 @@ const AdminBannersPage = () => {
           <h2 className="text-xl font-semibold text-center mb-6">Bannières photo</h2>
           
           <p className="text-gray-600 mb-6">
-            Gérez les bannières photo qui apparaissent sur la page d'accueil. Les bannières sont affichées dans l'ordre de leur position.
+            Gérez les bannières photo qui apparaissent sur la page d'accueil. Faites glisser les bannières pour changer leur ordre d'affichage.
             Dimensions exactes requises: 1920x250 pixels. Seules les bannières photo avec ces dimensions exactes sont acceptées.
           </p>
           
@@ -79,6 +84,7 @@ const AdminBannersPage = () => {
             onEdit={openDialog} 
             onDelete={deleteBanner}
             onToggleActive={toggleBannerActive}
+            onReorder={handleReorder}
           />
         </div>
       </div>

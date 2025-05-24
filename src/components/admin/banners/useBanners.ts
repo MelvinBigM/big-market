@@ -3,6 +3,7 @@ import { useBannersFetch } from "./hooks/useBannersFetch";
 import { useBannerEdit } from "./hooks/useBannerEdit";
 import { useBannerDelete } from "./hooks/useBannerDelete";
 import { useBannerToggle } from "./hooks/useBannerToggle";
+import { useBannersReorder } from "./hooks/useBannersReorder";
 
 export const useBanners = () => {
   // Use the smaller hooks
@@ -17,6 +18,7 @@ export const useBanners = () => {
   } = useBannerEdit(fetchBanners);
   const { deleteBanner } = useBannerDelete(fetchBanners);
   const { toggleBannerActive } = useBannerToggle(fetchBanners);
+  const { reorderBanners } = useBannersReorder(fetchBanners);
 
   // Return everything needed by consumers
   return {
@@ -30,6 +32,7 @@ export const useBanners = () => {
     saveBanner,
     deleteBanner,
     openDialog,
-    toggleBannerActive
+    toggleBannerActive,
+    reorderBanners
   };
 };

@@ -28,27 +28,6 @@ const BannerFormFields: React.FC<BannerFormFieldsProps> = ({
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
-        <Input
-          id="description"
-          value={banner.description || ''}
-          onChange={(e) => onUpdateBanner({ description: e.target.value })}
-          placeholder="Description de la bannière"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="position">Position</Label>
-        <Input
-          id="position"
-          type="number"
-          min="1"
-          value={banner.position || 1}
-          onChange={(e) => onUpdateBanner({ position: parseInt(e.target.value) })}
-        />
-      </div>
-
       <BannerImageUploader 
         imageUrl={banner.image_url}
         onImageUploaded={(url) => onUpdateBanner({ image_url: url })}
