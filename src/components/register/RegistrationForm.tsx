@@ -51,7 +51,7 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
 
       // Vérifier si le numéro de téléphone existe déjà
       if (existingProfiles && existingProfiles.length > 0) {
-        const errorMsg = "Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un autre numéro ou vous connecter si c'est votre compte.";
+        const errorMsg = "Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un autre numéro.";
         setError(errorMsg);
         toast.error(errorMsg);
         setIsLoading(false);
@@ -83,8 +83,9 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
         // Gestion des erreurs spécifiques
         if (signUpError.message.includes("User already registered") || 
             signUpError.message.includes("already exists") ||
-            signUpError.message.includes("already been taken")) {
-          errorMessage = "Un compte existe déjà avec cette adresse email. Veuillez vous connecter ou utiliser une autre adresse email.";
+            signUpError.message.includes("already been taken") ||
+            signUpError.message.includes("Email address is already registered")) {
+          errorMessage = "Cette adresse email est déjà utilisée par un autre compte. Veuillez vous connecter ou utiliser une autre adresse email.";
         } else if (signUpError.name === "AuthWeakPasswordError" || 
                    signUpError.message.includes("Password should contain at least one character")) {
           errorMessage = "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule et un chiffre.";
@@ -104,6 +105,16 @@ const RegistrationForm = ({ onRegistrationSuccess }: RegistrationFormProps) => {
 
         setError(errorMessage);
         toast.error(errorMessage);
+        setIsLoading(false);
+        return;
+      }
+
+      // Vérifier si l'utilisateur existe déjà (cas de repeated signup)
+      if (authData && !authData.user?.email_confirmed_at && authData.user?.id) {
+        // L'utilisateur existe déjà mais n'a pas confirmé son email
+        const errorMsg = "Cette adresse email est déjà utilisée. Si c'est votre compte, veuillez vérifier votre email pour le confirmer ou vous connecter.";
+        setError(errorMsg);
+        toast.error(errorMsg);
         setIsLoading(false);
         return;
       }
