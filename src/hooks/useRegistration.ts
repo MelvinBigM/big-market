@@ -1,44 +1,52 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+interface RegistrationFormData {
+  email: string;
+  password: string;
+  companyName: string;
+  managerFirstName: string;
+  managerLastName: string;
+  phoneNumber: string;
+  address: string;
+  city: string;
+  postalCode: string;
+}
 
 export const useRegistration = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
-  const navigate = useNavigate();
 
-  const checkEmailExists = async (email: string) => {
-    const { data } = await supabase
-      .from("profiles")
-      .select("email")
-      .eq("email", email)
-      .single();
-    return !!data;
+  const checkEmailExists = async (email: string): Promise<boolean> => {
+    try {
+      const { data } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("email", email)
+        .single();
+      return !!data;
+    } catch {
+      return false;
+    }
   };
 
-  const checkPhoneExists = async (phone: string) => {
-    const { data } = await supabase
-      .from("profiles")
-      .select("phone_number")
-      .eq("phone_number", phone)
-      .single();
-    return !!data;
+  const checkPhoneExists = async (phone: string): Promise<boolean> => {
+    try {
+      const { data } = await supabase
+        .from("profiles")
+        .select("phone_number")
+        .eq("phone_number", phone)
+        .single();
+      return !!data;
+    } catch {
+      return false;
+    }
   };
 
-  const handleRegister = async (formData: {
-    email: string;
-    password: string;
-    companyName: string;
-    managerFirstName: string;
-    managerLastName: string;
-    phoneNumber: string;
-    address: string;
-    city: string;
-    postalCode: string;
-  }) => {
+  const handleRegister = async (formData: RegistrationFormData) => {
     setIsLoading(true);
     setShowSuccessMessage(false);
 
@@ -110,6 +118,5 @@ export const useRegistration = () => {
     registeredEmail,
     handleRegister,
     resetForm,
-    navigate
   };
 };
