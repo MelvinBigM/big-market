@@ -23,24 +23,7 @@ export const useRegistration = () => {
     console.log("Début de l'inscription pour:", email);
 
     try {
-      // 1. Vérifier d'abord si l'email existe déjà dans auth.users
-      const { data: existingUser, error: userCheckError } = await supabase.auth.admin.listUsers();
-      
-      if (userCheckError) {
-        console.error('Erreur lors de la vérification utilisateur:', userCheckError);
-        // Continuons même si on ne peut pas vérifier (limitation de permissions)
-      } else if (existingUser?.users) {
-        const emailExists = existingUser.users.some(user => user.email === email);
-        if (emailExists) {
-          const errorMsg = "Cette adresse email est déjà utilisée par un autre compte. Veuillez vous connecter ou utiliser une autre adresse email.";
-          setError(errorMsg);
-          toast.error(errorMsg);
-          setIsLoading(false);
-          return;
-        }
-      }
-
-      // 2. Vérifier si le téléphone existe déjà dans les profils
+      // 1. Vérifier si le téléphone existe déjà dans les profils
       const { data: existingProfiles, error: profileCheckError } = await supabase
         .from('profiles')
         .select('phone_number, id')
@@ -63,7 +46,7 @@ export const useRegistration = () => {
         return;
       }
 
-      // 3. Tenter l'inscription
+      // 2. Tenter l'inscription
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -81,7 +64,7 @@ export const useRegistration = () => {
         },
       });
 
-      // 4. Gérer les erreurs d'inscription
+      // 3. Gérer les erreurs d'inscription
       if (signUpError) {
         console.error('Erreur d\'inscription:', signUpError);
         
@@ -112,7 +95,7 @@ export const useRegistration = () => {
         return;
       }
 
-      // 5. Vérifier le succès de l'inscription
+      // 4. Vérifier le succès de l'inscription
       if (!authData || !authData.user) {
         const errorMsg = "Une erreur inattendue s'est produite lors de l'inscription.";
         setError(errorMsg);
@@ -121,26 +104,29 @@ export const useRegistration = () => {
         return;
       }
 
-      // 6. Déterminer si c'est une vraie nouvelle inscription ou un compte existant
+      // 5. Vérifier si c'est un compte existant qui essaie de s'inscrire à nouveau
       const user = authData.user;
-      const now = new Date();
-      const userCreatedAt = new Date(user.created_at || '');
-      const timeDifference = now.getTime() - userCreatedAt.getTime();
       
-      // Si le compte a été créé il y a moins de 5 secondes, c'est une nouvelle inscription
-      const isNewRegistration = timeDifference < 5000;
-      
-      if (!isNewRegistration) {
-        // Compte existant - vérifier l'état de confirmation
-        if (user.email_confirmed_at) {
-          const errorMsg = "Cette adresse email est déjà utilisée par un compte confirmé. Veuillez vous connecter.";
-          setError(errorMsg);
-          toast.error(errorMsg);
-        } else {
-          const errorMsg = "Cette adresse email est déjà utilisée. Un email de confirmation a déjà été envoyé. Veuillez vérifier votre boîte de réception.";
-          setError(errorMsg);
-          toast.error(errorMsg);
-        }
+      // Si l'utilisateur a déjà un email confirmé, c'est un compte existant
+      if (user.email_confirmed_at) {
+        const errorMsg = "Cette adresse email est déjà utilisée par un compte confirmé. Veuillez vous connecter.";
+        setError(errorMsg);
+        toast.error(errorMsg);
+        setIsLoading(false);
+        return;
+      }
+
+      // 6. Vérifier si un profil existe déjà pour cet utilisateur
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .single();
+
+      if (existingProfile) {
+        const errorMsg = "Cette adresse email est déjà utilisée. Un email de confirmation a déjà été envoyé. Veuillez vérifier votre boîte de réception.";
+        setError(errorMsg);
+        toast.error(errorMsg);
         setIsLoading(false);
         return;
       }
