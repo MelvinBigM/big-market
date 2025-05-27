@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -22,7 +23,7 @@ export const useRegistration = () => {
     console.log("Début de l'inscription pour:", email);
 
     try {
-      // 1. Vérifier si l'email existe déjà dans les profils
+      // 1. Vérifier AVANT l'inscription si l'email existe déjà dans les profils
       const { data: existingEmailProfiles, error: emailCheckError } = await supabase
         .from('profiles')
         .select('email, id')
@@ -45,7 +46,7 @@ export const useRegistration = () => {
         return;
       }
 
-      // 2. Vérifier si le téléphone existe déjà dans les profils
+      // 2. Vérifier AVANT l'inscription si le téléphone existe déjà dans les profils
       const { data: existingPhoneProfiles, error: phoneCheckError } = await supabase
         .from('profiles')
         .select('phone_number, id')
@@ -68,7 +69,7 @@ export const useRegistration = () => {
         return;
       }
 
-      // 3. Tenter l'inscription
+      // 3. Maintenant que les vérifications sont passées, tenter l'inscription
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
