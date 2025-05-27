@@ -100,22 +100,41 @@ export const useRegistration = () => {
         return;
       }
 
-      // Vérifier si l'inscription a réussi
+      // Vérifier si l'inscription a vraiment réussi
       if (authData && authData.user) {
-        // Si l'utilisateur existe et n'a pas confirmé son email, c'est une nouvelle inscription réussie
-        if (!authData.user.email_confirmed_at) {
-          console.log('Inscription réussie pour:', email);
-          console.log('Données utilisateur:', authData);
-          
-          onSuccess(email);
-          const successMsg = "Inscription réussie ! Veuillez vérifier votre email pour confirmer votre compte.";
-          toast.success(successMsg);
-        } else {
-          // Si l'email est déjà confirmé, c'est que le compte existe déjà
+        // Cas spécial : si l'utilisateur existe déjà mais que Supabase ne retourne pas d'erreur
+        // Cela peut arriver avec des emails déjà utilisés
+        if (authData.user.email_confirmed_at) {
+          // L'email est déjà confirmé = compte existant
           const errorMsg = "Cette adresse email est déjà utilisée par un compte confirmé. Veuillez vous connecter.";
           setError(errorMsg);
           toast.error(errorMsg);
+          setIsLoading(false);
+          return;
         }
+
+        // Vérifier si c'est vraiment une nouvelle inscription
+        // Si l'utilisateur a été créé il y a plus de quelques secondes, c'est probablement un compte existant
+        const userCreatedAt = new Date(authData.user.created_at || '');
+        const now = new Date();
+        const timeDiff = now.getTime() - userCreatedAt.getTime();
+        
+        // Si le compte a été créé il y a plus de 10 secondes, c'est probablement un compte existant
+        if (timeDiff > 10000) {
+          const errorMsg = "Cette adresse email est déjà utilisée. Veuillez vérifier votre email pour confirmer votre compte ou vous connecter.";
+          setError(errorMsg);
+          toast.error(errorMsg);
+          setIsLoading(false);
+          return;
+        }
+
+        // C'est une vraie nouvelle inscription
+        console.log('Inscription réussie pour:', email);
+        console.log('Données utilisateur:', authData);
+        
+        onSuccess(email);
+        const successMsg = "Inscription réussie ! Veuillez vérifier votre email pour confirmer votre compte.";
+        toast.success(successMsg);
       } else {
         // Cas où aucune donnée utilisateur n'est retournée
         const errorMsg = "Une erreur inattendue s'est produite lors de l'inscription.";
