@@ -1,15 +1,12 @@
-
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { GlobeIcon, HeartHandshake, ShieldCheck, Users, Clock } from "lucide-react";
-
 const AboutPage = () => {
-  return (
-    <div className="min-h-screen bg-white flex flex-col">
+  return <div className="min-h-screen bg-white flex flex-col">
       <NavBar />
       <main className="flex-grow">
         {/* Hero section */}
-        <div className="bg-gray-50 py-16">
+        <div className="py-16 bg-transparent">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-6">À propos de Big Market</h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -63,8 +60,6 @@ const AboutPage = () => {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default AboutPage;
