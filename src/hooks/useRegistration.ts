@@ -26,7 +26,7 @@ export const useRegistration = () => {
         .from("profiles")
         .select("email")
         .eq("email", email)
-        .single();
+        .maybeSingle();
       return !!data;
     } catch {
       return false;
@@ -39,7 +39,7 @@ export const useRegistration = () => {
         .from("profiles")
         .select("phone_number")
         .eq("phone_number", phone)
-        .single();
+        .maybeSingle();
       return !!data;
     } catch {
       return false;
