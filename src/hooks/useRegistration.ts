@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -23,14 +22,14 @@ export const useRegistration = () => {
     console.log("Début de l'inscription pour:", email);
 
     try {
-      // 1. Vérifier si le téléphone existe déjà dans les profils
-      const { data: existingProfiles, error: profileCheckError } = await supabase
+      // 1. Vérifier si l'email existe déjà dans les profils
+      const { data: existingEmailProfiles, error: emailCheckError } = await supabase
         .from('profiles')
-        .select('phone_number, id')
-        .eq('phone_number', phoneNumber);
+        .select('email, id')
+        .eq('email', email);
 
-      if (profileCheckError) {
-        console.error('Erreur lors de la vérification des profils:', profileCheckError);
+      if (emailCheckError) {
+        console.error('Erreur lors de la vérification de l\'email:', emailCheckError);
         const errorMsg = "Erreur lors de la vérification des données. Veuillez réessayer.";
         setError(errorMsg);
         toast.error(errorMsg);
@@ -38,7 +37,30 @@ export const useRegistration = () => {
         return;
       }
 
-      if (existingProfiles && existingProfiles.length > 0) {
+      if (existingEmailProfiles && existingEmailProfiles.length > 0) {
+        const errorMsg = "Cette adresse email est déjà utilisée par un autre compte. Veuillez vous connecter ou utiliser une autre adresse email.";
+        setError(errorMsg);
+        toast.error(errorMsg);
+        setIsLoading(false);
+        return;
+      }
+
+      // 2. Vérifier si le téléphone existe déjà dans les profils
+      const { data: existingPhoneProfiles, error: phoneCheckError } = await supabase
+        .from('profiles')
+        .select('phone_number, id')
+        .eq('phone_number', phoneNumber);
+
+      if (phoneCheckError) {
+        console.error('Erreur lors de la vérification du téléphone:', phoneCheckError);
+        const errorMsg = "Erreur lors de la vérification des données. Veuillez réessayer.";
+        setError(errorMsg);
+        toast.error(errorMsg);
+        setIsLoading(false);
+        return;
+      }
+
+      if (existingPhoneProfiles && existingPhoneProfiles.length > 0) {
         const errorMsg = "Ce numéro de téléphone est déjà utilisé par un autre compte. Veuillez utiliser un autre numéro.";
         setError(errorMsg);
         toast.error(errorMsg);
@@ -46,7 +68,7 @@ export const useRegistration = () => {
         return;
       }
 
-      // 2. Tenter l'inscription
+      // 3. Tenter l'inscription
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -64,7 +86,7 @@ export const useRegistration = () => {
         },
       });
 
-      // 3. Gérer les erreurs d'inscription
+      // 4. Gérer les erreurs d'inscription
       if (signUpError) {
         console.error('Erreur d\'inscription:', signUpError);
         
@@ -95,7 +117,7 @@ export const useRegistration = () => {
         return;
       }
 
-      // 4. Vérifier le succès de l'inscription
+      // 5. Vérifier le succès de l'inscription
       if (!authData || !authData.user) {
         const errorMsg = "Une erreur inattendue s'est produite lors de l'inscription.";
         setError(errorMsg);
@@ -104,34 +126,7 @@ export const useRegistration = () => {
         return;
       }
 
-      // 5. Vérifier si c'est un compte existant qui essaie de s'inscrire à nouveau
-      const user = authData.user;
-      
-      // Si l'utilisateur a déjà un email confirmé, c'est un compte existant
-      if (user.email_confirmed_at) {
-        const errorMsg = "Cette adresse email est déjà utilisée par un compte confirmé. Veuillez vous connecter.";
-        setError(errorMsg);
-        toast.error(errorMsg);
-        setIsLoading(false);
-        return;
-      }
-
-      // 6. Vérifier si un profil existe déjà pour cet utilisateur
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', user.id)
-        .single();
-
-      if (existingProfile) {
-        const errorMsg = "Cette adresse email est déjà utilisée. Un email de confirmation a déjà été envoyé. Veuillez vérifier votre boîte de réception.";
-        setError(errorMsg);
-        toast.error(errorMsg);
-        setIsLoading(false);
-        return;
-      }
-
-      // 7. Inscription réussie !
+      // 6. Inscription réussie !
       console.log('Nouvelle inscription réussie pour:', email);
       console.log('Données utilisateur:', authData);
       
