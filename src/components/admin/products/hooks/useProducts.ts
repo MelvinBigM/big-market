@@ -84,7 +84,7 @@ export const useProducts = () => {
 
       if (error) throw error;
       
-      toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'hors stock'}`);
+      toast.success(`Produit marqué comme ${!product.in_stock ? 'en stock' : 'en rupture'}`);
       queryClient.invalidateQueries({ queryKey: ["products"] });
     } catch (error: any) {
       toast.error(error.message);
