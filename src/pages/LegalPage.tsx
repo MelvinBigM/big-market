@@ -1,4 +1,3 @@
-
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 
@@ -7,7 +6,7 @@ const LegalPage = () => {
     <div className="min-h-screen bg-white">
       <NavBar />
       
-      <main className="max-w-4xl mx-auto px-4 py-8">
+      <main className="max-w-4xl mx-auto px-4 py-24">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Mentions légales</h1>
         
         <section className="space-y-6">
