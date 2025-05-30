@@ -7,7 +7,7 @@ const LegalPage = () => {
     <div className="min-h-screen bg-white">
       <NavBar />
       
-      <main className="max-w-4xl mx-auto px-4 py-24">
+      <main className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Mentions légales</h1>
         
         <section className="space-y-6">
@@ -17,8 +17,8 @@ const LegalPage = () => {
               <li><span className="font-medium">Nom commercial :</span> BIG IMEX</li>
               <li>
                 <span className="font-medium">Adresse :</span><br />
-                45 ALLÉE DES ORMES<br />
-                06250 MOUGINS<br />
+                42 Chemin de l'escadrille<br />
+                06210 Mandelieu<br />
                 FRANCE
               </li>
               <li><span className="font-medium">SIRET :</span> 887 712 255 00033</li>
