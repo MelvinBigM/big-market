@@ -60,7 +60,8 @@ const ProfilePage = () => {
         .from("profiles")
         .update(updateData)
         .eq("id", session.user.id)
-        .select();
+        .select()
+        .single();
 
       if (error) {
         console.error("Supabase error:", error);
@@ -68,6 +69,10 @@ const ProfilePage = () => {
       }
 
       console.log("Profile updated successfully:", data);
+      
+      // Force refresh of the profile data in AuthProvider
+      window.location.reload();
+      
       toast.success("Profil mis à jour avec succès");
     } catch (error: any) {
       console.error("Error updating profile:", error);
