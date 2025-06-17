@@ -17,6 +17,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (profile) {
+      console.log("Profile loaded:", profile);
       setFormData({
         company_name: profile.company_name || "",
         manager_first_name: profile.manager_first_name || "",
@@ -32,37 +33,52 @@ const ProfilePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session?.user?.id) return;
+    if (!session?.user?.id) {
+      toast.error("Vous devez être connecté pour modifier votre profil");
+      return;
+    }
 
     setIsLoading(true);
+    console.log("Updating profile with data:", formData);
 
     try {
-      const { error } = await supabase
+      const updateData = {
+        company_name: formData.company_name,
+        manager_first_name: formData.manager_first_name,
+        manager_last_name: formData.manager_last_name,
+        phone_number: formData.phone_number,
+        address: formData.address,
+        city: formData.city,
+        postal_code: formData.postal_code,
+        is_company: formData.is_company,
+        updated_at: new Date().toISOString(),
+      };
+
+      console.log("Sending update to Supabase:", updateData);
+
+      const { data, error } = await supabase
         .from("profiles")
-        .update({
-          company_name: formData.company_name,
-          manager_first_name: formData.manager_first_name,
-          manager_last_name: formData.manager_last_name,
-          phone_number: formData.phone_number,
-          address: formData.address,
-          city: formData.city,
-          postal_code: formData.postal_code,
-          is_company: formData.is_company,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", session.user.id);
+        .update(updateData)
+        .eq("id", session.user.id)
+        .select();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
 
+      console.log("Profile updated successfully:", data);
       toast.success("Profil mis à jour avec succès");
     } catch (error: any) {
-      toast.error("Erreur lors de la mise à jour du profil");
+      console.error("Error updating profile:", error);
+      toast.error(`Erreur lors de la mise à jour du profil: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleInputChange = (field: keyof Profile, value: string | boolean) => {
+    console.log(`Updating field ${field} with value:`, value);
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
