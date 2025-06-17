@@ -5,7 +5,22 @@ import Footer from "./Footer";
 import ProfileForm from "./profile/ProfileForm";
 
 const ProfilePage = () => {
-  const { session } = useAuth();
+  const { session, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <NavBar />
+        <div className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-gray-600">Chargement...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!session) {
     return (
