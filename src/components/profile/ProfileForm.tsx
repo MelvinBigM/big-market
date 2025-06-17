@@ -23,7 +23,6 @@ const ProfileForm = () => {
         address: profile.address || "",
         city: profile.city || "",
         postal_code: profile.postal_code || "",
-        is_company: profile.is_company || false,
       });
     }
   }, [profile]);
@@ -47,7 +46,6 @@ const ProfileForm = () => {
         address: formData.address,
         city: formData.city,
         postal_code: formData.postal_code,
-        is_company: formData.is_company,
         updated_at: new Date().toISOString(),
       };
 

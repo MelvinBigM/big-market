@@ -89,17 +89,6 @@ const ProfileFormFields = ({ formData, onInputChange }: ProfileFormFieldsProps) 
           />
         </div>
       </div>
-
-      <div className="flex items-center space-x-2">
-        <input
-          type="checkbox"
-          id="is_company"
-          checked={formData.is_company || false}
-          onChange={(e) => onInputChange("is_company", e.target.checked)}
-          className="rounded border-gray-300 text-primary focus:ring-primary"
-        />
-        <Label htmlFor="is_company">Je représente une entreprise</Label>
-      </div>
     </>
   );
 };
