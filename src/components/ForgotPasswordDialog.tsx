@@ -15,21 +15,53 @@ const ForgotPasswordDialog = () => {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email.trim()) {
+      toast.error("Veuillez saisir votre adresse email");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Veuillez saisir une adresse email valide");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
+      // Utiliser l'URL actuelle pour la redirection
+      const redirectUrl = `${window.location.origin}/reset-password`;
+      console.log("Sending reset email with redirect URL:", redirectUrl);
+
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
+        redirectTo: redirectUrl,
       });
 
       if (error) {
+        console.error("Reset password error:", error);
         throw error;
       }
 
+      console.log("Reset email sent successfully");
       toast.success("Email de réinitialisation envoyé ! Vérifiez votre boîte mail.");
       setEmailSent(true);
     } catch (error: any) {
-      toast.error("Erreur lors de l'envoi de l'email de réinitialisation");
+      console.error("Error in password reset:", error);
+      
+      let errorMessage = "Erreur lors de l'envoi de l'email de réinitialisation";
+      
+      if (error.message.includes("Invalid email")) {
+        errorMessage = "Adresse email invalide";
+      } else if (error.message.includes("Email not found")) {
+        errorMessage = "Aucun compte trouvé avec cette adresse email";
+      } else if (error.message.includes("rate limit")) {
+        errorMessage = "Trop de tentatives. Veuillez attendre avant de réessayer";
+      } else if (error.message) {
+        errorMessage += ` : ${error.message}`;
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +98,11 @@ const ForgotPasswordDialog = () => {
                 placeholder="Votre email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Nous enverrons un lien de réinitialisation à cette adresse
+              </p>
             </div>
             <div className="flex space-x-2">
               <Button
@@ -74,13 +110,14 @@ const ForgotPasswordDialog = () => {
                 variant="outline"
                 className="flex-1"
                 onClick={handleClose}
+                disabled={isLoading}
               >
                 Annuler
               </Button>
               <Button
                 type="submit"
                 className="flex-1"
-                disabled={isLoading}
+                disabled={isLoading || !email.trim()}
               >
                 {isLoading ? "Envoi..." : "Envoyer"}
               </Button>
@@ -98,11 +135,14 @@ const ForgotPasswordDialog = () => {
               <p className="text-sm text-gray-600">
                 Nous avons envoyé un lien de réinitialisation à :
               </p>
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-sm font-medium text-gray-900 break-words">
                 {email}
               </p>
               <p className="text-sm text-gray-600">
-                Vérifiez votre boîte mail et cliquez sur le lien pour créer un nouveau mot de passe.
+                Vérifiez votre boîte mail (et le dossier spam) puis cliquez sur le lien pour créer un nouveau mot de passe.
+              </p>
+              <p className="text-xs text-gray-500 mt-2">
+                Le lien expire dans 1 heure
               </p>
             </div>
             <Button onClick={handleClose} className="w-full">
