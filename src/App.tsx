@@ -9,6 +9,8 @@ import CategoryPage from "@/pages/CategoryPage";
 import ProductPage from "@/pages/ProductPage";
 import LoginPage from "@/components/LoginPage";
 import RegisterPage from "@/components/RegisterPage";
+import ResetPasswordPage from "@/components/ResetPasswordPage";
+import ProfilePage from "@/components/ProfilePage";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminUsersPage from "@/components/admin/AdminUsersPage";
 import AdminCategoriesPage from "@/components/admin/AdminCategoriesPage";
@@ -33,6 +35,8 @@ function App() {
           <Route path="/product/:productId" element={<ProductPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route
             path="/admin"
             element={

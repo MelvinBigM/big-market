@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuIcon, User, X, Bell } from "lucide-react";
+import { MenuIcon, User, X, Settings } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,7 +30,7 @@ const NavBar = () => {
       if (error) throw error;
       return data as Category[];
     },
-    staleTime: 0, // Force le rafraîchissement des données
+    staleTime: 0,
   });
 
   const handleLogout = async () => {
@@ -75,6 +75,13 @@ const NavBar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
+            {session && (
+              <Link to="/profile">
+                <Button variant="ghost" size="icon">
+                  <Settings className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
             {profile?.role === 'admin' && (
               <Link to="/admin" className="relative">
                 <Button variant="ghost" size="icon">
@@ -133,6 +140,12 @@ const NavBar = () => {
             <div className="mt-4 flex flex-col space-y-2 px-3">
               {session ? (
                 <>
+                  <Link to="/profile">
+                    <Button variant="outline" className="w-full justify-start">
+                      <Settings className="h-5 w-5 mr-2" />
+                      Mon Profil
+                    </Button>
+                  </Link>
                   {profile?.role === 'admin' && (
                     <Link to="/admin" className="relative">
                       <Button variant="outline" className="w-full justify-start">

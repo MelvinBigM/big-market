@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
+import ForgotPasswordDialog from "./ForgotPasswordDialog";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -92,16 +93,20 @@ const LoginPage = () => {
             >
               {isLoading ? "Connexion..." : "Se connecter"}
             </Button>
-            <p className="text-center text-sm">
-              Pas encore de compte ?{" "}
-              <button
-                type="button"
-                className="text-primary hover:text-primary/90"
-                onClick={() => navigate("/register")}
-              >
-                S'inscrire
-              </button>
-            </p>
+            
+            <div className="text-center space-y-2">
+              <ForgotPasswordDialog />
+              <p className="text-sm">
+                Pas encore de compte ?{" "}
+                <button
+                  type="button"
+                  className="text-primary hover:text-primary/90"
+                  onClick={() => navigate("/register")}
+                >
+                  S'inscrire
+                </button>
+              </p>
+            </div>
           </div>
         </form>
       </div>
