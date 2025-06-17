@@ -49,7 +49,17 @@ const ProductsGrid = ({
                   alt={product.name}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                 />
-                <ProductAvailability inStock={product.in_stock} className="absolute top-2 right-2" />
+                <div className="absolute top-2 right-2">
+                  <div 
+                    className={`px-2 py-1 rounded-md text-xs font-medium ${
+                      product.in_stock 
+                        ? "bg-green-50 text-green-700" 
+                        : "bg-red-50 text-red-700"
+                    }`}
+                  >
+                    {product.in_stock ? "En stock" : "En rupture"}
+                  </div>
+                </div>
               </div>
               
               <div className="p-4">
@@ -64,11 +74,15 @@ const ProductsGrid = ({
                 )}
                 
                 <div className="flex items-center justify-between">
-                  <PriceDisplay 
-                    price={product.price}
-                    canSeePrice={canSeePrice}
-                    vatRate={product.vat_rate}
-                  />
+                  {canSeePrice ? (
+                    <div className="text-lg font-bold text-primary">
+                      {product.price.toFixed(2)} € HT
+                    </div>
+                  ) : (
+                    <div className="text-sm text-gray-500">
+                      Prix sur demande
+                    </div>
+                  )}
                   
                   {isNewUser && (
                     <Button
