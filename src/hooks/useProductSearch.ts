@@ -26,7 +26,7 @@ export const useProductSearch = ({ products, searchQuery, filters }: UseProductS
     }
 
     // Category filter
-    if (filters.categoryId) {
+    if (filters.categoryId && filters.categoryId !== "all") {
       filtered = filtered.filter(product => product.category_id === filters.categoryId);
     }
 
@@ -46,7 +46,7 @@ export const useProductSearch = ({ products, searchQuery, filters }: UseProductS
     }
 
     // Sorting
-    if (filters.sortBy) {
+    if (filters.sortBy && filters.sortBy !== "default") {
       filtered.sort((a, b) => {
         let aValue: any, bValue: any;
         

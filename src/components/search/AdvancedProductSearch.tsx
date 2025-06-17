@@ -102,7 +102,7 @@ const AdvancedProductSearch = ({
               {filters.inStock ? 'En stock' : 'En rupture'}
               <X 
                 className="h-3 w-3 cursor-pointer" 
-                onClick={() => clearFilter('inStock')}
+                onChange={() => clearFilter('inStock')}
               />
             </Badge>
           )}
@@ -141,14 +141,14 @@ const AdvancedProductSearch = ({
             <div className="space-y-2">
               <label className="text-sm font-medium">Catégorie</label>
               <Select 
-                value={filters.categoryId || ""} 
-                onValueChange={(value) => updateFilter('categoryId', value || undefined)}
+                value={filters.categoryId || "all"} 
+                onValueChange={(value) => updateFilter('categoryId', value === "all" ? undefined : value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Toutes les catégories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Toutes les catégories</SelectItem>
+                  <SelectItem value="all">Toutes les catégories</SelectItem>
                   {categories.map((category) => (
                     <SelectItem key={category.id} value={category.id}>
                       {category.name}
@@ -162,16 +162,27 @@ const AdvancedProductSearch = ({
             <div className="space-y-2">
               <label className="text-sm font-medium">Disponibilité</label>
               <Select 
-                value={filters.inStock?.toString() || ""} 
-                onValueChange={(value) => updateFilter('inStock', value === "" ? undefined : value === "true")}
+                value={
+                  filters.inStock === undefined 
+                    ? "all" 
+                    : filters.inStock 
+                    ? "in-stock" 
+                    : "out-of-stock"
+                } 
+                onValueChange={(value) => 
+                  updateFilter('inStock', 
+                    value === "all" ? undefined : 
+                    value === "in-stock" ? true : false
+                  )
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Tous les produits" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Tous les produits</SelectItem>
-                  <SelectItem value="true">En stock uniquement</SelectItem>
-                  <SelectItem value="false">En rupture uniquement</SelectItem>
+                  <SelectItem value="all">Tous les produits</SelectItem>
+                  <SelectItem value="in-stock">En stock uniquement</SelectItem>
+                  <SelectItem value="out-of-stock">En rupture uniquement</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -209,14 +220,14 @@ const AdvancedProductSearch = ({
             <div className="space-y-2">
               <label className="text-sm font-medium">Trier par</label>
               <Select 
-                value={filters.sortBy || ""} 
-                onValueChange={(value) => updateFilter('sortBy', value || undefined)}
+                value={filters.sortBy || "default"} 
+                onValueChange={(value) => updateFilter('sortBy', value === "default" ? undefined : value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Ordre par défaut" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Ordre par défaut</SelectItem>
+                  <SelectItem value="default">Ordre par défaut</SelectItem>
                   <SelectItem value="name">Nom</SelectItem>
                   <SelectItem value="price">Prix</SelectItem>
                   <SelectItem value="created_at">Date de création</SelectItem>
