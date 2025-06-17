@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuIcon, User, X, Settings } from "lucide-react";
+import { MenuIcon, Settings, X, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -78,14 +78,14 @@ const NavBar = () => {
             {session && (
               <Link to="/profile">
                 <Button variant="ghost" size="icon">
-                  <Settings className="h-5 w-5" />
+                  <User className="h-5 w-5" />
                 </Button>
               </Link>
             )}
             {profile?.role === 'admin' && (
               <Link to="/admin" className="relative">
                 <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
+                  <Settings className="h-5 w-5" />
                   {showNotification && (
                     <NotificationBadge 
                       count={pendingCount}
@@ -142,14 +142,14 @@ const NavBar = () => {
                 <>
                   <Link to="/profile">
                     <Button variant="outline" className="w-full justify-start">
-                      <Settings className="h-5 w-5 mr-2" />
+                      <User className="h-5 w-5 mr-2" />
                       Mon Profil
                     </Button>
                   </Link>
                   {profile?.role === 'admin' && (
                     <Link to="/admin" className="relative">
                       <Button variant="outline" className="w-full justify-start">
-                        <User className="h-5 w-5 mr-2" />
+                        <Settings className="h-5 w-5 mr-2" />
                         Administration
                         {showNotification && (
                           <NotificationBadge 
