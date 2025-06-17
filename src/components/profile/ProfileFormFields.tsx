@@ -162,12 +162,6 @@ const ProfileFormFields = ({ formData, onInputChange, errors = {} }: ProfileForm
           )}
         </div>
       </div>
-
-      <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mt-4">
-        <p className="text-blue-800 text-sm">
-          <span className="text-red-500">*</span> Tous les champs sont obligatoires et doivent respecter le format requis.
-        </p>
-      </div>
     </>
   );
 };
