@@ -56,6 +56,21 @@ const ProfilePage = () => {
 
       console.log("Sending update to Supabase:", updateData);
 
+      // First check if profile exists
+      const { data: existingProfile, error: fetchError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", session.user.id)
+        .single();
+
+      if (fetchError) {
+        console.error("Error fetching profile:", fetchError);
+        throw new Error("Profil introuvable");
+      }
+
+      console.log("Existing profile found:", existingProfile);
+
+      // Update the profile
       const { data, error } = await supabase
         .from("profiles")
         .update(updateData)
@@ -70,10 +85,13 @@ const ProfilePage = () => {
 
       console.log("Profile updated successfully:", data);
       
-      // Force refresh of the profile data in AuthProvider
-      window.location.reload();
-      
       toast.success("Profil mis à jour avec succès");
+      
+      // Reload to refresh the AuthProvider data
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      
     } catch (error: any) {
       console.error("Error updating profile:", error);
       toast.error(`Erreur lors de la mise à jour du profil: ${error.message}`);
