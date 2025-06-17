@@ -56,20 +56,6 @@ const ProfilePage = () => {
 
       console.log("Sending update to Supabase:", updateData);
 
-      // First check if profile exists
-      const { data: existingProfile, error: fetchError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("id", session.user.id)
-        .single();
-
-      if (fetchError) {
-        console.error("Error fetching profile:", fetchError);
-        throw new Error("Profil introuvable");
-      }
-
-      console.log("Existing profile found:", existingProfile);
-
       // Update the profile
       const { data, error } = await supabase
         .from("profiles")
