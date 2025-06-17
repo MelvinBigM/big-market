@@ -3,8 +3,6 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import OptimizedImage from "@/components/ui/optimized-image";
-import { defaultQueryConfig } from "@/hooks/useOptimizedQuery";
 
 interface ProductImage {
   id: string;
@@ -21,7 +19,7 @@ interface ProductImageCarouselProps {
 const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: ProductImageCarouselProps) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  // Fetch product images avec cache optimisé
+  // Fetch product images
   const { data: productImages } = useQuery({
     queryKey: ["productImages", productId],
     queryFn: async () => {
@@ -34,7 +32,6 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
       if (error) throw error;
       return data as ProductImage[];
     },
-    ...defaultQueryConfig,
   });
 
   // Use product images if available, otherwise fallback to the main image
@@ -67,11 +64,10 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
     <div className="space-y-4">
       {/* Main Image Display */}
       <div className="aspect-square overflow-hidden rounded-lg max-w-sm mx-auto">
-        <OptimizedImage
+        <img
           src={selectedImage.image_url}
           alt={`${productName} - Image ${validIndex + 1}`}
           className="w-full h-full object-contain"
-          fallback="https://images.unsplash.com/photo-1618160472975-cfea543a1077?auto=format&fit=crop&q=80&w=800"
         />
       </div>
 
@@ -85,17 +81,16 @@ const ProductImageCarousel = ({ productId, fallbackImageUrl, productName }: Prod
                   <CarouselItem key={image.id} className="basis-auto pl-4">
                     <button
                       onClick={() => setSelectedImageIndex(index)}
-                      className={`w-16 h-16 overflow-hidden rounded-md border-2 transition-all duration-200 flex-shrink-0 hover:scale-105 ${
+                      className={`w-16 h-16 overflow-hidden rounded-md border-2 transition-all flex-shrink-0 ${
                         validIndex === index 
                           ? 'border-primary ring-2 ring-primary/20' 
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
                     >
-                      <OptimizedImage
+                      <img
                         src={image.image_url}
                         alt={`${productName} - Miniature ${index + 1}`}
                         className="w-full h-full object-cover"
-                        fallback="https://images.unsplash.com/photo-1618160472975-cfea543a1077?auto=format&fit=crop&q=80&w=200"
                       />
                     </button>
                   </CarouselItem>
