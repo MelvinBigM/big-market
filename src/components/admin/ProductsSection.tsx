@@ -1,17 +1,20 @@
+
 import { useState, useEffect } from "react";
 import { Product } from "@/lib/types";
 import ProductDialog from "./ProductDialog";
 import ProductHeader from "./products/ProductHeader";
-import ProductSearch from "./products/ProductSearch";
+import AdvancedProductSearch, { SearchFilters } from "@/components/search/AdvancedProductSearch";
 import CategorySection from "./products/CategorySection";
 import { useProducts } from "./products/hooks/useProducts";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useProductSearch } from "@/hooks/useProductSearch";
 
 const ProductsSection = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
   const [collapsedCategories, setCollapsedCategories] = useState<string[]>([]);
 
   const { products, handleDelete, toggleStock, handleDragEnd } = useProducts();
@@ -27,6 +30,12 @@ const ProductsSection = () => {
       if (error) throw error;
       return data;
     },
+  });
+
+  const { filteredProducts } = useProductSearch({
+    products,
+    searchQuery,
+    filters: searchFilters
   });
 
   useEffect(() => {
@@ -48,12 +57,6 @@ const ProductsSection = () => {
     );
   };
 
-  const filteredProducts = products?.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.categories.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   const productsByCategory = categories?.map(category => ({
     ...category,
     products: filteredProducts?.filter(product => product.category_id === category.id) || []
@@ -68,9 +71,11 @@ const ProductsSection = () => {
         }} 
       />
 
-      <ProductSearch 
+      <AdvancedProductSearch 
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        categories={categories}
+        onFiltersChange={setSearchFilters}
       />
 
       <div className="space-y-4 mt-6">
@@ -87,6 +92,16 @@ const ProductsSection = () => {
           />
         ))}
       </div>
+
+      {filteredProducts?.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-600">
+            {searchQuery || Object.keys(searchFilters).length > 0 
+              ? "Aucun produit ne correspond à vos critères de recherche." 
+              : "Aucun produit disponible."}
+          </p>
+        </div>
+      )}
 
       <ProductDialog
         open={dialogOpen}

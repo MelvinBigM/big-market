@@ -1,5 +1,5 @@
 
-import { useParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import NavBar from "@/components/NavBar";
@@ -7,35 +7,28 @@ import Footer from "@/components/Footer";
 import { Product } from "@/lib/types";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdvancedProductSearch, { SearchFilters } from "@/components/search/AdvancedProductSearch";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
 import { useProductSearch } from "@/hooks/useProductSearch";
 
-const CategoryPage = () => {
-  const { categoryId } = useParams();
-  const { session, profile } = useAuth();
+const SearchPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { profile } = useAuth();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || "");
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({});
   const [showAccessDialog, setShowAccessDialog] = useState(false);
 
-  const { data: category } = useQuery({
-    queryKey: ["category", categoryId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("*")
-        .eq("id", categoryId)
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-  });
+  // Update URL when search changes
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchQuery) params.set('q', searchQuery);
+    setSearchParams(params);
+  }, [searchQuery, setSearchParams]);
 
   const { data: products } = useQuery({
-    queryKey: ["products", categoryId],
+    queryKey: ["all-products"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("products")
@@ -46,7 +39,6 @@ const CategoryPage = () => {
             name
           )
         `)
-        .eq("category_id", categoryId)
         .order("position", { ascending: true })
         .order("name");
 
@@ -55,8 +47,8 @@ const CategoryPage = () => {
     },
   });
 
-  const { data: allCategories } = useQuery({
-    queryKey: ["categories-for-search"],
+  const { data: categories } = useQuery({
+    queryKey: ["categories-search"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
@@ -77,10 +69,6 @@ const CategoryPage = () => {
   const canSeePrice = profile?.role === 'client' || profile?.role === 'admin';
   const isNewUser = profile?.role === 'nouveau';
 
-  const handleAccessRequest = () => {
-    setShowAccessDialog(true);
-  };
-
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
@@ -88,22 +76,26 @@ const CategoryPage = () => {
         <div className="max-w-[1920px] mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              {category?.name}
+              Recherche de produits
             </h1>
-            {category?.description && (
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-                {category.description}
-              </p>
-            )}
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+              Trouvez rapidement les produits que vous cherchez
+            </p>
             
             <div className="max-w-4xl mx-auto">
               <AdvancedProductSearch
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
-                categories={allCategories}
+                categories={categories}
                 onFiltersChange={setSearchFilters}
               />
             </div>
+
+            {filteredProducts && filteredProducts.length > 0 && (
+              <p className="text-sm text-gray-600 mt-4">
+                {filteredProducts.length} produit{filteredProducts.length > 1 ? 's' : ''} trouvé{filteredProducts.length > 1 ? 's' : ''}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6">
@@ -132,6 +124,9 @@ const CategoryPage = () => {
                     <h3 className="text-xs sm:text-sm font-semibold line-clamp-2 text-center leading-tight">
                       {product.name}
                     </h3>
+                    <p className="text-xs text-gray-500 text-center mt-1">
+                      {product.categories.name}
+                    </p>
                   </div>
                   
                   <div className="mt-0.5">
@@ -156,11 +151,16 @@ const CategoryPage = () => {
 
           {filteredProducts?.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-600">
+              <p className="text-gray-600 text-lg mb-4">
                 {searchQuery || Object.keys(searchFilters).length > 0 
                   ? "Aucun produit ne correspond à vos critères de recherche." 
-                  : "Aucun produit n'est disponible dans cette catégorie pour le moment."}
+                  : "Commencez votre recherche en tapant un mot-clé ci-dessus."}
               </p>
+              {(searchQuery || Object.keys(searchFilters).length > 0) && (
+                <p className="text-gray-500 text-sm">
+                  Essayez de simplifier vos critères de recherche ou parcourez nos catégories.
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -171,4 +171,4 @@ const CategoryPage = () => {
   );
 };
 
-export default CategoryPage;
+export default SearchPage;
