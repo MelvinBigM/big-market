@@ -4,10 +4,7 @@ import { Link } from "react-router-dom";
 import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import OptimizedImage from "@/components/ui/optimized-image";
-import PriceDisplay from "@/components/products/PriceDisplay";
-import ProductAvailability from "@/components/products/ProductAvailability";
 
 interface ProductsGridProps {
   products: Product[];
@@ -43,11 +40,11 @@ const ProductsGrid = ({
         <Card key={product.id} className="group hover:shadow-lg transition-shadow duration-200">
           <CardContent className="p-0">
             <Link to={`/product/${product.id}`} className="block">
-              <div className="aspect-square relative overflow-hidden rounded-t-lg">
+              <div className="aspect-square relative overflow-hidden rounded-t-lg bg-white">
                 <OptimizedImage
                   src={product.image_url || "https://images.unsplash.com/photo-1618160472975-cfea543a1077?auto=format&fit=crop&q=80&w=400"}
                   alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-200 p-4"
                 />
                 <div className="absolute top-2 right-2">
                   <div 
