@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Toggle } from "@/components/ui/toggle";
 import { GripVertical, Pencil, Trash2 } from "lucide-react";
 import { DraggableProvided } from "@hello-pangea/dnd";
+import OptimizedImage from "@/components/ui/optimized-image";
 
 interface ProductListItemProps {
   product: Product & { categories: { id: string; name: string } };
@@ -18,11 +19,11 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
     <div
       ref={provided.innerRef}
       {...provided.draggableProps}
-      className="flex items-center border rounded-lg bg-white overflow-hidden hover:bg-gray-50 transition-colors shadow-sm hover:shadow-md"
+      className="flex items-center border rounded-lg bg-white overflow-hidden hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-[1.02]"
     >
       <div
         {...provided.dragHandleProps}
-        className="px-4 cursor-move text-gray-400 hover:text-gray-600"
+        className="px-4 cursor-move text-gray-400 hover:text-gray-600 transition-colors duration-200"
       >
         <GripVertical className="h-5 w-5" />
       </div>
@@ -31,10 +32,11 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
         <div className="flex items-center space-x-4">
           <div className="w-16 h-16 flex-shrink-0">
             {product.image_url ? (
-              <img
+              <OptimizedImage
                 src={product.image_url}
                 alt={product.name}
-                className="w-full h-full object-contain rounded"
+                className="w-full h-full rounded"
+                fallback="https://images.unsplash.com/photo-1618160472975-cfea543a1077?auto=format&fit=crop&q=80&w=400"
               />
             ) : (
               <div className="w-full h-full bg-gray-100 rounded flex items-center justify-center">
@@ -43,11 +45,11 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
             )}
           </div>
           <div>
-            <h3 className="font-medium">{product.name}</h3>
+            <h3 className="font-medium transition-colors duration-200 hover:text-primary">{product.name}</h3>
             <div className="text-sm text-gray-600">
               <span className="font-medium">{product.price} €</span>
               {product.description && (
-                <p className="text-sm text-gray-600 mt-1">{product.description}</p>
+                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{product.description}</p>
               )}
             </div>
           </div>
@@ -56,9 +58,15 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
           <Toggle
             pressed={product.in_stock}
             onPressedChange={() => onToggleStock(product)}
-            className={product.in_stock ? 'bg-green-100 hover:bg-green-200' : 'bg-red-100 hover:bg-red-200'}
+            className={`transition-all duration-200 ${
+              product.in_stock 
+                ? 'bg-green-100 hover:bg-green-200 data-[state=on]:bg-green-200' 
+                : 'bg-red-100 hover:bg-red-200 data-[state=on]:bg-red-200'
+            }`}
           >
-            <span className={`text-sm ${product.in_stock ? 'text-green-700' : 'text-red-700'}`}>
+            <span className={`text-sm transition-colors duration-200 ${
+              product.in_stock ? 'text-green-700' : 'text-red-700'
+            }`}>
               {product.in_stock ? 'En stock' : 'En Rupture'}
             </span>
           </Toggle>
@@ -66,6 +74,7 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
             variant="ghost"
             size="icon"
             onClick={() => onEdit(product)}
+            className="hover:bg-blue-50 hover:text-blue-600 transition-all duration-200"
           >
             <Pencil className="h-4 w-4" />
           </Button>
@@ -73,6 +82,7 @@ const ProductListItem = ({ product, onEdit, onDelete, onToggleStock, provided }:
             variant="ghost"
             size="icon"
             onClick={() => onDelete(product)}
+            className="hover:bg-red-50 hover:text-red-600 transition-all duration-200"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
