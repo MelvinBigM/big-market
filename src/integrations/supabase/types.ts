@@ -303,6 +303,10 @@ export type Database = {
       }
     }
     Functions: {
+      check_admin_direct: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       delete_user: {
         Args: { user_id: string }
         Returns: undefined
@@ -342,6 +346,10 @@ export type Database = {
           email: string
           created_at: string
         }[]
+      }
+      get_user_id_direct: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_user_role_cached: {
         Args: Record<PropertyKey, never>
