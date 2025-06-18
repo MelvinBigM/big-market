@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -136,8 +135,8 @@ export const usePasswordReset = () => {
       console.log("Mot de passe mis à jour avec succès");
       
       toast.success("🎉 Mot de passe modifié avec succès !", {
-        description: "Vous allez être redirigé vers la page de connexion dans 3 secondes",
-        duration: 3000,
+        description: "Vous allez être redirigé vers la page de connexion",
+        duration: 5000,
       });
       
       setTimeout(async () => {
