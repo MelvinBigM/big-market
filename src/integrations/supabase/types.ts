@@ -294,7 +294,13 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          id: string | null
+          role: Database["public"]["Enums"]["user_role"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       delete_user: {
@@ -333,6 +339,10 @@ export type Database = {
           created_at: string
         }[]
       }
+      get_user_role_cached: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
       log_admin_action: {
         Args: {
           action_type: string
@@ -350,6 +360,10 @@ export type Database = {
           user_agent?: string
           details?: Json
         }
+        Returns: undefined
+      }
+      refresh_admin_users: {
+        Args: Record<PropertyKey, never>
         Returns: undefined
       }
       update_user_role: {
