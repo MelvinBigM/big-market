@@ -50,14 +50,12 @@ export class SecurityUtils {
   
   // Secure form data processing
   static sanitizeFormData<T extends Record<string, any>>(data: T): T {
-    const sanitized = {} as T;
+    const sanitized = { ...data };
     
     Object.keys(data).forEach(key => {
       const value = data[key];
       if (typeof value === 'string') {
-        sanitized[key] = sanitizeInput(value) as T[Extract<keyof T, string>];
-      } else {
-        sanitized[key] = value;
+        (sanitized as any)[key] = sanitizeInput(value);
       }
     });
     
