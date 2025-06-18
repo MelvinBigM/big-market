@@ -26,15 +26,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         .single();
 
       if (error) {
-        throw error;
+        console.error("Profile fetch error:", error);
+        // Don't throw error, just log it
+        return;
       }
 
       if (data) {
         setProfile(data as Profile);
       }
     } catch (error: any) {
-      toast.error("Erreur lors du chargement du profil");
       console.error("Error fetching profile:", error.message);
+      // Don't show toast error on profile fetch failure to avoid spam
     } finally {
       if (shouldSetLoading) {
         setIsLoading(false);
@@ -49,42 +51,77 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      // Vérifier si nous sommes sur la page de réinitialisation de mot de passe
-      const isResetPasswordPage = location.pathname === '/reset-password';
-      
-      setSession(session);
-      if (session && !isResetPasswordPage) {
-        fetchProfile(session.user.id);
-      } else {
-        setIsLoading(false);
-      }
-    });
+    let mounted = true;
 
+    // Set up auth state listener FIRST
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      const isResetPasswordPage = location.pathname === '/reset-password';
+      console.log('Auth state change:', event, 'Session:', !!session);
       
-      console.log('Auth state change:', event, 'on page:', location.pathname);
+      if (!mounted) return;
+
+      const isResetPasswordPage = location.pathname === '/reset-password';
       
       setSession(session);
       
-      if (session && !isResetPasswordPage) {
-        await fetchProfile(session.user.id);
+      if (session?.user && !isResetPasswordPage) {
+        // Defer profile fetch to avoid blocking the auth state change
+        setTimeout(() => {
+          if (mounted) {
+            fetchProfile(session.user.id, false);
+          }
+        }, 0);
       } else {
         setProfile(null);
-        setIsLoading(false);
       }
       
-      // Ne pas rediriger automatiquement si on est sur la page de reset password
+      // Always set loading to false after handling auth state
+      setIsLoading(false);
+      
+      // Handle redirect for password reset
       if (event === 'SIGNED_IN' && isResetPasswordPage) {
         console.log('User signed in for password reset - staying on reset page');
         return;
       }
     });
 
-    return () => subscription.unsubscribe();
+    // THEN check for existing session
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Session fetch error:', error);
+          setIsLoading(false);
+          return;
+        }
+
+        if (!mounted) return;
+
+        const isResetPasswordPage = location.pathname === '/reset-password';
+        
+        setSession(session);
+        
+        if (session?.user && !isResetPasswordPage) {
+          await fetchProfile(session.user.id);
+        } else {
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    initializeAuth();
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, [location.pathname]);
 
   return (

@@ -13,14 +13,22 @@ const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Only act when loading is complete
     if (!isLoading) {
       if (!session) {
+        console.log("No session, redirecting to login");
         navigate('/login');
         toast.error("Vous devez être connecté pour accéder à cette page");
         return;
       }
       
-      if (!profile || profile.role !== 'admin') {
+      if (!profile) {
+        console.log("No profile found, but session exists - profile may be loading");
+        return; // Don't redirect yet if profile is still loading
+      }
+      
+      if (profile.role !== 'admin') {
+        console.log("User is not admin, redirecting to home");
         navigate('/');
         toast.error("Accès non autorisé");
         return;
@@ -28,19 +36,33 @@ const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
     }
   }, [profile, isLoading, session, navigate]);
 
+  // Show loading while determining auth status
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
-          <p className="mt-4 text-gray-600">Chargement...</p>
+          <p className="mt-4 text-gray-600">Vérification des permissions...</p>
         </div>
       </div>
     );
   }
 
+  // Show loading if session exists but profile is still loading
+  if (session && !profile) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-gray-600">Chargement du profil...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render if conditions aren't met (redirects will handle navigation)
   if (!session || !profile || profile.role !== 'admin') {
-    return null; // Le useEffect va rediriger
+    return null;
   }
 
   return <>{children}</>;
