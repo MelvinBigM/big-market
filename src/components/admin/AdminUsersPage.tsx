@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
@@ -41,7 +40,7 @@ const AdminUsersPage = () => {
         if (error) throw error;
         if (!data) return [];
 
-        // Transformer les données pour qu'elles correspondent au type UserProfile
+        // Transform data for UserProfile type
         return data.map((item: any) => ({
           id: item.id,
           role: item.role,
@@ -72,18 +71,19 @@ const AdminUsersPage = () => {
         throw new Error("Action non autorisée");
       }
 
-      const { error } = await supabase
-        .from('profiles')
-        .update({ role: newRole })
-        .eq('id', userId);
+      // Use the secure role update function with audit logging
+      const { error } = await supabase.rpc('update_user_role', {
+        target_user_id: userId,
+        new_role: newRole
+      });
 
       if (error) throw error;
 
       toast.success(`Le rôle a été mis à jour avec succès`);
       refetch();
-    } catch (error) {
-      toast.error("Erreur lors de la mise à jour du rôle");
-      console.error(error);
+    } catch (error: any) {
+      console.error("Erreur lors de la mise à jour du rôle:", error);
+      toast.error(`Erreur lors de la mise à jour du rôle: ${error.message}`);
     }
   };
 

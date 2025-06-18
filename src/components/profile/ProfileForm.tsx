@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { Profile } from "@/lib/types";
 import ProfileFormFields from "./ProfileFormFields";
+import { validateRequired, validatePhone, validatePostalCode, sanitizeInput } from "@/lib/validation";
 
 const ProfileForm = () => {
   const { profile, session } = useAuth();
@@ -31,55 +32,44 @@ const ProfileForm = () => {
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
-    // Validation prénom
-    if (!formData.manager_first_name?.trim()) {
-      newErrors.manager_first_name = "Le prénom est obligatoire";
-    } else if (formData.manager_first_name.trim().length < 2) {
-      newErrors.manager_first_name = "Le prénom doit contenir au moins 2 caractères";
+    // Validate required fields with sanitization
+    const firstNameValidation = validateRequired(formData.manager_first_name || "", "Le prénom");
+    if (!firstNameValidation.isValid) {
+      newErrors.manager_first_name = firstNameValidation.error || "";
     }
 
-    // Validation nom
-    if (!formData.manager_last_name?.trim()) {
-      newErrors.manager_last_name = "Le nom est obligatoire";
-    } else if (formData.manager_last_name.trim().length < 2) {
-      newErrors.manager_last_name = "Le nom doit contenir au moins 2 caractères";
+    const lastNameValidation = validateRequired(formData.manager_last_name || "", "Le nom");
+    if (!lastNameValidation.isValid) {
+      newErrors.manager_last_name = lastNameValidation.error || "";
     }
 
-    // Validation nom d'entreprise
-    if (!formData.company_name?.trim()) {
-      newErrors.company_name = "Le nom de l'entreprise est obligatoire";
-    } else if (formData.company_name.trim().length < 2) {
-      newErrors.company_name = "Le nom de l'entreprise doit contenir au moins 2 caractères";
+    const companyNameValidation = validateRequired(formData.company_name || "", "Le nom de l'entreprise");
+    if (!companyNameValidation.isValid) {
+      newErrors.company_name = companyNameValidation.error || "";
     }
 
-    // Validation téléphone
-    const phoneRegex = /^(?:(?:\+33|0)[1-9](?:[0-9]{8}))$/;
-    if (!formData.phone_number?.trim()) {
-      newErrors.phone_number = "Le numéro de téléphone est obligatoire";
-    } else if (!phoneRegex.test(formData.phone_number.replace(/\s/g, ""))) {
-      newErrors.phone_number = "Le numéro de téléphone n'est pas valide (format français attendu)";
+    // Validate phone number
+    const phoneValidation = validatePhone(formData.phone_number || "");
+    if (!phoneValidation.isValid) {
+      newErrors.phone_number = phoneValidation.error || "";
     }
 
-    // Validation adresse
-    if (!formData.address?.trim()) {
-      newErrors.address = "L'adresse est obligatoire";
-    } else if (formData.address.trim().length < 5) {
-      newErrors.address = "L'adresse doit contenir au moins 5 caractères";
+    // Validate address
+    const addressValidation = validateRequired(formData.address || "", "L'adresse");
+    if (!addressValidation.isValid) {
+      newErrors.address = addressValidation.error || "";
     }
 
-    // Validation ville
-    if (!formData.city?.trim()) {
-      newErrors.city = "La ville est obligatoire";
-    } else if (formData.city.trim().length < 2) {
-      newErrors.city = "La ville doit contenir au moins 2 caractères";
+    // Validate city
+    const cityValidation = validateRequired(formData.city || "", "La ville");
+    if (!cityValidation.isValid) {
+      newErrors.city = cityValidation.error || "";
     }
 
-    // Validation code postal
-    const postalCodeRegex = /^[0-9]{5}$/;
-    if (!formData.postal_code?.trim()) {
-      newErrors.postal_code = "Le code postal est obligatoire";
-    } else if (!postalCodeRegex.test(formData.postal_code)) {
-      newErrors.postal_code = "Le code postal doit contenir exactement 5 chiffres";
+    // Validate postal code
+    const postalCodeValidation = validatePostalCode(formData.postal_code || "");
+    if (!postalCodeValidation.isValid) {
+      newErrors.postal_code = postalCodeValidation.error || "";
     }
 
     setErrors(newErrors);
@@ -103,18 +93,19 @@ const ProfileForm = () => {
     console.log("Updating profile with data:", formData);
 
     try {
+      // Sanitize all input data
       const updateData = {
-        company_name: formData.company_name?.trim(),
-        manager_first_name: formData.manager_first_name?.trim(),
-        manager_last_name: formData.manager_last_name?.trim(),
-        phone_number: formData.phone_number?.trim(),
-        address: formData.address?.trim(),
-        city: formData.city?.trim(),
-        postal_code: formData.postal_code?.trim(),
+        company_name: sanitizeInput(formData.company_name || ""),
+        manager_first_name: sanitizeInput(formData.manager_first_name || ""),
+        manager_last_name: sanitizeInput(formData.manager_last_name || ""),
+        phone_number: sanitizeInput(formData.phone_number || ""),
+        address: sanitizeInput(formData.address || ""),
+        city: sanitizeInput(formData.city || ""),
+        postal_code: sanitizeInput(formData.postal_code || ""),
         updated_at: new Date().toISOString(),
       };
 
-      console.log("Sending update to Supabase:", updateData);
+      console.log("Sending sanitized update to Supabase:", updateData);
 
       const { data, error } = await supabase
         .from("profiles")

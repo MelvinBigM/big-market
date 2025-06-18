@@ -36,6 +36,36 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          action_type: string
+          admin_id: string
+          created_at: string | null
+          details: Json | null
+          id: string
+          record_id: string | null
+          table_name: string
+        }
+        Insert: {
+          action_type: string
+          admin_id: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          record_id?: string | null
+          table_name: string
+        }
+        Update: {
+          action_type?: string
+          admin_id?: string
+          created_at?: string | null
+          details?: Json | null
+          id?: string
+          record_id?: string | null
+          table_name?: string
+        }
+        Relationships: []
+      }
       banners: {
         Row: {
           active: boolean
@@ -241,6 +271,10 @@ export type Database = {
         Args: { user_id: string }
         Returns: undefined
       }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
       get_profiles_with_email: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -268,6 +302,22 @@ export type Database = {
           email: string
           created_at: string
         }[]
+      }
+      log_admin_action: {
+        Args: {
+          action_type: string
+          table_name: string
+          record_id: string
+          details?: Json
+        }
+        Returns: undefined
+      }
+      update_user_role: {
+        Args: {
+          target_user_id: string
+          new_role: Database["public"]["Enums"]["user_role"]
+        }
+        Returns: undefined
       }
     }
     Enums: {

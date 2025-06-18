@@ -6,21 +6,66 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { toast } from "sonner";
 import ForgotPasswordDialog from "./ForgotPasswordDialog";
+import { validateEmail, validatePassword, sanitizeInput } from "@/lib/validation";
+import { checkLoginRateLimit, getLoginRateLimitRemainingTime } from "@/lib/rateLimiting";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+
+  const validateForm = (): boolean => {
+    let isValid = true;
+    
+    // Clear previous errors
+    setEmailError("");
+    setPasswordError("");
+    
+    // Validate email
+    const emailValidation = validateEmail(email);
+    if (!emailValidation.isValid) {
+      setEmailError(emailValidation.error || "");
+      isValid = false;
+    }
+    
+    // Validate password
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      setPasswordError(passwordValidation.error || "");
+      isValid = false;
+    }
+    
+    return isValid;
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    // Check rate limiting
+    const sanitizedEmail = sanitizeInput(email.toLowerCase());
+    if (!checkLoginRateLimit(sanitizedEmail)) {
+      const remainingTime = getLoginRateLimitRemainingTime(sanitizedEmail);
+      const minutes = Math.ceil(remainingTime / (60 * 1000));
+      toast.error("🚫 Trop de tentatives de connexion", {
+        description: `Veuillez attendre ${minutes} minute(s) avant de réessayer`,
+        duration: 5000,
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+        email: sanitizedEmail,
+        password: password,
       });
 
       if (error) {
@@ -85,8 +130,15 @@ const LoginPage = () => {
                 required
                 placeholder="Votre email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (emailError) setEmailError("");
+                }}
+                className={emailError ? "border-red-500" : ""}
               />
+              {emailError && (
+                <p className="text-red-500 text-sm mt-1">{emailError}</p>
+              )}
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
@@ -99,8 +151,15 @@ const LoginPage = () => {
                 required
                 placeholder="Votre mot de passe"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (passwordError) setPasswordError("");
+                }}
+                className={passwordError ? "border-red-500" : ""}
               />
+              {passwordError && (
+                <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+              )}
             </div>
           </div>
 
