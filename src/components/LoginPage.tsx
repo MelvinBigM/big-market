@@ -30,11 +30,30 @@ const LoginPage = () => {
       toast.success("Connexion réussie");
       navigate("/");
     } catch (error: any) {
-      toast.error(
-        error.message === "Invalid login credentials"
-          ? "Email ou mot de passe incorrect"
-          : "Erreur lors de la connexion"
-      );
+      console.error("Login error:", error);
+      
+      // Gestion spécifique des erreurs de connexion
+      if (error.message === "Invalid login credentials") {
+        toast.error("❌ Identifiants incorrects", {
+          description: "Vérifiez votre adresse email et votre mot de passe",
+          duration: 4000,
+        });
+      } else if (error.message.includes("Email not confirmed")) {
+        toast.error("📧 Email non confirmé", {
+          description: "Veuillez vérifier votre boîte mail et confirmer votre compte",
+          duration: 5000,
+        });
+      } else if (error.message.includes("Invalid email")) {
+        toast.error("📧 Adresse email invalide", {
+          description: "Veuillez saisir une adresse email valide",
+          duration: 4000,
+        });
+      } else {
+        toast.error("🚫 Erreur de connexion", {
+          description: error.message || "Une erreur inattendue est survenue",
+          duration: 4000,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
