@@ -2,7 +2,6 @@
 import { usePasswordReset } from "./reset-password/hooks/usePasswordReset";
 import ResetPasswordLoadingState from "./reset-password/ResetPasswordLoadingState";
 import ResetPasswordInvalidState from "./reset-password/ResetPasswordInvalidState";
-import ResetPasswordSuccessState from "./reset-password/ResetPasswordSuccessState";
 import ResetPasswordForm from "./reset-password/ResetPasswordForm";
 
 const ResetPasswordPage = () => {
@@ -14,7 +13,6 @@ const ResetPasswordPage = () => {
     isLoading,
     isValidSession,
     isCheckingSession,
-    passwordUpdated,
     handleResetPassword
   } = usePasswordReset();
 
@@ -24,10 +22,6 @@ const ResetPasswordPage = () => {
 
   if (!isValidSession) {
     return <ResetPasswordInvalidState />;
-  }
-
-  if (passwordUpdated) {
-    return <ResetPasswordSuccessState />;
   }
 
   return (

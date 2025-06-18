@@ -10,7 +10,6 @@ export const usePasswordReset = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isValidSession, setIsValidSession] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
-  const [passwordUpdated, setPasswordUpdated] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -135,11 +134,10 @@ export const usePasswordReset = () => {
       }
 
       console.log("Mot de passe mis à jour avec succès");
-      setPasswordUpdated(true);
       
       toast.success("🎉 Mot de passe modifié avec succès !", {
-        description: "Vous allez être redirigé vers la page de connexion dans 5 secondes",
-        duration: 5000,
+        description: "Vous allez être redirigé vers la page de connexion dans 3 secondes",
+        duration: 3000,
       });
       
       setTimeout(async () => {
@@ -149,7 +147,7 @@ export const usePasswordReset = () => {
             message: "Votre mot de passe a été modifié avec succès. Veuillez vous connecter avec votre nouveau mot de passe." 
           }
         });
-      }, 5000);
+      }, 3000);
     } catch (error: any) {
       console.error("Password update error:", error);
       toast.error(`Erreur inattendue : ${error.message}`);
@@ -166,7 +164,6 @@ export const usePasswordReset = () => {
     isLoading,
     isValidSession,
     isCheckingSession,
-    passwordUpdated,
     handleResetPassword
   };
 };
