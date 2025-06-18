@@ -1,3 +1,4 @@
+
 import { Profile } from "@/lib/types";
 import { Button } from "../ui/button";
 import { Mail, Trash2, ArrowRight, Building2 } from "lucide-react";
@@ -22,6 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { EnhancedRateLimiter, logSecurityEvent, SecurityEventTypes } from "@/lib/enhancedRateLimiting";
 
 interface UserProfile extends Profile {
   email: string | null;
@@ -39,16 +41,50 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
 
   const displayName = userProfile.company_name;
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    // Log admin action for security monitoring
+    await logSecurityEvent(SecurityEventTypes.ADMIN_ACTION, {
+      action: 'user_delete_attempt',
+      target_user_id: userProfile.id,
+      target_company: userProfile.company_name
+    });
+    
     onDelete(userProfile.id);
     setIsDeleteDialogOpen(false);
   };
 
-  const handleSendEmail = () => {
+  const handleRoleChange = async (newRole: 'nouveau' | 'client' | 'admin') => {
+    // Check rate limiting for admin actions
+    const currentUserId = 'current-admin-id'; // This should come from auth context
+    if (!EnhancedRateLimiter.checkAdminActionRateLimit(currentUserId, 'role_change')) {
+      toast.error("Trop d'actions administratives. Veuillez patienter.");
+      return;
+    }
+
+    // Log admin action for security monitoring
+    await logSecurityEvent(SecurityEventTypes.ADMIN_ACTION, {
+      action: 'role_change_attempt',
+      target_user_id: userProfile.id,
+      old_role: userProfile.role,
+      new_role: newRole,
+      target_company: userProfile.company_name
+    });
+    
+    onRoleChange(userProfile.id, newRole);
+  };
+
+  const handleSendEmail = async () => {
     if (!userProfile.email) {
       toast.error("Aucune adresse email disponible pour cet utilisateur");
       return;
     }
+
+    // Log data access for security monitoring
+    await logSecurityEvent(SecurityEventTypes.DATA_ACCESS, {
+      action: 'email_contact',
+      target_user_id: userProfile.id,
+      target_email: userProfile.email
+    });
 
     const subject = `Contact depuis l'administration - ${displayName || 'Votre compte'}`;
     const body = `Bonjour,\n\nNous vous contactons concernant votre compte.\n\nCordialement,\nL'équipe d'administration`;
@@ -84,9 +120,7 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
       <div className="flex items-center space-x-4">
         <Select
           value={userProfile.role}
-          onValueChange={(value: 'nouveau' | 'client' | 'admin') => 
-            onRoleChange(userProfile.id, value)
-          }
+          onValueChange={handleRoleChange}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Sélectionner un rôle" />
