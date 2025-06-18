@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -79,22 +80,22 @@ const RegisterPage = () => {
   // Si l'inscription a réussi, afficher le message de confirmation
   if (showSuccessMessage) {
     return (
-      <div className="min-h-screen h-screen flex items-center justify-center p-4 bg-gray-50">
-        <div className="w-full max-w-md space-y-6 bg-white p-6 rounded-lg shadow-lg">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
           <div className="flex flex-col items-center">
             <img
               src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png"
               alt="Big Market Logo"
-              className="h-20 w-20 mb-4"
+              className="h-24 w-24 mb-4"
             />
-            <h2 className="text-center text-2xl font-extrabold text-gray-900">
+            <h2 className="text-center text-3xl font-extrabold text-gray-900">
               Inscription réussie !
             </h2>
           </div>
 
           <Alert className="border-green-200 bg-green-50">
             <Mail className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800 text-sm">
+            <AlertDescription className="text-green-800">
               <strong>Votre inscription a été prise en compte avec succès !</strong>
               <br /><br />
               Un email de confirmation a été envoyé à <strong>{registeredEmail}</strong>.
@@ -105,7 +106,7 @@ const RegisterPage = () => {
             </AlertDescription>
           </Alert>
 
-          <div className="flex flex-col space-y-3">
+          <div className="flex flex-col space-y-4">
             <Button
               onClick={() => navigate("/login")}
               className="w-full bg-primary hover:bg-primary/90"
@@ -138,161 +139,158 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className="min-h-screen h-screen flex items-center justify-center p-4 bg-gray-50 overflow-y-auto">
-      <div className="w-full max-w-md my-8 bg-white rounded-lg shadow-lg">
-        <div className="p-6 space-y-6 max-h-[calc(100vh-4rem)] overflow-y-auto">
-          <div className="flex flex-col items-center">
-            <img
-              src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png"
-              alt="Big Market Logo"
-              className="h-16 w-16 mb-3"
-            />
-            <h2 className="text-center text-xl font-extrabold text-gray-900">
-              Créer un compte entreprise Big Market
-            </h2>
-            <p className="mt-1 text-center text-sm text-gray-600">
-              Inscription réservée aux entreprises
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="flex flex-col items-center">
+          <img
+            src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png"
+            alt="Big Market Logo"
+            className="h-24 w-24 mb-4"
+          />
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">
+            Créer un compte entreprise Big Market
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Inscription réservée aux entreprises
+          </p>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleRegister}>
+          <div className="rounded-md shadow-sm space-y-4">
+            <div>
+              <Label htmlFor="companyName">Nom de la société</Label>
+              <Input
+                id="companyName"
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                required
+                placeholder="Nom de votre société"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="email">Adresse email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="Email de votre société"
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="managerFirstName">Prénom du responsable</Label>
+                <Input
+                  id="managerFirstName"
+                  value={managerFirstName}
+                  onChange={(e) => setManagerFirstName(e.target.value)}
+                  required
+                  placeholder="Prénom"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="managerLastName">Nom du responsable</Label>
+                <Input
+                  id="managerLastName"
+                  value={managerLastName}
+                  onChange={(e) => setManagerLastName(e.target.value)}
+                  required
+                  placeholder="Nom"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="password">Mot de passe</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="Votre mot de passe"
+                minLength={6}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="phoneNumber">Numéro de téléphone</Label>
+              <Input
+                id="phoneNumber"
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+                placeholder="Téléphone de votre société"
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="address">Adresse</Label>
+              <Input
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+                placeholder="Adresse de votre société"
+                className="mt-1"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="postalCode">Code postal</Label>
+                <Input
+                  id="postalCode"
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  required
+                  placeholder="Code postal"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="city">Ville</Label>
+                <Input
+                  id="city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  required
+                  placeholder="Ville"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col space-y-4">
+            <Button
+              type="submit"
+              className="w-full bg-primary hover:bg-primary/90"
+              disabled={isLoading}
+            >
+              {isLoading ? "Inscription..." : "S'inscrire"}
+            </Button>
+            <p className="text-center text-sm">
+              Déjà inscrit ?{" "}
+              <button
+                type="button"
+                className="text-primary hover:text-primary/90"
+                onClick={() => navigate("/login")}
+              >
+                Se connecter
+              </button>
             </p>
           </div>
-          
-          <form className="space-y-4" onSubmit={handleRegister}>
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="companyName" className="text-sm">Nom de la société</Label>
-                <Input
-                  id="companyName"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  required
-                  placeholder="Nom de votre société"
-                  className="mt-1"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="email" className="text-sm">Adresse email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  placeholder="Email de votre société"
-                  className="mt-1"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="managerFirstName" className="text-sm">Prénom</Label>
-                  <Input
-                    id="managerFirstName"
-                    value={managerFirstName}
-                    onChange={(e) => setManagerFirstName(e.target.value)}
-                    required
-                    placeholder="Prénom"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="managerLastName" className="text-sm">Nom</Label>
-                  <Input
-                    id="managerLastName"
-                    value={managerLastName}
-                    onChange={(e) => setManagerLastName(e.target.value)}
-                    required
-                    placeholder="Nom"
-                    className="mt-1"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="password" className="text-sm">Mot de passe</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  placeholder="Votre mot de passe"
-                  minLength={6}
-                  className="mt-1"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="phoneNumber" className="text-sm">Numéro de téléphone</Label>
-                <Input
-                  id="phoneNumber"
-                  type="tel"
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  required
-                  placeholder="Téléphone de votre société"
-                  className="mt-1"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="address" className="text-sm">Adresse</Label>
-                <Input
-                  id="address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  required
-                  placeholder="Adresse de votre société"
-                  className="mt-1"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="postalCode" className="text-sm">Code postal</Label>
-                  <Input
-                    id="postalCode"
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                    required
-                    placeholder="Code postal"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="city" className="text-sm">Ville</Label>
-                  <Input
-                    id="city"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    required
-                    placeholder="Ville"
-                    className="mt-1"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col space-y-3 pt-2">
-              <Button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90"
-                disabled={isLoading}
-              >
-                {isLoading ? "Inscription..." : "S'inscrire"}
-              </Button>
-              <p className="text-center text-sm">
-                Déjà inscrit ?{" "}
-                <button
-                  type="button"
-                  className="text-primary hover:text-primary/90"
-                  onClick={() => navigate("/login")}
-                >
-                  Se connecter
-                </button>
-              </p>
-            </div>
-          </form>
-        </div>
+        </form>
       </div>
     </div>
   );
