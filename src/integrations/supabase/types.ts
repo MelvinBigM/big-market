@@ -319,6 +319,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      get_current_user_uuid: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_profiles_with_email: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -354,6 +358,10 @@ export type Database = {
       get_user_role_cached: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["Enums"]["user_role"]
+      }
+      is_admin_user: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
       is_current_user_admin: {
         Args: Record<PropertyKey, never>
