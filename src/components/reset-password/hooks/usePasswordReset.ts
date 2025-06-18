@@ -98,7 +98,20 @@ export const usePasswordReset = () => {
 
       if (error) {
         console.error("Error updating password:", error);
-        throw error;
+        
+        // Gérer l'erreur spécifique du mot de passe identique
+        if (error.message.includes('New password should be different from the old password') || 
+            error.message.includes('same_password')) {
+          toast.error("⚠️ Nouveau mot de passe requis", {
+            description: "Votre nouveau mot de passe doit être différent de l'ancien. Veuillez choisir un mot de passe différent.",
+            duration: 6000,
+          });
+          return;
+        }
+        
+        // Autres erreurs
+        toast.error(`Erreur lors de la mise à jour du mot de passe : ${error.message}`);
+        return;
       }
 
       setPasswordUpdated(true);
@@ -118,7 +131,7 @@ export const usePasswordReset = () => {
       }, 5000);
     } catch (error: any) {
       console.error("Password update error:", error);
-      toast.error(`Erreur lors de la mise à jour du mot de passe : ${error.message}`);
+      toast.error(`Erreur inattendue : ${error.message}`);
     } finally {
       setIsLoading(false);
     }
