@@ -9,29 +9,38 @@ interface AdminProtectedRouteProps {
 }
 
 const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
-  const { profile, isLoading } = useAuth();
+  const { profile, isLoading, session } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoading && (!profile || profile.role !== 'admin')) {
-      navigate('/');
-      toast.error("Accès non autorisé");
+    if (!isLoading) {
+      if (!session) {
+        navigate('/login');
+        toast.error("Vous devez être connecté pour accéder à cette page");
+        return;
+      }
+      
+      if (!profile || profile.role !== 'admin') {
+        navigate('/');
+        toast.error("Accès non autorisé");
+        return;
+      }
     }
-  }, [profile, isLoading, navigate]);
+  }, [profile, isLoading, session, navigate]);
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-white">
         <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-          <p className="mt-4">Chargement...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-gray-600">Chargement...</p>
         </div>
       </div>
     );
   }
 
-  if (!profile || profile.role !== 'admin') {
-    return null;
+  if (!session || !profile || profile.role !== 'admin') {
+    return null; // Le useEffect va rediriger
   }
 
   return <>{children}</>;

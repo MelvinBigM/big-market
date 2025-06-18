@@ -13,7 +13,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, shouldSetLoading = true) => {
+    if (shouldSetLoading) {
+      setIsLoading(true);
+    }
+    
     try {
       const { data, error } = await supabase
         .from("profiles")
@@ -32,14 +36,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       toast.error("Erreur lors du chargement du profil");
       console.error("Error fetching profile:", error.message);
     } finally {
-      setIsLoading(false);
+      if (shouldSetLoading) {
+        setIsLoading(false);
+      }
     }
   };
 
   const refreshProfile = async () => {
     if (session?.user?.id) {
-      setIsLoading(true);
-      await fetchProfile(session.user.id);
+      await fetchProfile(session.user.id, false);
     }
   };
 
