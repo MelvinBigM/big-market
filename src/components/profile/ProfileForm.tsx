@@ -9,7 +9,7 @@ import ProfileFormFields from "./ProfileFormFields";
 import { validateRequired, validatePhone, validatePostalCode, sanitizeInput } from "@/lib/validation";
 
 const ProfileForm = () => {
-  const { profile, session } = useAuth();
+  const { profile, session, refreshProfile } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<Profile>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -132,12 +132,12 @@ const ProfileForm = () => {
 
       console.log("Profile updated successfully:", data);
       
-      toast.success("Profil mis à jour avec succès ! La page va se recharger pour appliquer les modifications.");
+      toast.success("Profil mis à jour avec succès !");
       
-      // Reload to refresh the AuthProvider data
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      // Refresh profile data instead of reloading the page
+      if (refreshProfile) {
+        await refreshProfile();
+      }
       
     } catch (error: any) {
       console.error("Error updating profile:", error);

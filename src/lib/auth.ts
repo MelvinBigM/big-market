@@ -6,6 +6,7 @@ export type AuthContextType = {
   isLoading: boolean;
   session: any | null;
   profile: Profile | null;
+  refreshProfile?: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextType>({

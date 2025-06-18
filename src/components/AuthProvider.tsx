@@ -13,6 +13,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const fetchProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      if (data) {
+        setProfile(data as Profile);
+      }
+    } catch (error: any) {
+      toast.error("Erreur lors du chargement du profil");
+      console.error("Error fetching profile:", error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const refreshProfile = async () => {
+    if (session?.user?.id) {
+      setIsLoading(true);
+      await fetchProfile(session.user.id);
+    }
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       // Vérifier si nous sommes sur la page de réinitialisation de mot de passe
@@ -52,31 +82,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, [location.pathname]);
 
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-
-      if (error) {
-        throw error;
-      }
-
-      if (data) {
-        setProfile(data as Profile);
-      }
-    } catch (error: any) {
-      toast.error("Erreur lors du chargement du profil");
-      console.error("Error fetching profile:", error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ isLoading, session, profile }}>
+    <AuthContext.Provider value={{ isLoading, session, profile, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   );
