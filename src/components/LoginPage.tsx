@@ -15,6 +15,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const navigate = useNavigate();
 
   const validateForm = (): boolean => {
@@ -43,6 +44,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setHasSubmitted(true);
     
     if (!validateForm()) {
       return;
@@ -104,6 +106,22 @@ const LoginPage = () => {
     }
   };
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    // Only clear error if form has been submitted
+    if (hasSubmitted && emailError) {
+      setEmailError("");
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    // Only clear error if form has been submitted
+    if (hasSubmitted && passwordError) {
+      setPasswordError("");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -130,13 +148,10 @@ const LoginPage = () => {
                 required
                 placeholder="Votre email"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  if (emailError) setEmailError("");
-                }}
+                onChange={handleEmailChange}
                 className={emailError ? "border-red-500" : ""}
               />
-              {emailError && (
+              {emailError && hasSubmitted && (
                 <p className="text-red-500 text-sm mt-1">{emailError}</p>
               )}
             </div>
@@ -151,13 +166,10 @@ const LoginPage = () => {
                 required
                 placeholder="Votre mot de passe"
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  if (passwordError) setPasswordError("");
-                }}
+                onChange={handlePasswordChange}
                 className={passwordError ? "border-red-500" : ""}
               />
-              {passwordError && (
+              {passwordError && hasSubmitted && (
                 <p className="text-red-500 text-sm mt-1">{passwordError}</p>
               )}
             </div>
