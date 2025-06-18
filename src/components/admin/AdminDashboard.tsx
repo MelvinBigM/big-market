@@ -1,7 +1,7 @@
 
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Users, Layers, Package, UserCheck, ImageIcon, Shield } from "lucide-react";
+import { Users, Layers, Package, UserCheck, ImageIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
@@ -86,16 +86,6 @@ const AdminDashboard = () => {
       color: "bg-pink-500",
       notificationCount: 0,
       category: "Mise en page"
-    },
-    // Sécurité
-    {
-      title: "Surveillance Sécurité",
-      description: "Monitoring et audit des actions administratives",
-      icon: <Shield className="h-8 w-8" />,
-      link: "/admin/security",
-      color: "bg-red-500",
-      notificationCount: 0,
-      category: "Sécurité"
     }
   ];
 
@@ -109,7 +99,7 @@ const AdminDashboard = () => {
   }, {} as Record<string, typeof cards>);
 
   // Ordre des sections
-  const categoryOrder = ["Utilisateurs", "Catalogue", "Mise en page", "Sécurité"];
+  const categoryOrder = ["Utilisateurs", "Catalogue", "Mise en page"];
 
   return (
     <div className="min-h-screen bg-white">
