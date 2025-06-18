@@ -12,6 +12,7 @@ const ResetPasswordPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isValidSession, setIsValidSession] = useState(false);
   const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [passwordUpdated, setPasswordUpdated] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -109,20 +110,24 @@ const ResetPasswordPage = () => {
         throw error;
       }
 
-      // Notification de succès
+      // Marquer le mot de passe comme mis à jour
+      setPasswordUpdated(true);
+      
+      // Notification de succès plus visible
       toast.success("🎉 Mot de passe modifié avec succès !", {
-        description: "Vous allez être redirigé vers la page de connexion",
-        duration: 3000,
+        description: "Vous allez être redirigé vers la page de connexion dans 5 secondes",
+        duration: 5000,
       });
       
-      // Déconnecter l'utilisateur après le changement de mot de passe
-      // pour qu'il se reconnecte avec le nouveau mot de passe
-      await supabase.auth.signOut();
-      
-      // Rediriger vers la page de connexion
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      // Attendre 5 secondes avant de déconnecter et rediriger
+      setTimeout(async () => {
+        await supabase.auth.signOut();
+        navigate("/login", { 
+          state: { 
+            message: "Votre mot de passe a été modifié avec succès. Veuillez vous connecter avec votre nouveau mot de passe." 
+          }
+        });
+      }, 5000);
     } catch (error: any) {
       console.error("Password update error:", error);
       toast.error(`Erreur lors de la mise à jour du mot de passe : ${error.message}`);
@@ -175,6 +180,33 @@ const ResetPasswordPage = () => {
             >
               Retour à la connexion
             </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Afficher un message de succès si le mot de passe a été mis à jour
+  if (passwordUpdated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 text-center">
+          <div className="flex flex-col items-center">
+            <img
+              src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png"
+              alt="Big Market Logo"
+              className="h-24 w-24 mb-4"
+            />
+            <div className="text-green-600 text-6xl mb-4">✅</div>
+            <h2 className="text-center text-3xl font-extrabold text-gray-900">
+              Mot de passe modifié !
+            </h2>
+            <p className="mt-2 text-gray-600">
+              Votre mot de passe a été mis à jour avec succès.
+            </p>
+            <p className="mt-1 text-sm text-gray-500">
+              Redirection en cours vers la page de connexion...
+            </p>
           </div>
         </div>
       </div>
