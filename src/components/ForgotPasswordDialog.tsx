@@ -96,9 +96,6 @@ const ForgotPasswordDialog = () => {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Si un compte avec cette adresse existe, nous enverrons un lien de réinitialisation
-            </p>
           </div>
           <div className="flex space-x-2">
             <Button
