@@ -27,7 +27,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (error) {
         console.error("Profile fetch error:", error);
-        // Don't throw error, just log it
         return;
       }
 
@@ -35,8 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setProfile(data as Profile);
       }
     } catch (error: any) {
-      console.error("Error fetching profile:", error.message);
-      // Don't show toast error on profile fetch failure to avoid spam
+      console.error("Error fetching profile:", error);
     } finally {
       if (shouldSetLoading) {
         setIsLoading(false);
@@ -53,7 +51,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let mounted = true;
 
-    // Set up auth state listener FIRST
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Session fetch error:', error);
+          if (mounted) {
+            setSession(null);
+            setProfile(null);
+            setIsLoading(false);
+          }
+          return;
+        }
+
+        if (!mounted) return;
+
+        const isResetPasswordPage = location.pathname === '/reset-password';
+        
+        console.log('Initial session:', !!initialSession);
+        setSession(initialSession);
+        
+        if (initialSession?.user && !isResetPasswordPage) {
+          await fetchProfile(initialSession.user.id);
+        } else {
+          setProfile(null);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (mounted) {
+          setSession(null);
+          setProfile(null);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Set up auth state listener
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
@@ -66,56 +102,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setSession(session);
       
       if (session?.user && !isResetPasswordPage) {
-        // Defer profile fetch to avoid blocking the auth state change
+        // Fetch profile for new session
         setTimeout(() => {
           if (mounted) {
             fetchProfile(session.user.id, false);
           }
         }, 0);
       } else {
+        // Clear profile when signed out
         setProfile(null);
+        setIsLoading(false);
       }
-      
-      // Always set loading to false after handling auth state
-      setIsLoading(false);
       
       // Handle redirect for password reset
       if (event === 'SIGNED_IN' && isResetPasswordPage) {
         console.log('User signed in for password reset - staying on reset page');
         return;
       }
+      
+      // Handle sign out
+      if (event === 'SIGNED_OUT') {
+        console.log('User signed out');
+        setProfile(null);
+        setIsLoading(false);
+      }
     });
 
-    // THEN check for existing session
-    const initializeAuth = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Session fetch error:', error);
-          setIsLoading(false);
-          return;
-        }
-
-        if (!mounted) return;
-
-        const isResetPasswordPage = location.pathname === '/reset-password';
-        
-        setSession(session);
-        
-        if (session?.user && !isResetPasswordPage) {
-          await fetchProfile(session.user.id);
-        } else {
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        if (mounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
+    // Initialize auth
     initializeAuth();
 
     return () => {

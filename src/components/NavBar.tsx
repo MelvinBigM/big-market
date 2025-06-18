@@ -13,6 +13,7 @@ import { useAccessRequests } from "@/hooks/useAccessRequests";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { session, profile } = useAuth();
   const navigate = useNavigate();
 
@@ -34,13 +35,26 @@ const NavBar = () => {
   });
 
   const handleLogout = async () => {
+    if (isLoggingOut) return; // Prevent multiple logout attempts
+    
+    setIsLoggingOut(true);
+    console.log("Starting logout process...");
+    
     try {
       const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      toast.success("Déconnexion réussie");
-      navigate("/");
+      if (error) {
+        console.error("Logout error:", error);
+        toast.error("Erreur lors de la déconnexion");
+      } else {
+        console.log("Logout successful");
+        toast.success("Déconnexion réussie");
+        navigate("/");
+      }
     } catch (error: any) {
+      console.error("Logout catch error:", error);
       toast.error("Erreur lors de la déconnexion");
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
@@ -96,8 +110,12 @@ const NavBar = () => {
               </Link>
             )}
             {session ? (
-              <Button variant="default" onClick={handleLogout}>
-                Se déconnecter
+              <Button 
+                variant="default" 
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+              >
+                {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
               </Button>
             ) : (
               <Link to="/login">
@@ -164,8 +182,9 @@ const NavBar = () => {
                     variant="default" 
                     className="justify-start"
                     onClick={handleLogout}
+                    disabled={isLoggingOut}
                   >
-                    Se déconnecter
+                    {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
                   </Button>
                 </>
               ) : (
