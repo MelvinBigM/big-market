@@ -10,18 +10,28 @@ const ForgotPasswordDialog = () => {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [emailError, setEmailError] = useState("");
 
-  const handleResetPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const validateEmail = (email: string): boolean => {
     if (!email.trim()) {
-      toast.error("Veuillez saisir votre adresse email");
-      return;
+      setEmailError("Veuillez saisir votre adresse email");
+      return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      toast.error("Veuillez saisir une adresse email valide");
+      setEmailError("Veuillez saisir une adresse email valide");
+      return false;
+    }
+
+    setEmailError("");
+    return true;
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!validateEmail(email)) {
       return;
     }
 
@@ -46,6 +56,7 @@ const ForgotPasswordDialog = () => {
       // Fermer la modal et réinitialiser le formulaire
       setIsOpen(false);
       setEmail("");
+      setEmailError("");
     } catch (error: any) {
       console.error("Error in password reset:", error);
       
@@ -68,6 +79,14 @@ const ForgotPasswordDialog = () => {
   const handleClose = () => {
     setIsOpen(false);
     setEmail("");
+    setEmailError("");
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    if (emailError) {
+      setEmailError("");
+    }
   };
 
   return (
@@ -93,9 +112,13 @@ const ForgotPasswordDialog = () => {
               required
               placeholder="Votre email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               autoComplete="email"
+              className={emailError ? "border-red-500" : ""}
             />
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
+            )}
           </div>
           <div className="flex space-x-2">
             <Button
