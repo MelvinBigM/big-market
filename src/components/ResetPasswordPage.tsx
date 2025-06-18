@@ -11,45 +11,64 @@ const ResetPasswordPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isValidSession, setIsValidSession] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
     const checkSession = async () => {
-      // Vérifier les paramètres d'URL
-      const accessToken = searchParams.get('access_token');
-      const refreshToken = searchParams.get('refresh_token');
-      const type = searchParams.get('type');
+      setIsCheckingSession(true);
       
-      console.log("URL params:", { accessToken, refreshToken, type });
-      
-      if (!accessToken || !refreshToken || type !== 'recovery') {
-        console.log("Missing or invalid URL parameters");
-        toast.error("Lien de réinitialisation invalide ou expiré");
-        navigate("/login");
-        return;
-      }
-
       try {
-        // Définir la session avec les tokens
-        const { data, error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        });
+        // Vérifier d'abord s'il y a des paramètres d'URL valides
+        const accessToken = searchParams.get('access_token');
+        const refreshToken = searchParams.get('refresh_token');
+        const type = searchParams.get('type');
+        
+        console.log("URL params:", { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
+        
+        if (accessToken && refreshToken && type === 'recovery') {
+          // Définir la session avec les tokens de l'URL
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
 
-        if (error) {
-          console.error("Error setting session:", error);
-          toast.error("Session invalide ou expirée");
-          navigate("/login");
-          return;
+          if (error) {
+            console.error("Error setting session:", error);
+            toast.error("Lien de réinitialisation invalide ou expiré");
+            navigate("/login");
+            return;
+          }
+
+          console.log("Session set successfully from URL params");
+          setIsValidSession(true);
+        } else {
+          // Vérifier s'il y a déjà une session valide
+          const { data: { session }, error } = await supabase.auth.getSession();
+          
+          if (error) {
+            console.error("Error getting session:", error);
+            toast.error("Erreur lors de la vérification de la session");
+            navigate("/login");
+            return;
+          }
+
+          if (session) {
+            console.log("Valid existing session found");
+            setIsValidSession(true);
+          } else {
+            console.log("No valid session found");
+            toast.error("Lien de réinitialisation invalide ou expiré. Veuillez demander un nouveau lien.");
+            navigate("/login");
+          }
         }
-
-        console.log("Session set successfully:", data);
-        setIsValidSession(true);
       } catch (error) {
         console.error("Error during session setup:", error);
         toast.error("Erreur lors de la validation du lien");
         navigate("/login");
+      } finally {
+        setIsCheckingSession(false);
       }
     };
 
@@ -88,7 +107,7 @@ const ResetPasswordPage = () => {
 
       toast.success("Mot de passe mis à jour avec succès ! Vous allez être redirigé...");
       
-      // Attendre un peu puis rediriger
+      // Attendre un peu puis rediriger vers la page de connexion
       setTimeout(() => {
         navigate("/login");
       }, 2000);
@@ -100,7 +119,7 @@ const ResetPasswordPage = () => {
     }
   };
 
-  if (!isValidSession) {
+  if (isCheckingSession) {
     return (
       <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 text-center">
@@ -116,6 +135,34 @@ const ResetPasswordPage = () => {
             <p className="mt-2 text-gray-600">
               Validation de votre lien de réinitialisation...
             </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isValidSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 text-center">
+          <div className="flex flex-col items-center">
+            <img
+              src="/lovable-uploads/971215a2-f74e-4bb2-aa1a-cd630b4c8bb1.png"
+              alt="Big Market Logo"
+              className="h-24 w-24 mb-4"
+            />
+            <h2 className="text-center text-3xl font-extrabold text-gray-900">
+              Lien invalide
+            </h2>
+            <p className="mt-2 text-gray-600">
+              Ce lien de réinitialisation n'est plus valide.
+            </p>
+            <Button 
+              onClick={() => navigate("/login")} 
+              className="mt-4"
+            >
+              Retour à la connexion
+            </Button>
           </div>
         </div>
       </div>

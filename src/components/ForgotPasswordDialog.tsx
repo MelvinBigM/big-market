@@ -30,12 +30,8 @@ const ForgotPasswordDialog = () => {
     setIsLoading(true);
 
     try {
-      // Utiliser l'URL actuelle pour la redirection
-      const redirectUrl = `${window.location.origin}/reset-password`;
-      console.log("Sending reset email with redirect URL:", redirectUrl);
-
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectUrl,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) {
