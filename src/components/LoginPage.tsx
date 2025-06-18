@@ -15,7 +15,7 @@ const LoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [loginFormSubmitted, setLoginFormSubmitted] = useState(false);
   const navigate = useNavigate();
 
   const validateForm = (): boolean => {
@@ -44,7 +44,7 @@ const LoginPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setHasSubmitted(true);
+    setLoginFormSubmitted(true);
     
     if (!validateForm()) {
       return;
@@ -108,16 +108,16 @@ const LoginPage = () => {
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    // Only clear error if form has been submitted
-    if (hasSubmitted && emailError) {
+    // Only clear error if login form has been submitted
+    if (loginFormSubmitted && emailError) {
       setEmailError("");
     }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-    // Only clear error if form has been submitted
-    if (hasSubmitted && passwordError) {
+    // Only clear error if login form has been submitted
+    if (loginFormSubmitted && passwordError) {
       setPasswordError("");
     }
   };
@@ -151,7 +151,7 @@ const LoginPage = () => {
                 onChange={handleEmailChange}
                 className={emailError ? "border-red-500" : ""}
               />
-              {emailError && hasSubmitted && (
+              {emailError && loginFormSubmitted && (
                 <p className="text-red-500 text-sm mt-1">{emailError}</p>
               )}
             </div>
@@ -169,7 +169,7 @@ const LoginPage = () => {
                 onChange={handlePasswordChange}
                 className={passwordError ? "border-red-500" : ""}
               />
-              {passwordError && hasSubmitted && (
+              {passwordError && loginFormSubmitted && (
                 <p className="text-red-500 text-sm mt-1">{passwordError}</p>
               )}
             </div>
