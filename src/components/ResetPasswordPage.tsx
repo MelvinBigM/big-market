@@ -109,7 +109,11 @@ const ResetPasswordPage = () => {
         throw error;
       }
 
-      toast.success("Mot de passe mis à jour avec succès !");
+      // Notification de succès
+      toast.success("🎉 Mot de passe modifié avec succès !", {
+        description: "Vous allez être redirigé vers la page de connexion",
+        duration: 3000,
+      });
       
       // Déconnecter l'utilisateur après le changement de mot de passe
       // pour qu'il se reconnecte avec le nouveau mot de passe
@@ -118,7 +122,7 @@ const ResetPasswordPage = () => {
       // Rediriger vers la page de connexion
       setTimeout(() => {
         navigate("/login");
-      }, 1500);
+      }, 2000);
     } catch (error: any) {
       console.error("Password update error:", error);
       toast.error(`Erreur lors de la mise à jour du mot de passe : ${error.message}`);
