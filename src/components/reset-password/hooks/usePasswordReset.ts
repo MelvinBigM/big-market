@@ -92,16 +92,35 @@ export const usePasswordReset = () => {
     setIsLoading(true);
 
     try {
+      console.log("Tentative de mise à jour du mot de passe...");
+      
       const { error } = await supabase.auth.updateUser({
         password: password
       });
 
+      console.log("Réponse de updateUser:", { error });
+
       if (error) {
         console.error("Error updating password:", error);
+        console.log("Error message:", error.message);
+        console.log("Error code:", error.status);
         
-        // Gérer l'erreur spécifique du mot de passe identique
-        if (error.message.includes('New password should be different from the old password') || 
-            error.message.includes('same_password')) {
+        // Vérifier plusieurs variantes possibles de l'erreur du mot de passe identique
+        const samePasswordPatterns = [
+          'New password should be different from the old password',
+          'same_password',
+          'Password should be different',
+          'identical password',
+          'même mot de passe',
+          'identique'
+        ];
+        
+        const isSamePasswordError = samePasswordPatterns.some(pattern => 
+          error.message.toLowerCase().includes(pattern.toLowerCase())
+        );
+        
+        if (isSamePasswordError) {
+          console.log("Erreur détectée : mot de passe identique");
           toast.error("⚠️ Nouveau mot de passe requis", {
             description: "Votre nouveau mot de passe doit être différent de l'ancien. Veuillez choisir un mot de passe différent.",
             duration: 6000,
@@ -110,10 +129,12 @@ export const usePasswordReset = () => {
         }
         
         // Autres erreurs
+        console.log("Autre type d'erreur:", error.message);
         toast.error(`Erreur lors de la mise à jour du mot de passe : ${error.message}`);
         return;
       }
 
+      console.log("Mot de passe mis à jour avec succès");
       setPasswordUpdated(true);
       
       toast.success("🎉 Mot de passe modifié avec succès !", {
