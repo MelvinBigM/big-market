@@ -28,7 +28,7 @@ const ResetPasswordPage = () => {
         console.log("URL params:", { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
         
         if (accessToken && refreshToken && type === 'recovery') {
-          // Définir la session avec les tokens de l'URL
+          // Définir la session avec les tokens de l'URL SANS redirection automatique
           const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken,
@@ -41,10 +41,13 @@ const ResetPasswordPage = () => {
             return;
           }
 
-          console.log("Session set successfully from URL params");
+          console.log("Session set successfully for password reset");
           setIsValidSession(true);
+          
+          // IMPORTANT: Ne pas rediriger automatiquement, rester sur cette page
+          // pour permettre à l'utilisateur de changer son mot de passe
         } else {
-          // Vérifier s'il y a déjà une session valide
+          // Vérifier s'il y a déjà une session valide de type recovery
           const { data: { session }, error } = await supabase.auth.getSession();
           
           if (error) {
@@ -54,11 +57,12 @@ const ResetPasswordPage = () => {
             return;
           }
 
-          if (session) {
-            console.log("Valid existing session found");
+          // Vérifier si c'est une session de récupération de mot de passe
+          if (session && session.user.aud === 'authenticated') {
+            console.log("Valid recovery session found");
             setIsValidSession(true);
           } else {
-            console.log("No valid session found");
+            console.log("No valid recovery session found");
             toast.error("Lien de réinitialisation invalide ou expiré. Veuillez demander un nouveau lien.");
             navigate("/login");
           }
@@ -105,12 +109,16 @@ const ResetPasswordPage = () => {
         throw error;
       }
 
-      toast.success("Mot de passe mis à jour avec succès ! Vous allez être redirigé...");
+      toast.success("Mot de passe mis à jour avec succès !");
       
-      // Attendre un peu puis rediriger vers la page de connexion
+      // Déconnecter l'utilisateur après le changement de mot de passe
+      // pour qu'il se reconnecte avec le nouveau mot de passe
+      await supabase.auth.signOut();
+      
+      // Rediriger vers la page de connexion
       setTimeout(() => {
         navigate("/login");
-      }, 2000);
+      }, 1500);
     } catch (error: any) {
       console.error("Password update error:", error);
       toast.error(`Erreur lors de la mise à jour du mot de passe : ${error.message}`);
