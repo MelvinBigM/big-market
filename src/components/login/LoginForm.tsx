@@ -26,8 +26,8 @@ const LoginForm = ({
   onSubmit,
 }: LoginFormProps) => {
   return (
-    <form className="mt-8 space-y-6" onSubmit={onSubmit}>
-      <div className="rounded-md shadow-sm space-y-4">
+    <form className="space-y-4" onSubmit={onSubmit}>
+      <div className="space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
             Adresse email

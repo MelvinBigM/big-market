@@ -18,8 +18,8 @@ const LoginPage = () => {
   } = useLogin();
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen h-screen flex items-center justify-center p-4 bg-gray-50">
+      <div className="w-full max-w-md space-y-6 bg-white p-6 rounded-lg shadow-lg">
         <LoginHeader />
         <LoginForm
           email={email}
@@ -32,9 +32,7 @@ const LoginPage = () => {
           onPasswordChange={handlePasswordChange}
           onSubmit={handleLogin}
         />
-        <div className="flex flex-col space-y-4">
-          <LoginActions />
-        </div>
+        <LoginActions />
       </div>
     </div>
   );
