@@ -1,4 +1,3 @@
-
 export type Profile = {
   id: string;
   role: 'admin' | 'client' | 'nouveau';
@@ -12,6 +11,7 @@ export type Profile = {
   address: string | null;
   city: string | null;
   postal_code: string | null;
+  email: string | null;
 };
 
 export type Category = {
