@@ -4,9 +4,8 @@ import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Filter, X } from "lucide-react";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Filter, ChevronDown, X } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface CategoryFiltersProps {
   products: Product[];
@@ -86,13 +85,9 @@ const CategoryFilters = ({ products, onFilterChange }: CategoryFiltersProps) => 
     applyFilters(newShowInStock, newShowOutOfStock, selectedVolumes);
   };
 
-  const handleVolumeFilterChange = (volume: string, checked: boolean) => {
-    const newSelectedVolumes = checked
-      ? [...selectedVolumes, volume]
-      : selectedVolumes.filter(v => v !== volume);
-    
-    setSelectedVolumes(newSelectedVolumes);
-    applyFilters(showInStock, showOutOfStock, newSelectedVolumes);
+  const handleVolumeFilterChange = (volumes: string[]) => {
+    setSelectedVolumes(volumes);
+    applyFilters(showInStock, showOutOfStock, volumes);
   };
 
   const clearAllFilters = () => {
@@ -105,98 +100,98 @@ const CategoryFilters = ({ products, onFilterChange }: CategoryFiltersProps) => 
   const hasActiveFilters = !showInStock || !showOutOfStock || selectedVolumes.length > 0;
 
   return (
-    <Card className="w-full mb-6">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer hover:bg-gray-50 transition-colors">
-            <CardTitle className="flex items-center justify-between text-lg">
-              <div className="flex items-center gap-2">
-                <Filter className="h-5 w-5" />
-                Filtres
-                {hasActiveFilters && (
-                  <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-                    Actifs
-                  </span>
-                )}
+    <div className="mb-4">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2"
+      >
+        <Filter className="h-4 w-4" />
+        Filtres
+        {hasActiveFilters && (
+          <span className="bg-primary text-primary-foreground text-xs px-1.5 py-0.5 rounded-full">
+            {(selectedVolumes.length > 0 ? selectedVolumes.length : 0) + (!showInStock || !showOutOfStock ? 1 : 0)}
+          </span>
+        )}
+        <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+      </Button>
+
+      {isOpen && (
+        <div className="mt-3 p-4 bg-gray-50 rounded-lg border space-y-4">
+          {/* Filtres de stock */}
+          <div>
+            <h4 className="font-medium mb-2 text-sm">Disponibilité</h4>
+            <div className="flex gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="in-stock"
+                  checked={showInStock}
+                  onCheckedChange={(checked) => 
+                    handleStockFilterChange('in', checked as boolean)
+                  }
+                />
+                <Label htmlFor="in-stock" className="text-sm">
+                  En stock
+                </Label>
               </div>
-            </CardTitle>
-          </CardHeader>
-        </CollapsibleTrigger>
-        
-        <CollapsibleContent>
-          <CardContent className="space-y-4">
-            {/* Filtres de stock */}
-            <div>
-              <h4 className="font-medium mb-3">Disponibilité</h4>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="in-stock"
-                    checked={showInStock}
-                    onCheckedChange={(checked) => 
-                      handleStockFilterChange('in', checked as boolean)
-                    }
-                  />
-                  <Label htmlFor="in-stock" className="text-sm">
-                    En stock
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="out-of-stock"
-                    checked={showOutOfStock}
-                    onCheckedChange={(checked) => 
-                      handleStockFilterChange('out', checked as boolean)
-                    }
-                  />
-                  <Label htmlFor="out-of-stock" className="text-sm">
-                    En rupture
-                  </Label>
-                </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="out-of-stock"
+                  checked={showOutOfStock}
+                  onCheckedChange={(checked) => 
+                    handleStockFilterChange('out', checked as boolean)
+                  }
+                />
+                <Label htmlFor="out-of-stock" className="text-sm">
+                  En rupture
+                </Label>
               </div>
             </div>
+          </div>
 
-            {/* Filtres de volume */}
-            {availableVolumes.length > 0 && (
-              <div>
-                <h4 className="font-medium mb-3">Volumes</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {availableVolumes.map((volume) => (
-                    <div key={volume} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`volume-${volume}`}
-                        checked={selectedVolumes.includes(volume)}
-                        onCheckedChange={(checked) =>
-                          handleVolumeFilterChange(volume, checked as boolean)
-                        }
-                      />
-                      <Label htmlFor={`volume-${volume}`} className="text-sm">
-                        {volume}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+          {/* Filtres de volume */}
+          {availableVolumes.length > 0 && (
+            <div>
+              <h4 className="font-medium mb-2 text-sm">Volumes</h4>
+              <ToggleGroup
+                type="multiple"
+                value={selectedVolumes}
+                onValueChange={handleVolumeFilterChange}
+                className="justify-start flex-wrap"
+              >
+                {availableVolumes.map((volume) => (
+                  <ToggleGroupItem
+                    key={volume}
+                    value={volume}
+                    variant="outline"
+                    size="sm"
+                    className="text-xs"
+                  >
+                    {volume}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
+          )}
 
-            {/* Bouton pour effacer tous les filtres */}
-            {hasActiveFilters && (
-              <div className="pt-4 border-t">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={clearAllFilters}
-                  className="w-full"
-                >
-                  <X className="h-4 w-4 mr-2" />
-                  Effacer tous les filtres
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </CollapsibleContent>
-      </Collapsible>
-    </Card>
+          {/* Bouton pour effacer tous les filtres */}
+          {hasActiveFilters && (
+            <div className="pt-2 border-t">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearAllFilters}
+                className="text-xs h-8"
+              >
+                <X className="h-3 w-3 mr-1" />
+                Effacer les filtres
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

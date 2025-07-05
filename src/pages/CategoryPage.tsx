@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import { Product } from "@/lib/types";
 import { motion } from "framer-motion";
 import { useAuth } from "@/lib/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import RequestClientAccessDialog from "@/components/RequestClientAccessDialog";
@@ -45,11 +45,15 @@ const CategoryPage = () => {
         .order("name");
       if (error) throw error;
       return data as Product[];
-    },
-    onSuccess: (data) => {
-      setFilteredProducts(data || []);
     }
   });
+
+  // Initialize filtered products when products data changes
+  useEffect(() => {
+    if (products) {
+      setFilteredProducts(products);
+    }
+  }, [products]);
 
   // Appliquer la recherche sur les produits filtrés
   const searchFilteredProducts = filteredProducts?.filter(product => 
