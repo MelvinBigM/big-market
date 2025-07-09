@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Product } from "@/lib/types";
 import ProductDialog from "./ProductDialog";
@@ -59,6 +60,10 @@ const ProductsSection = () => {
     products: filteredProducts?.filter(product => product.category_id === category.id) || []
   }));
 
+  const handleCategoryDragEnd = (result: any, categoryId: string) => {
+    handleDragEnd(result, categoryId);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <ProductHeader 
@@ -83,7 +88,7 @@ const ProductsSection = () => {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onToggleStock={toggleStock}
-            onDragEnd={handleDragEnd}
+            onDragEnd={handleCategoryDragEnd}
           />
         ))}
       </div>

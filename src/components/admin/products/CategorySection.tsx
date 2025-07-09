@@ -17,7 +17,7 @@ interface CategorySectionProps {
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
   onToggleStock: (product: Product) => void;
-  onDragEnd: (result: any) => void;
+  onDragEnd: (result: any, categoryId: string) => void;
 }
 
 const CategorySection = ({
@@ -58,7 +58,7 @@ const CategorySection = ({
             <DragDropContext 
               onDragEnd={(result) => {
                 console.log("CategorySection - Drag end result:", result);
-                onDragEnd(result);
+                onDragEnd(result, category.id);
               }}
             >
               <Droppable droppableId={`category-${category.id}`}>

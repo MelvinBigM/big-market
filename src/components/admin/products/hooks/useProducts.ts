@@ -28,7 +28,7 @@ export const useProducts = () => {
     },
   });
 
-  const handleDragEnd = async (result: any) => {
+  const handleDragEnd = async (result: any, categoryId: string) => {
     if (!result.destination || !products) return;
 
     const sourceIndex = result.source.index;
@@ -37,22 +37,30 @@ export const useProducts = () => {
     // Ne rien faire si l'élément n'a pas bougé
     if (sourceIndex === destinationIndex) return;
 
-    console.log("Drag end - source:", sourceIndex, "destination:", destinationIndex);
+    console.log("Drag end - source:", sourceIndex, "destination:", destinationIndex, "category:", categoryId);
 
-    const items = Array.from(products);
-    const [reorderedItem] = items.splice(sourceIndex, 1);
-    items.splice(destinationIndex, 0, reorderedItem);
+    // Filtrer les produits de cette catégorie uniquement
+    const categoryProducts = products.filter(product => product.category_id === categoryId);
+    const otherProducts = products.filter(product => product.category_id !== categoryId);
+
+    // Réorganiser les produits de cette catégorie
+    const reorderedCategoryProducts = Array.from(categoryProducts);
+    const [reorderedItem] = reorderedCategoryProducts.splice(sourceIndex, 1);
+    reorderedCategoryProducts.splice(destinationIndex, 0, reorderedItem);
+
+    // Recombiner tous les produits
+    const allProducts = [...otherProducts, ...reorderedCategoryProducts];
 
     // Mise à jour optimiste
-    queryClient.setQueryData(["products"], items);
+    queryClient.setQueryData(["products"], allProducts);
 
     try {
-      // Mise à jour des positions dans la base de données
-      const updatePromises = items.map((item, index) => {
+      // Mise à jour des positions uniquement pour les produits de cette catégorie
+      const updatePromises = reorderedCategoryProducts.map((product, index) => {
         return supabase
           .from("products")
           .update({ position: index })
-          .eq("id", item.id);
+          .eq("id", product.id);
       });
 
       const results = await Promise.all(updatePromises);
