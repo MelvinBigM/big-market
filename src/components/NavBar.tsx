@@ -1,8 +1,9 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuIcon, Settings, X, User } from "lucide-react";
+import { MenuIcon, Settings, X, User, Search } from "lucide-react";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -10,12 +11,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Category } from "@/lib/types";
 import { NotificationBadge } from "./ui/notification-badge";
 import { useAccessRequests } from "@/hooks/useAccessRequests";
-import ProductSearch from "./search/ProductSearch";
-import MobileSearch from "./search/MobileSearch";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { session, profile } = useAuth();
   const navigate = useNavigate();
 
@@ -60,10 +60,19 @@ const NavBar = () => {
     }
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center gap-4">
+        {/* Première ligne - Logo et actions */}
+        <div className="flex justify-between h-16 items-center">
           <div className="flex items-center space-x-4">
             <Link to="/" className="flex items-center space-x-2">
               <img 
@@ -75,11 +84,6 @@ const NavBar = () => {
                 Big Market
               </span>
             </Link>
-          </div>
-
-          {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
-            <ProductSearch />
           </div>
 
           {/* Desktop Menu */}
@@ -146,6 +150,22 @@ const NavBar = () => {
             </Button>
           </div>
         </div>
+
+        {/* Deuxième ligne - Barre de recherche */}
+        <div className="pb-3 pt-2 border-t border-gray-100">
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+              <Input
+                type="text"
+                placeholder="Rechercher un produit..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 w-full"
+              />
+            </div>
+          </form>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -153,7 +173,18 @@ const NavBar = () => {
         <div className="md:hidden animate-fadeIn">
           <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
             {/* Mobile Search */}
-            <MobileSearch onClose={() => setIsOpen(false)} />
+            <form onSubmit={handleSearch} className="px-3 pb-2">
+              <div className="relative">
+                <Search className="absolute left-6 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <Input
+                  type="text"
+                  placeholder="Rechercher un produit..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 w-full"
+                />
+              </div>
+            </form>
             
             {categories?.map((category) => (
               <Link

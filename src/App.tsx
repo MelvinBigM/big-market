@@ -7,6 +7,7 @@ import LegalPage from "@/pages/LegalPage";
 import NotFound from "@/pages/NotFound";
 import CategoryPage from "@/pages/CategoryPage";
 import ProductPage from "@/pages/ProductPage";
+import SearchPage from "@/pages/SearchPage";
 import LoginPage from "@/components/LoginPage";
 import RegisterPage from "@/components/RegisterPage";
 import ResetPasswordPage from "@/components/ResetPasswordPage";
@@ -33,6 +34,7 @@ function App() {
           <Route path="/legal" element={<LegalPage />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/product/:productId" element={<ProductPage />} />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
