@@ -7,7 +7,7 @@ import { toast } from "sonner";
 export const useProducts = () => {
   const queryClient = useQueryClient();
 
-  const { data: products } = useQuery({
+  const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: async () => {
       const { data: products, error: productsError } = await supabase
@@ -31,28 +31,49 @@ export const useProducts = () => {
   const handleDragEnd = async (result: any) => {
     if (!result.destination || !products) return;
 
-    const items = Array.from(products);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
 
-    // Update optimistically
+    // Ne rien faire si l'élément n'a pas bougé
+    if (sourceIndex === destinationIndex) return;
+
+    console.log("Drag end - source:", sourceIndex, "destination:", destinationIndex);
+
+    const items = Array.from(products);
+    const [reorderedItem] = items.splice(sourceIndex, 1);
+    items.splice(destinationIndex, 0, reorderedItem);
+
+    // Mise à jour optimiste
     queryClient.setQueryData(["products"], items);
 
     try {
-      // Mise à jour des positions un par un
-      for (let i = 0; i < items.length; i++) {
-        const { error } = await supabase
+      // Mise à jour des positions dans la base de données
+      const updatePromises = items.map((item, index) => {
+        return supabase
           .from("products")
-          .update({ position: i })
-          .eq("id", items[i].id);
+          .update({ position: index })
+          .eq("id", item.id);
+      });
 
-        if (error) throw error;
+      const results = await Promise.all(updatePromises);
+      
+      // Vérifier s'il y a eu des erreurs
+      const hasError = results.some(result => result.error);
+      
+      if (hasError) {
+        throw new Error("Erreur lors de la mise à jour des positions");
       }
       
+      console.log("Positions mises à jour avec succès");
       toast.success("Ordre des produits mis à jour");
+      
+      // Invalider et refetch pour s'assurer que les données sont cohérentes
+      await queryClient.invalidateQueries({ queryKey: ["products"] });
+      
     } catch (error: any) {
+      console.error("Erreur lors de la réorganisation:", error);
       // Revert optimistic update on error
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+      await queryClient.invalidateQueries({ queryKey: ["products"] });
       toast.error("Erreur lors de la réorganisation des produits");
     }
   };
@@ -93,6 +114,7 @@ export const useProducts = () => {
 
   return {
     products,
+    isLoading,
     handleDragEnd,
     handleDelete,
     toggleStock,
