@@ -10,6 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Category } from "@/lib/types";
 import { NotificationBadge } from "./ui/notification-badge";
 import { useAccessRequests } from "@/hooks/useAccessRequests";
+import ProductSearch from "./search/ProductSearch";
+import MobileSearch from "./search/MobileSearch";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +37,7 @@ const NavBar = () => {
   });
 
   const handleLogout = async () => {
-    if (isLoggingOut) return; // Prevent multiple logout attempts
+    if (isLoggingOut) return;
     
     setIsLoggingOut(true);
     console.log("Starting logout process...");
@@ -61,7 +63,7 @@ const NavBar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
+        <div className="flex justify-between h-16 items-center gap-4">
           <div className="flex items-center space-x-4">
             <Link to="/" className="flex items-center space-x-2">
               <img 
@@ -75,13 +77,18 @@ const NavBar = () => {
             </Link>
           </div>
 
+          {/* Search Bar - Desktop */}
+          <div className="hidden md:flex flex-1 max-w-md mx-4">
+            <ProductSearch />
+          </div>
+
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {categories?.map((category) => (
               <Link
                 key={category.id}
                 to={`/category/${category.id}`}
-                className="text-gray-600 hover:text-primary transition-colors"
+                className="text-gray-600 hover:text-primary transition-colors text-sm"
               >
                 {category.name}
               </Link>
@@ -144,7 +151,10 @@ const NavBar = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden animate-fadeIn">
-          <div className="px-2 pt-2 pb-3 space-y-1 bg-white">
+          <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t">
+            {/* Mobile Search */}
+            <MobileSearch onClose={() => setIsOpen(false)} />
+            
             {categories?.map((category) => (
               <Link
                 key={category.id}
