@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuIcon, Settings, X, User, LogOut, UserCircle, ChevronDown } from "lucide-react";
+import { MenuIcon, Settings, X, User, LogOut, UserCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -123,7 +124,6 @@ const NavBar = () => {
                   >
                     <UserCircle className="h-5 w-5 text-gray-600" />
                     <span className="text-gray-800 font-medium">{getUserDisplayName()}</span>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
