@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MenuIcon, Settings, X, User } from "lucide-react";
+import { MenuIcon, Settings, X, User, LogOut, UserCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Category } from "@/lib/types";
 import { NotificationBadge } from "./ui/notification-badge";
 import { useAccessRequests } from "@/hooks/useAccessRequests";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,7 +42,7 @@ const NavBar = () => {
   });
 
   const handleLogout = async () => {
-    if (isLoggingOut) return; // Prevent multiple logout attempts
+    if (isLoggingOut) return;
     
     setIsLoggingOut(true);
     console.log("Starting logout process...");
@@ -56,6 +63,25 @@ const NavBar = () => {
     } finally {
       setIsLoggingOut(false);
     }
+  };
+
+  // Get user display name
+  const getUserDisplayName = () => {
+    if (!profile) return "Utilisateur";
+    
+    if (profile.is_company && profile.company_name) {
+      return profile.company_name;
+    }
+    
+    if (profile.manager_first_name && profile.manager_last_name) {
+      return `${profile.manager_first_name} ${profile.manager_last_name}`;
+    }
+    
+    if (profile.manager_first_name) {
+      return profile.manager_first_name;
+    }
+    
+    return session?.user?.email?.split('@')[0] || "Utilisateur";
   };
 
   return (
@@ -89,38 +115,55 @@ const NavBar = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
-            {session && (
-              <Link to="/profile">
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
-                </Button>
-              </Link>
-            )}
-            {profile?.role === 'admin' && (
-              <Link to="/admin" className="relative">
-                <Button variant="ghost" size="icon">
-                  <Settings className="h-5 w-5" />
-                  {showNotification && (
-                    <NotificationBadge 
-                      count={pendingCount}
-                      className="scale-75" 
-                    />
-                  )}
-                </Button>
-              </Link>
-            )}
             {session ? (
-              <Button 
-                variant="default" 
-                onClick={handleLogout}
-                disabled={isLoggingOut}
-              >
-                {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-2">
+                    <UserCircle className="h-5 w-5" />
+                    <span>{getUserDisplayName()}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="flex items-center">
+                      <User className="h-4 w-4 mr-2" />
+                      Mon Profil
+                    </Link>
+                  </DropdownMenuItem>
+                  {profile?.role === 'admin' && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center relative">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Administration
+                        {showNotification && (
+                          <NotificationBadge 
+                            count={pendingCount}
+                            className="ml-auto scale-75" 
+                          />
+                        )}
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className="flex items-center"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-              <Link to="/login">
-                <Button variant="default">Se connecter</Button>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link to="/login">
+                  <Button variant="outline">Se connecter</Button>
+                </Link>
+                <Link to="/register">
+                  <Button variant="default">S'inscrire</Button>
+                </Link>
+              </div>
             )}
           </div>
 
@@ -158,14 +201,18 @@ const NavBar = () => {
             <div className="mt-4 flex flex-col space-y-2 px-3">
               {session ? (
                 <>
-                  <Link to="/profile">
+                  <div className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700">
+                    <UserCircle className="h-5 w-5" />
+                    <span>{getUserDisplayName()}</span>
+                  </div>
+                  <Link to="/profile" onClick={() => setIsOpen(false)}>
                     <Button variant="outline" className="w-full justify-start">
                       <User className="h-5 w-5 mr-2" />
                       Mon Profil
                     </Button>
                   </Link>
                   {profile?.role === 'admin' && (
-                    <Link to="/admin" className="relative">
+                    <Link to="/admin" onClick={() => setIsOpen(false)} className="relative">
                       <Button variant="outline" className="w-full justify-start">
                         <Settings className="h-5 w-5 mr-2" />
                         Administration
@@ -184,16 +231,25 @@ const NavBar = () => {
                     onClick={handleLogout}
                     disabled={isLoggingOut}
                   >
+                    <LogOut className="h-5 w-5 mr-2" />
                     {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
                   </Button>
                 </>
               ) : (
-                <Link to="/login">
-                  <Button variant="default" className="w-full justify-start">
-                    <User className="h-5 w-5 mr-2" />
-                    Se connecter
-                  </Button>
-                </Link>
+                <div className="flex flex-col space-y-2">
+                  <Link to="/login" onClick={() => setIsOpen(false)}>
+                    <Button variant="outline" className="w-full justify-start">
+                      <User className="h-5 w-5 mr-2" />
+                      Se connecter
+                    </Button>
+                  </Link>
+                  <Link to="/register" onClick={() => setIsOpen(false)}>
+                    <Button variant="default" className="w-full justify-start">
+                      <User className="h-5 w-5 mr-2" />
+                      S'inscrire
+                    </Button>
+                  </Link>
+                </div>
               )}
             </div>
           </div>
