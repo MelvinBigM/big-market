@@ -80,7 +80,7 @@ export const UserMenu = () => {
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button 
           variant="outline" 
@@ -94,6 +94,7 @@ export const UserMenu = () => {
         align="end" 
         className="w-56 bg-white border border-gray-200 shadow-lg z-[60]"
         sideOffset={5}
+        onCloseAutoFocus={(e) => e.preventDefault()}
       >
         <DropdownMenuItem asChild>
           <Link to="/profile" className="flex items-center cursor-pointer">
