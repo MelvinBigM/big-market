@@ -18,9 +18,9 @@ const AdminProductsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
           <p className="mt-4">Chargement...</p>
         </div>
       </div>
@@ -34,16 +34,16 @@ const AdminProductsPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
-      <div className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+      <main className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-gray-900">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
               Gestion des produits
             </h1>
           </div>
           <ProductsSection />
         </div>
-      </div>
+      </main>
       <Footer />
     </div>
   );
