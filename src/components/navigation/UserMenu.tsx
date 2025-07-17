@@ -84,10 +84,16 @@ export const UserMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button 
           variant="outline" 
-          className="flex items-center space-x-2 px-3 py-2 border border-gray-300 hover:border-primary hover:bg-primary/5 transition-colors"
+          className="flex items-center space-x-2 px-3 py-2 border border-gray-300 hover:border-primary hover:bg-primary/5 transition-colors relative"
         >
           <UserCircle className="h-5 w-5 text-gray-600" />
           <span className="text-gray-800 font-medium">{getUserDisplayName()}</span>
+          {showNotification && (
+            <NotificationBadge 
+              count={pendingCount}
+              className="absolute -top-1 -right-1 scale-75" 
+            />
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 
