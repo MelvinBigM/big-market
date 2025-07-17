@@ -39,7 +39,7 @@ const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
   // Show loading while determining auth status
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="flex min-h-screen items-center justify-center bg-white px-4">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
           <p className="mt-4 text-gray-600">Vérification des permissions...</p>
@@ -51,7 +51,7 @@ const AdminProtectedRoute = ({ children }: AdminProtectedRouteProps) => {
   // Show loading if session exists but profile is still loading
   if (session && !profile) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white">
+      <div className="flex min-h-screen items-center justify-center bg-white px-4">
         <div className="text-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto"></div>
           <p className="mt-4 text-gray-600">Chargement du profil...</p>

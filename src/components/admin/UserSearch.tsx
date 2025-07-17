@@ -9,7 +9,7 @@ interface UserSearchProps {
 
 const UserSearch = ({ searchQuery, setSearchQuery }: UserSearchProps) => {
   return (
-    <div className="mb-6">
+    <div className="mb-4 sm:mb-6">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
         <Input
@@ -17,7 +17,7 @@ const UserSearch = ({ searchQuery, setSearchQuery }: UserSearchProps) => {
           placeholder="Rechercher un utilisateur par email, nom ou rôle..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-10"
+          className="w-full pl-10 text-sm sm:text-base"
         />
       </div>
     </div>

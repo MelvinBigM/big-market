@@ -54,10 +54,12 @@ const BannerForm: React.FC<BannerFormProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{selectedBanner?.id ? 'Modifier' : 'Ajouter'} une bannière</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">
+            {selectedBanner?.id ? 'Modifier' : 'Ajouter'} une bannière
+          </DialogTitle>
+          <DialogDescription className="text-sm">
             Personnalisez votre bannière qui sera affichée sur la page d'accueil.
             Dimensions requises: exactement {REQUIRED_WIDTH}x{REQUIRED_HEIGHT} pixels.
           </DialogDescription>
@@ -68,11 +70,19 @@ const BannerForm: React.FC<BannerFormProps> = ({
           onUpdateBanner={updateBanner}
         />
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setIsOpen(false)}>
+        <DialogFooter className="flex-col sm:flex-row gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => setIsOpen(false)}
+            className="w-full sm:w-auto"
+          >
             Annuler
           </Button>
-          <Button onClick={handleSave} disabled={isSaving}>
+          <Button 
+            onClick={handleSave} 
+            disabled={isSaving}
+            className="w-full sm:w-auto"
+          >
             {isSaving ? 'Enregistrement...' : 'Enregistrer'}
           </Button>
         </DialogFooter>

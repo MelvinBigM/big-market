@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/auth";
@@ -126,7 +127,7 @@ const AdminUsersPage = () => {
 
   if (isError) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center px-4">
         <div className="text-center text-red-600">
           <p>Une erreur est survenue lors du chargement des utilisateurs.</p>
           <p className="text-sm mt-2">{error instanceof Error ? error.message : 'Erreur inconnue'}</p>
@@ -142,15 +143,15 @@ const AdminUsersPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
-      <div className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="pt-16 pb-12 px-3 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-gray-900">
+          <div className="mb-4 sm:mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
               Gestion des utilisateurs
             </h1>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-3 sm:p-6">
             <UserSearch 
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}

@@ -15,14 +15,14 @@ interface UsersListProps {
 const UsersList = ({ profiles, onRoleChange, onDelete }: UsersListProps) => {
   if (!profiles || profiles.length === 0) {
     return (
-      <p className="text-center text-gray-600 py-4">
+      <p className="text-center text-gray-600 py-4 px-4">
         Aucun utilisateur trouvé.
       </p>
     );
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-3 sm:gap-4">
       {profiles.map((userProfile) => (
         <UserCard
           key={userProfile.id}

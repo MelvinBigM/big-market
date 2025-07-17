@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface BannerListProps {
   banners: Banner[];
@@ -22,23 +23,25 @@ const BannerList: React.FC<BannerListProps> = ({
   onToggleActive,
   onReorder 
 }) => {
+  const isMobile = useIsMobile();
+
   if (banners.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-gray-500 px-4">
         Aucune bannière photo disponible. Créez votre première bannière photo.
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <DragDropContext onDragEnd={onReorder}>
         <Droppable droppableId="banners">
           {(provided) => (
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              className="space-y-4"
+              className="space-y-3 sm:space-y-4"
             >
               {banners.map((banner, index) => (
                 <Draggable
@@ -58,7 +61,7 @@ const BannerList: React.FC<BannerListProps> = ({
                       } ${snapshot.isDragging ? 'shadow-lg' : ''}`}
                     >
                       {/* Full banner preview */}
-                      <div className="w-full h-32 bg-gray-200 relative overflow-hidden">
+                      <div className="w-full h-24 sm:h-32 bg-gray-200 relative overflow-hidden">
                         {banner.image_url && (
                           <img 
                             src={banner.image_url} 
@@ -69,10 +72,12 @@ const BannerList: React.FC<BannerListProps> = ({
                       </div>
                       
                       {/* Banner info and actions */}
-                      <div className="p-4 bg-white flex items-center justify-between">
+                      <div className={`p-3 sm:p-4 bg-white ${
+                        isMobile ? 'space-y-3' : 'flex items-center justify-between'
+                      }`}>
                         <div 
                           {...provided.dragHandleProps}
-                          className="flex items-center flex-1 cursor-move"
+                          className={`${isMobile ? 'flex items-center' : 'flex items-center flex-1'} cursor-move`}
                         >
                           <div className="mr-3 text-gray-400">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
@@ -84,12 +89,17 @@ const BannerList: React.FC<BannerListProps> = ({
                               <circle cx="15" cy="14" r="1"/>
                             </svg>
                           </div>
-                          <div>
-                            <h3 className="font-medium text-lg">{banner.title}</h3>
+                          <div className="flex-1">
+                            <h3 className="font-medium text-base sm:text-lg truncate">{banner.title}</h3>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-4 ml-4">
-                          <div className="flex items-center space-x-2">
+                        
+                        <div className={`${
+                          isMobile ? 'flex flex-col space-y-3' : 'flex items-center space-x-4 ml-4'
+                        }`}>
+                          <div className={`${
+                            isMobile ? 'flex items-center justify-between' : 'flex items-center space-x-2'
+                          }`}>
                             <span className="text-sm text-gray-600">
                               {banner.active ? 'Active' : 'Inactive'}
                             </span>
@@ -98,14 +108,29 @@ const BannerList: React.FC<BannerListProps> = ({
                               onCheckedChange={(checked) => onToggleActive(banner.id, checked)}
                             />
                           </div>
-                          <div className="flex space-x-2">
-                            <Button size="sm" variant="outline" onClick={() => onEdit(banner)}>
+                          
+                          <div className={`${
+                            isMobile ? 'flex space-x-2 w-full' : 'flex space-x-2'
+                          }`}>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => onEdit(banner)}
+                              className={isMobile ? 'flex-1 text-xs' : ''}
+                            >
                               <Edit className="h-4 w-4 mr-1" />
-                              Modifier
+                              {isMobile ? 'Modif.' : 'Modifier'}
                             </Button>
-                            <Button size="sm" variant="outline" className="text-destructive hover:text-destructive" onClick={() => onDelete(banner.id)}>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              className={`text-destructive hover:text-destructive ${
+                                isMobile ? 'flex-1 text-xs' : ''
+                              }`}
+                              onClick={() => onDelete(banner.id)}
+                            >
                               <Trash2 className="h-4 w-4 mr-1" />
-                              Supprimer
+                              {isMobile ? 'Suppr.' : 'Supprimer'}
                             </Button>
                           </div>
                         </div>

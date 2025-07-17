@@ -65,7 +65,7 @@ const BannerImageUploader: React.FC<BannerImageUploaderProps> = ({
     <div className="space-y-2">
       <Label>Image de bannière (obligatoire)</Label>
       <div className="mt-1 flex items-center">
-        <div className="h-36 w-full bg-gray-200 rounded overflow-hidden">
+        <div className="h-28 sm:h-36 w-full bg-gray-200 rounded overflow-hidden">
           {imageUrl ? (
             <img
               src={imageUrl}
@@ -74,7 +74,7 @@ const BannerImageUploader: React.FC<BannerImageUploaderProps> = ({
             />
           ) : (
             <div className="h-full w-full flex justify-center items-center bg-gray-100">
-              <LucideImage className="h-12 w-12 text-gray-400" />
+              <LucideImage className="h-8 w-8 sm:h-12 sm:w-12 text-gray-400" />
             </div>
           )}
         </div>
@@ -83,12 +83,12 @@ const BannerImageUploader: React.FC<BannerImageUploaderProps> = ({
       {imageError && (
         <Alert variant="destructive" className="mt-2">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{imageError}</AlertDescription>
+          <AlertDescription className="text-sm">{imageError}</AlertDescription>
         </Alert>
       )}
       
       <div className="mt-2">
-        <Label htmlFor="image" className="cursor-pointer inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+        <Label htmlFor="image" className="cursor-pointer inline-flex items-center px-3 sm:px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 w-full sm:w-auto justify-center">
           <LucideImage className="h-4 w-4 mr-2" />
           {isUploading ? 'Téléchargement...' : 'Choisir une image'}
         </Label>
@@ -100,7 +100,7 @@ const BannerImageUploader: React.FC<BannerImageUploaderProps> = ({
           onChange={handleFileUpload}
           disabled={isUploading}
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-gray-500 mt-1 text-center sm:text-left">
           L'image doit être exactement de {REQUIRED_WIDTH}x{REQUIRED_HEIGHT} pixels
         </p>
       </div>
