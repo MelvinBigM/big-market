@@ -91,7 +91,7 @@ export const UserMenu = () => {
           {showNotification && (
             <NotificationBadge 
               count={pendingCount}
-              className="absolute -top-1 -right-1 scale-75" 
+              className="absolute -top-2 -right-2 scale-75" 
             />
           )}
         </Button>
