@@ -1,4 +1,3 @@
-
 import { Profile } from "@/lib/types";
 import { Button } from "../ui/button";
 import { Mail, Trash2, ArrowRight, Building2, MoreVertical } from "lucide-react";
@@ -105,15 +104,15 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
 
   if (isMobile) {
     return (
-      <div className="bg-white border border-gray-100 rounded-lg shadow-sm p-4 space-y-3">
+      <div className="w-full bg-white border border-gray-100 rounded-lg shadow-sm p-3 space-y-3 overflow-hidden">
         {/* Header avec nom et bouton d'actions */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between min-w-0">
           <button
             onClick={() => navigate(`/admin/users/${userProfile.id}`)}
-            className="font-medium hover:text-primary flex items-center gap-2 flex-1 text-left"
+            className="font-medium hover:text-primary flex items-center gap-2 flex-1 text-left min-w-0 mr-2"
           >
             <Building2 className="h-4 w-4 flex-shrink-0" />
-            <span className="truncate">{displayName || 'Nom de société non défini'}</span>
+            <span className="truncate text-sm">{displayName || 'Nom de société non défini'}</span>
           </button>
           
           <DropdownMenu>
@@ -148,22 +147,22 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
         </div>
 
         {/* Informations utilisateur */}
-        <div className="space-y-1 text-sm">
+        <div className="space-y-1 text-xs min-w-0">
           <p className="text-gray-600 truncate">
             {userProfile.email || 'Email non défini'}
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-gray-500">
             Inscrit le {new Date(userProfile.created_at).toLocaleDateString()}
           </p>
         </div>
 
         {/* Sélecteur de rôle */}
-        <div>
+        <div className="w-full">
           <Select
             value={userProfile.role}
             onValueChange={handleRoleChange}
           >
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full h-8 text-xs">
               <SelectValue placeholder="Sélectionner un rôle" />
             </SelectTrigger>
             <SelectContent>
@@ -175,10 +174,10 @@ const UserCard = ({ userProfile, onRoleChange, onDelete }: UserCardProps) => {
         </div>
 
         <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <AlertDialogContent className="mx-4">
+          <AlertDialogContent className="mx-4 max-w-[calc(100vw-2rem)]">
             <AlertDialogHeader>
-              <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogTitle className="text-base">Confirmer la suppression</AlertDialogTitle>
+              <AlertDialogDescription className="text-sm">
                 Êtes-vous sûr de vouloir supprimer l'utilisateur "{displayName || 'Utilisateur sans nom'}" ? 
                 Cette action est irréversible et supprimera définitivement le compte utilisateur.
               </AlertDialogDescription>

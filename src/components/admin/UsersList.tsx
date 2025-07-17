@@ -22,7 +22,7 @@ const UsersList = ({ profiles, onRoleChange, onDelete }: UsersListProps) => {
   }
 
   return (
-    <div className="grid gap-3 sm:gap-4">
+    <div className="grid gap-2 sm:gap-4 w-full">
       {profiles.map((userProfile) => (
         <UserCard
           key={userProfile.id}
