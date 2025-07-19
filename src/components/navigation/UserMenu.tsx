@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { NotificationBadge } from "../ui/notification-badge";
 import { useAccessRequests } from "@/hooks/useAccessRequests";
+import { ThemeToggle } from "../ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,6 +70,7 @@ export const UserMenu = () => {
   if (!session) {
     return (
       <div className="flex items-center space-x-2">
+        <ThemeToggle />
         <Link to="/login">
           <Button variant="outline">Se connecter</Button>
         </Link>
@@ -80,8 +82,10 @@ export const UserMenu = () => {
   }
 
   return (
-    <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
+    <div className="flex items-center space-x-2">
+      <ThemeToggle />
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
         <Button 
           variant="outline" 
           className="flex items-center space-x-2 px-3 py-2 border border-gray-300 hover:border-primary hover:bg-primary/5 transition-colors relative"
@@ -131,7 +135,8 @@ export const UserMenu = () => {
           <LogOut className="h-4 w-4 mr-2" />
           {isLoggingOut ? "Déconnexion..." : "Se déconnecter"}
         </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 };
