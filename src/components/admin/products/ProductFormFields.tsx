@@ -3,7 +3,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import VatRateSelector from "./VatRateSelector";
-import ProductImageManager from "./ProductImageManager";
+import ProductImageUploader from "./ProductImageUploader";
+import ProductImageManagerV2 from "./ProductImageManagerV2";
 import { Category } from "@/lib/types";
 
 interface ProductFormFieldsProps {
@@ -93,18 +94,15 @@ const ProductFormFields = ({
           ))}
         </select>
       </div>
-      <div className="grid gap-2">
-        <Label htmlFor="imageUrl">Image principale (URL)</Label>
-        <Input
-          id="imageUrl"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          placeholder="URL de l'image principale"
-        />
-      </div>
+      <ProductImageUploader
+        value={imageUrl}
+        onChange={setImageUrl}
+        label="Image principale"
+        placeholder="Aucune image principale sélectionnée"
+      />
 
       {/* Product Image Manager for additional images */}
-      <ProductImageManager productId={productId} />
+      <ProductImageManagerV2 productId={productId} />
     </div>
   );
 };
