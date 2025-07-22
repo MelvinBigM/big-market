@@ -68,7 +68,7 @@ const HeroBanner = () => {
     return (
       <section className={`w-full ${isMobile ? 'mt-12' : 'mt-16'}`}>
         <div className={isMobile ? 'mx-0' : 'mx-auto'}>
-          <div className={`bg-gray-100 animate-pulse w-full ${isMobile ? 'h-[60px]' : 'h-[150px]'}`}></div>
+          <div className={`bg-muted animate-pulse w-full ${isMobile ? 'h-[60px]' : 'h-[150px]'}`}></div>
         </div>
       </section>
     );

@@ -29,7 +29,7 @@ const LatestProducts = () => {
     <section className="px-4 sm:px-6 lg:px-8 py-8 w-full">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 sm:mb-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold">
+          <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
             Nos Nouveautés
           </h2>
         </div>
@@ -37,7 +37,7 @@ const LatestProducts = () => {
           {latestProducts?.map((product) => (
             <Link to={`/product/${product.id}`} key={product.id} className="block group">
               <div
-                className="bg-white rounded-lg shadow-md overflow-hidden relative group-hover:shadow-xl transition-all duration-300 h-full border border-gray-100"
+                className="bg-card rounded-lg shadow-md overflow-hidden relative group-hover:shadow-xl transition-all duration-300 h-full border border-border"
               >
                 <div className="absolute top-2 right-2 z-10">
                   <span className="bg-gradient-to-r from-primary to-red-400 text-white px-2 py-0.5 rounded-full text-xs font-semibold">
@@ -51,9 +51,9 @@ const LatestProducts = () => {
                     className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-110"
                   />
                 </div>
-                <div className="p-2 sm:p-4 bg-gradient-to-b from-white to-gray-50">
+                <div className="p-2 sm:p-4 bg-card">
                   <div className="text-xs font-medium text-primary mb-1">{product.categories.name}</div>
-                  <h3 className="text-xs sm:text-sm font-semibold mb-1 truncate group-hover:text-primary transition-colors">{product.name}</h3>
+                  <h3 className="text-xs sm:text-sm font-semibold mb-1 truncate group-hover:text-primary transition-colors text-card-foreground">{product.name}</h3>
                   <div className="w-8 h-0.5 bg-primary mt-2 transition-all duration-300 group-hover:w-full opacity-70"></div>
                 </div>
               </div>
