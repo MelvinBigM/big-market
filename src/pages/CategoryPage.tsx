@@ -60,7 +60,7 @@ const CategoryPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <NavBar />
       <main className="pt-16 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-[1920px] mx-auto">

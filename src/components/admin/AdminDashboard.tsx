@@ -102,21 +102,21 @@ const AdminDashboard = () => {
   const categoryOrder = ["Utilisateurs", "Catalogue", "Mise en page"];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <NavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
         <div className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-foreground mb-4">
             Administration
           </h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Interface sécurisée avec surveillance et audit des actions
           </p>
         </div>
 
         {categoryOrder.map(category => (
           <div key={category} className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-700 mb-4 border-b border-gray-200 pb-2">
+            <h2 className="text-xl font-semibold text-foreground mb-4 border-b border-border pb-2">
               {category}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -128,7 +128,7 @@ const AdminDashboard = () => {
                   transition={{ delay: index * 0.1 }}
                 >
                   <Link to={card.link} className="block h-full">
-                    <div className="bg-white border-2 border-gray-200 rounded-lg shadow-md p-6 h-full hover:shadow-lg hover:border-gray-300 transition-all duration-200">
+                    <div className="bg-card border-2 border-border rounded-lg shadow-md p-6 h-full hover:shadow-lg hover:border-muted-foreground transition-all duration-200">
                       <div className="relative">
                         <div className={`inline-flex items-center justify-center p-3 rounded-lg ${card.color} text-white mb-4`}>
                           {card.icon}
@@ -137,10 +137,10 @@ const AdminDashboard = () => {
                           <NotificationBadge count={card.notificationCount} className="absolute -top-2 -right-2" />
                         )}
                       </div>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                      <h2 className="text-xl font-semibold text-card-foreground mb-2">
                         {card.title}
                       </h2>
-                      <p className="text-gray-600">
+                      <p className="text-muted-foreground">
                         {card.description}
                       </p>
                     </div>

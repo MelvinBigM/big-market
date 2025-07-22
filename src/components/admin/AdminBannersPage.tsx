@@ -55,19 +55,19 @@ const AdminBannersPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <NavBar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-foreground">
             Gestion des bannières
           </h1>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h2 className="text-xl font-semibold text-center mb-6">Bannières photo</h2>
+        <div className="bg-card rounded-lg shadow-sm p-6 mb-8">
+          <h2 className="text-xl font-semibold text-center mb-6 text-card-foreground">Bannières photo</h2>
           
-          <p className="text-gray-600 mb-6">
+          <p className="text-muted-foreground mb-6">
             Gérez les bannières photo qui apparaissent sur la page d'accueil. Faites glisser les bannières pour changer leur ordre d'affichage.
             Dimensions exactes requises: 1920x250 pixels. Seules les bannières photo avec ces dimensions exactes sont acceptées.
           </p>

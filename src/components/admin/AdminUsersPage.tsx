@@ -140,17 +140,17 @@ const AdminUsersPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <NavBar />
       <div className="pt-16 pb-12 px-2 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto w-full">
           <div className="mb-4 sm:mb-6 text-center">
-            <h1 className="text-xl sm:text-3xl font-bold text-gray-900">
+            <h1 className="text-xl sm:text-3xl font-bold text-foreground">
               Gestion des utilisateurs
             </h1>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-2 sm:p-6 w-full overflow-hidden">
+          <div className="bg-card rounded-lg shadow p-2 sm:p-6 w-full overflow-hidden">
             <UserSearch 
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
