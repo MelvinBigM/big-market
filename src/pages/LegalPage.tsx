@@ -38,10 +38,10 @@ const LegalPage = () => {
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-3">Hébergement du site</h2>
               <p className="text-gray-600">
-                Ce site est hébergé par Vercel Inc.<br />
-                440 N Barranca Ave #4133<br />
-                Covina, CA 91723<br />
-                États-Unis
+                Ce site est hébergé par Infomaniak Network SA<br />
+                Rue Eugène-Marziano 25<br />
+                1227 Les Acacias<br />
+                Genève, Suisse
               </p>
             </div>
 
