@@ -127,12 +127,12 @@ const AdminAccessRequestsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <NavBar />
       <div className="pt-16 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-6 text-center">
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-3xl font-bold text-gray-900">
               Demandes d'accès en attente
             </h1>
           </div>
@@ -150,8 +150,8 @@ const AdminAccessRequestsPage = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground mb-2">{request.reason}</p>
-                    <p className="text-sm text-muted-foreground mb-4">
+                    <p className="text-sm text-gray-600 mb-2">{request.reason}</p>
+                    <p className="text-sm text-gray-500 mb-4">
                       Demande effectuée le {formatDate(request.created_at)}
                     </p>
                     <div className="flex justify-center gap-4">
@@ -181,7 +181,7 @@ const AdminAccessRequestsPage = () => {
               <div className="col-span-full">
                 <Card>
                   <CardContent className="text-center py-6">
-                    <p className="text-muted-foreground">Aucune demande d'accès en attente</p>
+                    <p className="text-gray-500">Aucune demande d'accès en attente</p>
                   </CardContent>
                 </Card>
               </div>

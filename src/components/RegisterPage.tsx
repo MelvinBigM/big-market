@@ -88,7 +88,7 @@ const RegisterPage = () => {
               alt="Big Market Logo"
               className="h-24 w-24 mb-4"
             />
-            <h2 className="text-center text-3xl font-extrabold text-foreground">
+            <h2 className="text-center text-3xl font-extrabold text-gray-900">
               Inscription réussie !
             </h2>
           </div>
@@ -147,10 +147,10 @@ const RegisterPage = () => {
             alt="Big Market Logo"
             className="h-24 w-24 mb-4"
           />
-          <h2 className="text-center text-3xl font-extrabold text-foreground">
+          <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Créer un compte entreprise Big Market
           </h2>
-          <p className="mt-2 text-center text-sm text-muted-foreground">
+          <p className="mt-2 text-center text-sm text-gray-600">
             Inscription réservée aux entreprises
           </p>
         </div>

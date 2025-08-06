@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-white">
       <NavBar />
       <main className="flex-1">
         <HeroBanner />

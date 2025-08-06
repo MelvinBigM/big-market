@@ -20,14 +20,12 @@ import AdminBannersPage from "@/components/admin/AdminBannersPage";
 import UserDetailsPage from "@/components/admin/UserDetailsPage";
 import AdminProtectedRoute from "@/components/admin/AdminProtectedRoute";
 import { AuthProvider } from "@/components/AuthProvider";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import "./App.css";
 
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider defaultTheme="system" storageKey="big-market-theme">
-        <AuthProvider>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<AboutPage />} />
@@ -97,8 +95,7 @@ function App() {
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        </AuthProvider>
-      </ThemeProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
